@@ -11,6 +11,26 @@
 - SHA 3. - David
 - Digital signatures.
 
+- Basale operationer (fra discord chat):
+    - Modulo
+    - Euclid's algorithm
+    - Chinese Remainder Theorem
+    - Euler's Phi function
+    - Symmetric Encryption:
+    - Stream ciphers
+    - AES
+    - DES
+    - Block ciphers
+    - RSA
+    - RSA optimizations
+    - El-Gamal
+    - Hash functions
+    - Symmetric key authentication. MAC algorithms
+    - Digital signatures
+    - Diffie-Hellman
+    - Secret Sharing
+    - SHA-3
+    - Cryptology: How To Crack It
 
 ## Basic ideas for RSA
 
