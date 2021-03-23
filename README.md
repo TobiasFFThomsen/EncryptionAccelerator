@@ -3,7 +3,8 @@
  - David Risom Pedersen
  - Casper Egholm Jørgensen 
  - Tobias Thomsen
-
+## Schedule:
+![Block for Key generation](images/schedule.png)
 ## Ideas for other algorithms and expansions of project
 
 - Stream ciphers (chacha).
