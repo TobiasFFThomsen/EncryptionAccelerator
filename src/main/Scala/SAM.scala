@@ -47,28 +47,27 @@ class SAM extends Module {
   when (!run_reg & io.valid_in & !edge_high_reg){
     //Initialize computation
     w := 1.U;
+    progress_reg := 0.U;
     run_reg := true.B;
     io.valid_out := false.B;
   }
 
   //Compute result
-  // w needs time to reset
   when (run_reg){
-    // Square
     progress_reg := progress_reg + 1;
-    w := w * w
-
-    // Multiply if bit is high
-    when (io.t(progress_reg - 1.U)){
-      w := w * io.b;
-    }
-
     when(progress_reg === io.t.getWidth + 1.U){
-      result := w;
-      progress_reg := 0.U;
+      // Done. Set result to output.
       io.valid_out := true.B;
       run_reg := false.B;
+    }.elsewhen(io.t(progress_reg - 1.U)){
+      // Square and multiply
+      w := ((w * w) * io.b) % io.n;
+    }.otherwise{
+      // Square
+      w := (w * w) % io.n;
     }
   }
-  io.result := result;
+  // result output is just always set to w. valid_out signals whether it's usable.
+  io.result := w;
+  printf(p"w = $w")
 }
