@@ -1,6 +1,26 @@
 import chisel3.iotesters.PeekPokeTester
 import org.scalatest._
 
+class SAMTester(dut: SAM) extends PeekPokeTester(dut) {
+  poke(dut.io.t, 1);
+  poke(dut.io.n, 1);
+  poke(dut.io.b, 1);
+  poke(dut.io.valid_in, false)
+  val result: BigInt = peek(dut.io.result)
+  //val v_in: BigInt = peek(dut.io.valid_in)
+  val v_out: BigInt = peek(dut.io.valid_out)
+  System.out.println(result)
+  //System.out.println(v_in)
+  System.out.println(v_out)
+
+  // Here comes the Chisel/Scala code// for the testing}
+}
+class SAMSpec extends FlatSpec with Matchers {
+  "SAM" should "pass" in {
+    chisel3.iotesters.Driver(() => new SAM) { c => new SAMTester(c)} should be (true)
+  }
+}
+/*
 class SAMSpec extends FlatSpec with Matchers {
   "Hello" should "pass" in {
     chisel3.iotesters.Driver(() => new Hello()) { c =>
@@ -22,3 +42,4 @@ class SAMSpec extends FlatSpec with Matchers {
     } should be (true)
   }
 }
+*/

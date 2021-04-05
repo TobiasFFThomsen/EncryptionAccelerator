@@ -23,26 +23,31 @@ class SAM extends Module {
   */
   val io = IO(new Bundle{
     // b, t, n, w
-    val b = Input(UInt(8.W))
-    val t = Input(UInt(8.W))
-    val n = Input(UInt(8.W))
-    val result = Output(UInt(8.W))
+    val b: UInt = Input(UInt(8.W))
+    val t: UInt = Input(UInt(8.W))
+    val n: UInt = Input(UInt(8.W))
+    val result: UInt = Output(UInt(8.W))
     //Control signals
-    val valid_in = Input(Bool())
-    val valid_out = Output(Bool())
+    val valid_in: Bool = Input(Bool())
+    val valid_out: Bool = Output(Bool())
   })
   //Initial values
   val run_reg: Bool = RegInit(false.B);
-  val progress_reg: UInt = RegInit(0.U);
+  val progress_reg: UInt = RegInit(0.U(8.W));
   val edge_high_reg:Bool = RegInit(false.B);
-  val w: UInt = RegInit(1.U);
-  val result: UInt = RegInit(0.U);
-
+  val w: UInt = RegInit(1.U(8.W));
+  val result: UInt = RegInit(0.U(8.W));
+  when (run_reg){
+    io.valid_out := false.B;
+  }.otherwise{
+    io.valid_in := true.B;
+  }
   // Edge triggered run of operations
   // Start computing if:
   // 1) Not already computing
   // 2) valid input signal is raised
   // 3) valid input signal was not raised raised on prior cycle
+  /*
   edge_high_reg := io.valid_in;
   when (!run_reg & io.valid_in & !edge_high_reg){
     //Initialize computation
@@ -54,8 +59,8 @@ class SAM extends Module {
 
   //Compute result
   when (run_reg){
-    progress_reg := progress_reg + 1;
-    when(progress_reg === io.t.getWidth + 1.U){
+    progress_reg := progress_reg + 1.U;
+    when(progress_reg === (io.t.getWidth.asUInt() + 1.U)){
       // Done. Set result to output.
       io.valid_out := true.B;
       run_reg := false.B;
@@ -70,4 +75,5 @@ class SAM extends Module {
   // result output is just always set to w. valid_out signals whether it's usable.
   io.result := w;
   printf(p"w = $w")
+   */
 }
