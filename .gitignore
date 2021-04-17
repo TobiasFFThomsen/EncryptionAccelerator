@@ -1,3 +1,5 @@
 .idea
 project
 target
+*.anno.json
+*.fir

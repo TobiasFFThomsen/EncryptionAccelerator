@@ -1,6 +1,5 @@
-import Chisel.{OHToUInt, PriorityEncoder, Reverse, log2Ceil}
+import Chisel.{PriorityEncoder, Reverse}
 import chisel3._
-import org.scalacheck.Prop.False
 
 /*
 class RSA extends Module{
@@ -22,7 +21,8 @@ class SAM extends Module {
   b, t, and n must be valid when requesting result
   valid_in must be raised and held high while operation is running (until valid_out is raised).
   */
-  val max_bit_width = 8
+  val max_bit_width = 2048
+
   val io = IO(new Bundle {
     // b, t, n, w
     val b: UInt = Input(UInt(max_bit_width.W))
@@ -42,8 +42,7 @@ class SAM extends Module {
   // Initial values
   // ---------------------------------------
   // Result and UI control signals
-  val w_reg: UInt = RegInit(1.U(max_bit_width.W)) // Register holding current computed result
-  val v_out_reg: Bool = RegInit(false.B) // Register holding whether current output is valid (done)
+  val w_reg: UInt = RegInit(1.U((max_bit_width*3).W)) // Register holding current computed result
 
   // Internal control signals
   val run_reg: Bool = RegInit(false.B) // Register denoting whether module is currently computing result
@@ -54,7 +53,6 @@ class SAM extends Module {
 
   // Computing
   //-----------------------------------------------
-
   // Edge triggered run of operations
   // Start computing if:
   // 1) Not already computing
