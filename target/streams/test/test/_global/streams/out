@@ -1,23 +1,14 @@
-[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(sha3_spec, org.scalatest.tools.Framework$$anon$1@3bcc4681, false, [SuiteSelector])[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(sha3_spec, org.scalatest.tools.Framework$$anon$1@2a158cce, false, [SuiteSelector])[0m
 [0m[[0m[0minfo[0m] [0m[0m[32msha3_spec:[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mTHETA[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m- should pass *** FAILED ***[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  firrtl.transforms.CheckCombLoops$CombLoopException: : [module Round] Combinational loop detected:[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31mRound.st_1_4[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31mRound._T_74	 @[Round.scala 120:50][0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31mRound.b_4_4	 @[Round.scala 120:38][0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31mRound.chi_b_wire	 @[Round.scala 133:18][0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31mRound._T_119	 @[Round.scala 134:30][0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31mRound.st_1_4	 @[Round.scala 134:16][0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  ...[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- should pass[0m[0m
 [0m[[0m[0mdebug[0m] [0m[0mSummary for ScalaCheck not available.[0m
 [0m[[0m[0minfo[0m] [0m[0mScalaTest[0m
-[0m[[0m[0minfo[0m] [0m[0m[36mRun completed in 6 seconds, 345 milliseconds.[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mRun completed in 6 seconds, 914 milliseconds.[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mTotal number of tests run: 1[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mSuites: completed 1, aborted 0[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[36mTests: succeeded 0, failed 1, canceled 0, ignored 0, pending 0[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m*** 1 TEST FAILED ***[0m[0m
-[0m[[0m[31merror[0m] [0m[0mFailed: Total 1, Failed 1, Errors 0, Passed 0[0m
-[0m[[0m[31merror[0m] [0m[0mFailed tests:[0m
-[0m[[0m[31merror[0m] [0m[0m	sha3_spec[0m
-[0m[[0m[31merror[0m] [0m[0m(Test / [31mtest[0m) sbt.TestsFailedException: Tests unsuccessful[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mTests: succeeded 1, failed 0, canceled 0, ignored 0, pending 0[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mAll tests passed.[0m[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 1, Failed 0, Errors 0, Passed 1[0m
+[0m[[0m[0mdebug[0m] [0m[0mPassed tests:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	sha3_spec[0m

@@ -1,0 +1,884 @@
+circuit Round :
+  module Theta :
+    input clock : Clock
+    input reset : UInt<1>
+    input io_theta_in_0_0 : UInt<64>
+    input io_theta_in_0_1 : UInt<64>
+    input io_theta_in_0_2 : UInt<64>
+    input io_theta_in_0_3 : UInt<64>
+    input io_theta_in_0_4 : UInt<64>
+    input io_theta_in_1_0 : UInt<64>
+    input io_theta_in_1_1 : UInt<64>
+    input io_theta_in_1_2 : UInt<64>
+    input io_theta_in_1_3 : UInt<64>
+    input io_theta_in_1_4 : UInt<64>
+    input io_theta_in_2_0 : UInt<64>
+    input io_theta_in_2_1 : UInt<64>
+    input io_theta_in_2_2 : UInt<64>
+    input io_theta_in_2_3 : UInt<64>
+    input io_theta_in_2_4 : UInt<64>
+    input io_theta_in_3_0 : UInt<64>
+    input io_theta_in_3_1 : UInt<64>
+    input io_theta_in_3_2 : UInt<64>
+    input io_theta_in_3_3 : UInt<64>
+    input io_theta_in_3_4 : UInt<64>
+    input io_theta_in_4_0 : UInt<64>
+    input io_theta_in_4_1 : UInt<64>
+    input io_theta_in_4_2 : UInt<64>
+    input io_theta_in_4_3 : UInt<64>
+    input io_theta_in_4_4 : UInt<64>
+    output io_theta_out_0_0 : UInt<64>
+    output io_theta_out_0_1 : UInt<64>
+    output io_theta_out_0_2 : UInt<64>
+    output io_theta_out_0_3 : UInt<64>
+    output io_theta_out_0_4 : UInt<64>
+    output io_theta_out_1_0 : UInt<64>
+    output io_theta_out_1_1 : UInt<64>
+    output io_theta_out_1_2 : UInt<64>
+    output io_theta_out_1_3 : UInt<64>
+    output io_theta_out_1_4 : UInt<64>
+    output io_theta_out_2_0 : UInt<64>
+    output io_theta_out_2_1 : UInt<64>
+    output io_theta_out_2_2 : UInt<64>
+    output io_theta_out_2_3 : UInt<64>
+    output io_theta_out_2_4 : UInt<64>
+    output io_theta_out_3_0 : UInt<64>
+    output io_theta_out_3_1 : UInt<64>
+    output io_theta_out_3_2 : UInt<64>
+    output io_theta_out_3_3 : UInt<64>
+    output io_theta_out_3_4 : UInt<64>
+    output io_theta_out_4_0 : UInt<64>
+    output io_theta_out_4_1 : UInt<64>
+    output io_theta_out_4_2 : UInt<64>
+    output io_theta_out_4_3 : UInt<64>
+    output io_theta_out_4_4 : UInt<64>
+
+    node _T = xor(io_theta_in_0_0, io_theta_in_0_1) @[Theta.scala 36:30]
+    node _T_1 = xor(_T, io_theta_in_0_2) @[Theta.scala 36:48]
+    node _T_2 = xor(_T_1, io_theta_in_0_3) @[Theta.scala 36:66]
+    node _T_3 = xor(_T_2, io_theta_in_0_4) @[Theta.scala 36:84]
+    node _T_4 = xor(io_theta_in_1_0, io_theta_in_1_1) @[Theta.scala 36:30]
+    node _T_5 = xor(_T_4, io_theta_in_1_2) @[Theta.scala 36:48]
+    node _T_6 = xor(_T_5, io_theta_in_1_3) @[Theta.scala 36:66]
+    node _T_7 = xor(_T_6, io_theta_in_1_4) @[Theta.scala 36:84]
+    node _T_8 = xor(io_theta_in_2_0, io_theta_in_2_1) @[Theta.scala 36:30]
+    node _T_9 = xor(_T_8, io_theta_in_2_2) @[Theta.scala 36:48]
+    node _T_10 = xor(_T_9, io_theta_in_2_3) @[Theta.scala 36:66]
+    node _T_11 = xor(_T_10, io_theta_in_2_4) @[Theta.scala 36:84]
+    node _T_12 = xor(io_theta_in_3_0, io_theta_in_3_1) @[Theta.scala 36:30]
+    node _T_13 = xor(_T_12, io_theta_in_3_2) @[Theta.scala 36:48]
+    node _T_14 = xor(_T_13, io_theta_in_3_3) @[Theta.scala 36:66]
+    node _T_15 = xor(_T_14, io_theta_in_3_4) @[Theta.scala 36:84]
+    node _T_16 = xor(io_theta_in_4_0, io_theta_in_4_1) @[Theta.scala 36:30]
+    node _T_17 = xor(_T_16, io_theta_in_4_2) @[Theta.scala 36:48]
+    node _T_18 = xor(_T_17, io_theta_in_4_3) @[Theta.scala 36:66]
+    node _T_19 = xor(_T_18, io_theta_in_4_4) @[Theta.scala 36:84]
+    node c_1 = _T_7 @[Theta.scala 32:15 Theta.scala 36:10]
+    node _T_20 = shl(c_1, 1) @[Theta.scala 42:44]
+    node _T_21 = shr(c_1, 63) @[Theta.scala 43:44]
+    node rotation1_0 = bits(_T_20, 63, 0) @[Theta.scala 13:23 Theta.scala 42:25]
+    node rotation2_0 = pad(_T_21, 64) @[Theta.scala 14:23 Theta.scala 43:25]
+    node _T_22 = or(rotation1_0, rotation2_0) @[Theta.scala 44:41]
+    node c_4 = _T_19 @[Theta.scala 32:15 Theta.scala 36:10]
+    node rotation_result_0 = _T_22 @[Theta.scala 15:29 Theta.scala 44:25]
+    node _T_23 = xor(c_4, rotation_result_0) @[Theta.scala 45:30]
+    node c_2 = _T_11 @[Theta.scala 32:15 Theta.scala 36:10]
+    node _T_24 = shl(c_2, 1) @[Theta.scala 42:44]
+    node _T_25 = shr(c_2, 63) @[Theta.scala 43:44]
+    node rotation1_1 = bits(_T_24, 63, 0) @[Theta.scala 13:23 Theta.scala 42:25]
+    node rotation2_1 = pad(_T_25, 64) @[Theta.scala 14:23 Theta.scala 43:25]
+    node _T_26 = or(rotation1_1, rotation2_1) @[Theta.scala 44:41]
+    node c_0 = _T_3 @[Theta.scala 32:15 Theta.scala 36:10]
+    node rotation_result_1 = _T_26 @[Theta.scala 15:29 Theta.scala 44:25]
+    node _T_27 = xor(c_0, rotation_result_1) @[Theta.scala 45:30]
+    node c_3 = _T_15 @[Theta.scala 32:15 Theta.scala 36:10]
+    node _T_28 = shl(c_3, 1) @[Theta.scala 42:44]
+    node _T_29 = shr(c_3, 63) @[Theta.scala 43:44]
+    node rotation1_2 = bits(_T_28, 63, 0) @[Theta.scala 13:23 Theta.scala 42:25]
+    node rotation2_2 = pad(_T_29, 64) @[Theta.scala 14:23 Theta.scala 43:25]
+    node _T_30 = or(rotation1_2, rotation2_2) @[Theta.scala 44:41]
+    node rotation_result_2 = _T_30 @[Theta.scala 15:29 Theta.scala 44:25]
+    node _T_31 = xor(c_1, rotation_result_2) @[Theta.scala 45:30]
+    node _T_32 = shl(c_4, 1) @[Theta.scala 42:44]
+    node _T_33 = shr(c_4, 63) @[Theta.scala 43:44]
+    node rotation1_3 = bits(_T_32, 63, 0) @[Theta.scala 13:23 Theta.scala 42:25]
+    node rotation2_3 = pad(_T_33, 64) @[Theta.scala 14:23 Theta.scala 43:25]
+    node _T_34 = or(rotation1_3, rotation2_3) @[Theta.scala 44:41]
+    node rotation_result_3 = _T_34 @[Theta.scala 15:29 Theta.scala 44:25]
+    node _T_35 = xor(c_2, rotation_result_3) @[Theta.scala 45:30]
+    node _T_36 = shl(c_0, 1) @[Theta.scala 42:44]
+    node _T_37 = shr(c_0, 63) @[Theta.scala 43:44]
+    node rotation1_4 = bits(_T_36, 63, 0) @[Theta.scala 13:23 Theta.scala 42:25]
+    node rotation2_4 = pad(_T_37, 64) @[Theta.scala 14:23 Theta.scala 43:25]
+    node _T_38 = or(rotation1_4, rotation2_4) @[Theta.scala 44:41]
+    node rotation_result_4 = _T_38 @[Theta.scala 15:29 Theta.scala 44:25]
+    node _T_39 = xor(c_3, rotation_result_4) @[Theta.scala 45:30]
+    node d_0 = _T_23 @[Theta.scala 33:15 Theta.scala 45:11]
+    node _T_40 = xor(io_theta_in_0_0, d_0) @[Theta.scala 51:38]
+    node _T_41 = xor(io_theta_in_0_1, d_0) @[Theta.scala 51:38]
+    node _T_42 = xor(io_theta_in_0_2, d_0) @[Theta.scala 51:38]
+    node _T_43 = xor(io_theta_in_0_3, d_0) @[Theta.scala 51:38]
+    node _T_44 = xor(io_theta_in_0_4, d_0) @[Theta.scala 51:38]
+    node d_1 = _T_27 @[Theta.scala 33:15 Theta.scala 45:11]
+    node _T_45 = xor(io_theta_in_1_0, d_1) @[Theta.scala 51:38]
+    node _T_46 = xor(io_theta_in_1_1, d_1) @[Theta.scala 51:38]
+    node _T_47 = xor(io_theta_in_1_2, d_1) @[Theta.scala 51:38]
+    node _T_48 = xor(io_theta_in_1_3, d_1) @[Theta.scala 51:38]
+    node _T_49 = xor(io_theta_in_1_4, d_1) @[Theta.scala 51:38]
+    node d_2 = _T_31 @[Theta.scala 33:15 Theta.scala 45:11]
+    node _T_50 = xor(io_theta_in_2_0, d_2) @[Theta.scala 51:38]
+    node _T_51 = xor(io_theta_in_2_1, d_2) @[Theta.scala 51:38]
+    node _T_52 = xor(io_theta_in_2_2, d_2) @[Theta.scala 51:38]
+    node _T_53 = xor(io_theta_in_2_3, d_2) @[Theta.scala 51:38]
+    node _T_54 = xor(io_theta_in_2_4, d_2) @[Theta.scala 51:38]
+    node d_3 = _T_35 @[Theta.scala 33:15 Theta.scala 45:11]
+    node _T_55 = xor(io_theta_in_3_0, d_3) @[Theta.scala 51:38]
+    node _T_56 = xor(io_theta_in_3_1, d_3) @[Theta.scala 51:38]
+    node _T_57 = xor(io_theta_in_3_2, d_3) @[Theta.scala 51:38]
+    node _T_58 = xor(io_theta_in_3_3, d_3) @[Theta.scala 51:38]
+    node _T_59 = xor(io_theta_in_3_4, d_3) @[Theta.scala 51:38]
+    node d_4 = _T_39 @[Theta.scala 33:15 Theta.scala 45:11]
+    node _T_60 = xor(io_theta_in_4_0, d_4) @[Theta.scala 51:38]
+    node _T_61 = xor(io_theta_in_4_1, d_4) @[Theta.scala 51:38]
+    node _T_62 = xor(io_theta_in_4_2, d_4) @[Theta.scala 51:38]
+    node _T_63 = xor(io_theta_in_4_3, d_4) @[Theta.scala 51:38]
+    node _T_64 = xor(io_theta_in_4_4, d_4) @[Theta.scala 51:38]
+    node st_0_0 = _T_40 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_0_1 = _T_41 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_0_2 = _T_42 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_0_3 = _T_43 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_0_4 = _T_44 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_1_0 = _T_45 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_1_1 = _T_46 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_1_2 = _T_47 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_1_3 = _T_48 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_1_4 = _T_49 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_2_0 = _T_50 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_2_1 = _T_51 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_2_2 = _T_52 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_2_3 = _T_53 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_2_4 = _T_54 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_3_0 = _T_55 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_3_1 = _T_56 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_3_2 = _T_57 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_3_3 = _T_58 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_3_4 = _T_59 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_4_0 = _T_60 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_4_1 = _T_61 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_4_2 = _T_62 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_4_3 = _T_63 @[Theta.scala 10:17 Theta.scala 51:18]
+    node st_4_4 = _T_64 @[Theta.scala 10:17 Theta.scala 51:18]
+    io_theta_out_0_0 <= st_0_0 @[Theta.scala 53:16]
+    io_theta_out_0_1 <= st_0_1 @[Theta.scala 53:16]
+    io_theta_out_0_2 <= st_0_2 @[Theta.scala 53:16]
+    io_theta_out_0_3 <= st_0_3 @[Theta.scala 53:16]
+    io_theta_out_0_4 <= st_0_4 @[Theta.scala 53:16]
+    io_theta_out_1_0 <= st_1_0 @[Theta.scala 53:16]
+    io_theta_out_1_1 <= st_1_1 @[Theta.scala 53:16]
+    io_theta_out_1_2 <= st_1_2 @[Theta.scala 53:16]
+    io_theta_out_1_3 <= st_1_3 @[Theta.scala 53:16]
+    io_theta_out_1_4 <= st_1_4 @[Theta.scala 53:16]
+    io_theta_out_2_0 <= st_2_0 @[Theta.scala 53:16]
+    io_theta_out_2_1 <= st_2_1 @[Theta.scala 53:16]
+    io_theta_out_2_2 <= st_2_2 @[Theta.scala 53:16]
+    io_theta_out_2_3 <= st_2_3 @[Theta.scala 53:16]
+    io_theta_out_2_4 <= st_2_4 @[Theta.scala 53:16]
+    io_theta_out_3_0 <= st_3_0 @[Theta.scala 53:16]
+    io_theta_out_3_1 <= st_3_1 @[Theta.scala 53:16]
+    io_theta_out_3_2 <= st_3_2 @[Theta.scala 53:16]
+    io_theta_out_3_3 <= st_3_3 @[Theta.scala 53:16]
+    io_theta_out_3_4 <= st_3_4 @[Theta.scala 53:16]
+    io_theta_out_4_0 <= st_4_0 @[Theta.scala 53:16]
+    io_theta_out_4_1 <= st_4_1 @[Theta.scala 53:16]
+    io_theta_out_4_2 <= st_4_2 @[Theta.scala 53:16]
+    io_theta_out_4_3 <= st_4_3 @[Theta.scala 53:16]
+    io_theta_out_4_4 <= st_4_4 @[Theta.scala 53:16]
+
+  module RhoPi :
+    input clock : Clock
+    input reset : UInt<1>
+    input io_rhoPi_in_0_0 : UInt<64>
+    input io_rhoPi_in_0_1 : UInt<64>
+    input io_rhoPi_in_0_2 : UInt<64>
+    input io_rhoPi_in_0_3 : UInt<64>
+    input io_rhoPi_in_0_4 : UInt<64>
+    input io_rhoPi_in_1_0 : UInt<64>
+    input io_rhoPi_in_1_1 : UInt<64>
+    input io_rhoPi_in_1_2 : UInt<64>
+    input io_rhoPi_in_1_3 : UInt<64>
+    input io_rhoPi_in_1_4 : UInt<64>
+    input io_rhoPi_in_2_0 : UInt<64>
+    input io_rhoPi_in_2_1 : UInt<64>
+    input io_rhoPi_in_2_2 : UInt<64>
+    input io_rhoPi_in_2_3 : UInt<64>
+    input io_rhoPi_in_2_4 : UInt<64>
+    input io_rhoPi_in_3_0 : UInt<64>
+    input io_rhoPi_in_3_1 : UInt<64>
+    input io_rhoPi_in_3_2 : UInt<64>
+    input io_rhoPi_in_3_3 : UInt<64>
+    input io_rhoPi_in_3_4 : UInt<64>
+    input io_rhoPi_in_4_0 : UInt<64>
+    input io_rhoPi_in_4_1 : UInt<64>
+    input io_rhoPi_in_4_2 : UInt<64>
+    input io_rhoPi_in_4_3 : UInt<64>
+    input io_rhoPi_in_4_4 : UInt<64>
+    output io_rhoPi_out_0_0 : UInt<64>
+    output io_rhoPi_out_0_1 : UInt<64>
+    output io_rhoPi_out_0_2 : UInt<64>
+    output io_rhoPi_out_0_3 : UInt<64>
+    output io_rhoPi_out_0_4 : UInt<64>
+    output io_rhoPi_out_1_0 : UInt<64>
+    output io_rhoPi_out_1_1 : UInt<64>
+    output io_rhoPi_out_1_2 : UInt<64>
+    output io_rhoPi_out_1_3 : UInt<64>
+    output io_rhoPi_out_1_4 : UInt<64>
+    output io_rhoPi_out_2_0 : UInt<64>
+    output io_rhoPi_out_2_1 : UInt<64>
+    output io_rhoPi_out_2_2 : UInt<64>
+    output io_rhoPi_out_2_3 : UInt<64>
+    output io_rhoPi_out_2_4 : UInt<64>
+    output io_rhoPi_out_3_0 : UInt<64>
+    output io_rhoPi_out_3_1 : UInt<64>
+    output io_rhoPi_out_3_2 : UInt<64>
+    output io_rhoPi_out_3_3 : UInt<64>
+    output io_rhoPi_out_3_4 : UInt<64>
+    output io_rhoPi_out_4_0 : UInt<64>
+    output io_rhoPi_out_4_1 : UInt<64>
+    output io_rhoPi_out_4_2 : UInt<64>
+    output io_rhoPi_out_4_3 : UInt<64>
+    output io_rhoPi_out_4_4 : UInt<64>
+
+    node r_0_0 = pad(UInt<1>("h0"), 19) @[RhoPi.scala 9:17 RhoPi.scala 10:11]
+    node _T = dshl(io_rhoPi_in_0_0, r_0_0) @[RhoPi.scala 39:70]
+    node r_0_1 = pad(UInt<6>("h24"), 19) @[RhoPi.scala 9:17 RhoPi.scala 11:11]
+    node _T_1 = dshl(io_rhoPi_in_0_1, r_0_1) @[RhoPi.scala 39:70]
+    node r_0_2 = pad(UInt<2>("h3"), 19) @[RhoPi.scala 9:17 RhoPi.scala 12:11]
+    node _T_2 = dshl(io_rhoPi_in_0_2, r_0_2) @[RhoPi.scala 39:70]
+    node r_0_3 = pad(UInt<6>("h29"), 19) @[RhoPi.scala 9:17 RhoPi.scala 13:11]
+    node _T_3 = dshl(io_rhoPi_in_0_3, r_0_3) @[RhoPi.scala 39:70]
+    node r_0_4 = pad(UInt<5>("h12"), 19) @[RhoPi.scala 9:17 RhoPi.scala 14:11]
+    node _T_4 = dshl(io_rhoPi_in_0_4, r_0_4) @[RhoPi.scala 39:70]
+    node r_1_0 = pad(UInt<1>("h1"), 19) @[RhoPi.scala 9:17 RhoPi.scala 15:11]
+    node _T_5 = dshl(io_rhoPi_in_1_0, r_1_0) @[RhoPi.scala 39:70]
+    node r_1_1 = pad(UInt<6>("h2c"), 19) @[RhoPi.scala 9:17 RhoPi.scala 16:11]
+    node _T_6 = dshl(io_rhoPi_in_1_1, r_1_1) @[RhoPi.scala 39:70]
+    node r_1_2 = pad(UInt<4>("ha"), 19) @[RhoPi.scala 9:17 RhoPi.scala 17:11]
+    node _T_7 = dshl(io_rhoPi_in_1_2, r_1_2) @[RhoPi.scala 39:70]
+    node r_1_3 = pad(UInt<6>("h2d"), 19) @[RhoPi.scala 9:17 RhoPi.scala 18:11]
+    node _T_8 = dshl(io_rhoPi_in_1_3, r_1_3) @[RhoPi.scala 39:70]
+    node r_1_4 = pad(UInt<2>("h2"), 19) @[RhoPi.scala 9:17 RhoPi.scala 19:11]
+    node _T_9 = dshl(io_rhoPi_in_1_4, r_1_4) @[RhoPi.scala 39:70]
+    node r_2_0 = pad(UInt<6>("h3e"), 19) @[RhoPi.scala 9:17 RhoPi.scala 20:11]
+    node _T_10 = dshl(io_rhoPi_in_2_0, r_2_0) @[RhoPi.scala 39:70]
+    node r_2_1 = pad(UInt<3>("h6"), 19) @[RhoPi.scala 9:17 RhoPi.scala 21:11]
+    node _T_11 = dshl(io_rhoPi_in_2_1, r_2_1) @[RhoPi.scala 39:70]
+    node r_2_2 = pad(UInt<6>("h2b"), 19) @[RhoPi.scala 9:17 RhoPi.scala 22:11]
+    node _T_12 = dshl(io_rhoPi_in_2_2, r_2_2) @[RhoPi.scala 39:70]
+    node r_2_3 = pad(UInt<4>("hf"), 19) @[RhoPi.scala 9:17 RhoPi.scala 23:11]
+    node _T_13 = dshl(io_rhoPi_in_2_3, r_2_3) @[RhoPi.scala 39:70]
+    node r_2_4 = pad(UInt<6>("h3d"), 19) @[RhoPi.scala 9:17 RhoPi.scala 24:11]
+    node _T_14 = dshl(io_rhoPi_in_2_4, r_2_4) @[RhoPi.scala 39:70]
+    node r_3_0 = pad(UInt<5>("h1c"), 19) @[RhoPi.scala 9:17 RhoPi.scala 25:11]
+    node _T_15 = dshl(io_rhoPi_in_3_0, r_3_0) @[RhoPi.scala 39:70]
+    node r_3_1 = pad(UInt<6>("h37"), 19) @[RhoPi.scala 9:17 RhoPi.scala 26:11]
+    node _T_16 = dshl(io_rhoPi_in_3_1, r_3_1) @[RhoPi.scala 39:70]
+    node r_3_2 = pad(UInt<5>("h19"), 19) @[RhoPi.scala 9:17 RhoPi.scala 27:11]
+    node _T_17 = dshl(io_rhoPi_in_3_2, r_3_2) @[RhoPi.scala 39:70]
+    node r_3_3 = pad(UInt<5>("h15"), 19) @[RhoPi.scala 9:17 RhoPi.scala 28:11]
+    node _T_18 = dshl(io_rhoPi_in_3_3, r_3_3) @[RhoPi.scala 39:70]
+    node r_3_4 = pad(UInt<6>("h38"), 19) @[RhoPi.scala 9:17 RhoPi.scala 29:11]
+    node _T_19 = dshl(io_rhoPi_in_3_4, r_3_4) @[RhoPi.scala 39:70]
+    node r_4_0 = pad(UInt<5>("h1b"), 19) @[RhoPi.scala 9:17 RhoPi.scala 30:11]
+    node _T_20 = dshl(io_rhoPi_in_4_0, r_4_0) @[RhoPi.scala 39:70]
+    node r_4_1 = pad(UInt<5>("h14"), 19) @[RhoPi.scala 9:17 RhoPi.scala 31:11]
+    node _T_21 = dshl(io_rhoPi_in_4_1, r_4_1) @[RhoPi.scala 39:70]
+    node r_4_2 = pad(UInt<6>("h27"), 19) @[RhoPi.scala 9:17 RhoPi.scala 32:11]
+    node _T_22 = dshl(io_rhoPi_in_4_2, r_4_2) @[RhoPi.scala 39:70]
+    node r_4_3 = pad(UInt<4>("h8"), 19) @[RhoPi.scala 9:17 RhoPi.scala 33:11]
+    node _T_23 = dshl(io_rhoPi_in_4_3, r_4_3) @[RhoPi.scala 39:70]
+    node r_4_4 = pad(UInt<4>("he"), 19) @[RhoPi.scala 9:17 RhoPi.scala 34:11]
+    node _T_24 = dshl(io_rhoPi_in_4_4, r_4_4) @[RhoPi.scala 39:70]
+    io_rhoPi_out_0_0 <= bits(_T, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_0_1 <= bits(_T_15, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_0_2 <= bits(_T_5, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_0_3 <= bits(_T_20, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_0_4 <= bits(_T_10, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_1_0 <= bits(_T_6, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_1_1 <= bits(_T_21, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_1_2 <= bits(_T_11, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_1_3 <= bits(_T_1, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_1_4 <= bits(_T_16, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_2_0 <= bits(_T_12, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_2_1 <= bits(_T_2, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_2_2 <= bits(_T_17, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_2_3 <= bits(_T_7, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_2_4 <= bits(_T_22, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_3_0 <= bits(_T_18, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_3_1 <= bits(_T_8, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_3_2 <= bits(_T_23, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_3_3 <= bits(_T_13, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_3_4 <= bits(_T_3, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_4_0 <= bits(_T_24, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_4_1 <= bits(_T_14, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_4_2 <= bits(_T_4, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_4_3 <= bits(_T_19, 63, 0) @[RhoPi.scala 39:49]
+    io_rhoPi_out_4_4 <= bits(_T_9, 63, 0) @[RhoPi.scala 39:49]
+
+  module Chi :
+    input clock : Clock
+    input reset : UInt<1>
+    input io_chi_in_0_0 : UInt<64>
+    input io_chi_in_0_1 : UInt<64>
+    input io_chi_in_0_2 : UInt<64>
+    input io_chi_in_0_3 : UInt<64>
+    input io_chi_in_0_4 : UInt<64>
+    input io_chi_in_1_0 : UInt<64>
+    input io_chi_in_1_1 : UInt<64>
+    input io_chi_in_1_2 : UInt<64>
+    input io_chi_in_1_3 : UInt<64>
+    input io_chi_in_1_4 : UInt<64>
+    input io_chi_in_2_0 : UInt<64>
+    input io_chi_in_2_1 : UInt<64>
+    input io_chi_in_2_2 : UInt<64>
+    input io_chi_in_2_3 : UInt<64>
+    input io_chi_in_2_4 : UInt<64>
+    input io_chi_in_3_0 : UInt<64>
+    input io_chi_in_3_1 : UInt<64>
+    input io_chi_in_3_2 : UInt<64>
+    input io_chi_in_3_3 : UInt<64>
+    input io_chi_in_3_4 : UInt<64>
+    input io_chi_in_4_0 : UInt<64>
+    input io_chi_in_4_1 : UInt<64>
+    input io_chi_in_4_2 : UInt<64>
+    input io_chi_in_4_3 : UInt<64>
+    input io_chi_in_4_4 : UInt<64>
+    output io_chi_out_0_0 : UInt<64>
+    output io_chi_out_0_1 : UInt<64>
+    output io_chi_out_0_2 : UInt<64>
+    output io_chi_out_0_3 : UInt<64>
+    output io_chi_out_0_4 : UInt<64>
+    output io_chi_out_1_0 : UInt<64>
+    output io_chi_out_1_1 : UInt<64>
+    output io_chi_out_1_2 : UInt<64>
+    output io_chi_out_1_3 : UInt<64>
+    output io_chi_out_1_4 : UInt<64>
+    output io_chi_out_2_0 : UInt<64>
+    output io_chi_out_2_1 : UInt<64>
+    output io_chi_out_2_2 : UInt<64>
+    output io_chi_out_2_3 : UInt<64>
+    output io_chi_out_2_4 : UInt<64>
+    output io_chi_out_3_0 : UInt<64>
+    output io_chi_out_3_1 : UInt<64>
+    output io_chi_out_3_2 : UInt<64>
+    output io_chi_out_3_3 : UInt<64>
+    output io_chi_out_3_4 : UInt<64>
+    output io_chi_out_4_0 : UInt<64>
+    output io_chi_out_4_1 : UInt<64>
+    output io_chi_out_4_2 : UInt<64>
+    output io_chi_out_4_3 : UInt<64>
+    output io_chi_out_4_4 : UInt<64>
+
+    node _T = not(io_chi_in_1_0) @[Chi.scala 14:23]
+    node _T_72 = not(io_chi_in_0_4) @[Chi.scala 14:23]
+    node chi_not_wire = _T_72 @[Chi.scala 11:26 Chi.scala 14:20]
+    node _T_1 = and(chi_not_wire, io_chi_in_2_0) @[Chi.scala 15:33]
+    node chi_b_wire = io_chi_in_4_4 @[Chi.scala 10:25 Chi.scala 16:18]
+    node _T_73 = and(chi_not_wire, io_chi_in_1_4) @[Chi.scala 15:33]
+    node chi_wire = _T_73 @[Chi.scala 9:25 Chi.scala 15:16]
+    node _T_2 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_3 = not(io_chi_in_1_1) @[Chi.scala 14:23]
+    node _T_4 = and(chi_not_wire, io_chi_in_2_1) @[Chi.scala 15:33]
+    node _T_5 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_6 = not(io_chi_in_1_2) @[Chi.scala 14:23]
+    node _T_7 = and(chi_not_wire, io_chi_in_2_2) @[Chi.scala 15:33]
+    node _T_8 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_9 = not(io_chi_in_1_3) @[Chi.scala 14:23]
+    node _T_10 = and(chi_not_wire, io_chi_in_2_3) @[Chi.scala 15:33]
+    node _T_11 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_12 = not(io_chi_in_1_4) @[Chi.scala 14:23]
+    node _T_13 = and(chi_not_wire, io_chi_in_2_4) @[Chi.scala 15:33]
+    node _T_14 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_15 = not(io_chi_in_2_0) @[Chi.scala 14:23]
+    node _T_16 = and(chi_not_wire, io_chi_in_3_0) @[Chi.scala 15:33]
+    node _T_17 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_18 = not(io_chi_in_2_1) @[Chi.scala 14:23]
+    node _T_19 = and(chi_not_wire, io_chi_in_3_1) @[Chi.scala 15:33]
+    node _T_20 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_21 = not(io_chi_in_2_2) @[Chi.scala 14:23]
+    node _T_22 = and(chi_not_wire, io_chi_in_3_2) @[Chi.scala 15:33]
+    node _T_23 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_24 = not(io_chi_in_2_3) @[Chi.scala 14:23]
+    node _T_25 = and(chi_not_wire, io_chi_in_3_3) @[Chi.scala 15:33]
+    node _T_26 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_27 = not(io_chi_in_2_4) @[Chi.scala 14:23]
+    node _T_28 = and(chi_not_wire, io_chi_in_3_4) @[Chi.scala 15:33]
+    node _T_29 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_30 = not(io_chi_in_3_0) @[Chi.scala 14:23]
+    node _T_31 = and(chi_not_wire, io_chi_in_4_0) @[Chi.scala 15:33]
+    node _T_32 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_33 = not(io_chi_in_3_1) @[Chi.scala 14:23]
+    node _T_34 = and(chi_not_wire, io_chi_in_4_1) @[Chi.scala 15:33]
+    node _T_35 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_36 = not(io_chi_in_3_2) @[Chi.scala 14:23]
+    node _T_37 = and(chi_not_wire, io_chi_in_4_2) @[Chi.scala 15:33]
+    node _T_38 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_39 = not(io_chi_in_3_3) @[Chi.scala 14:23]
+    node _T_40 = and(chi_not_wire, io_chi_in_4_3) @[Chi.scala 15:33]
+    node _T_41 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_42 = not(io_chi_in_3_4) @[Chi.scala 14:23]
+    node _T_43 = and(chi_not_wire, io_chi_in_4_4) @[Chi.scala 15:33]
+    node _T_44 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_45 = not(io_chi_in_4_0) @[Chi.scala 14:23]
+    node _T_46 = and(chi_not_wire, io_chi_in_0_0) @[Chi.scala 15:33]
+    node _T_47 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_48 = not(io_chi_in_4_1) @[Chi.scala 14:23]
+    node _T_49 = and(chi_not_wire, io_chi_in_0_1) @[Chi.scala 15:33]
+    node _T_50 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_51 = not(io_chi_in_4_2) @[Chi.scala 14:23]
+    node _T_52 = and(chi_not_wire, io_chi_in_0_2) @[Chi.scala 15:33]
+    node _T_53 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_54 = not(io_chi_in_4_3) @[Chi.scala 14:23]
+    node _T_55 = and(chi_not_wire, io_chi_in_0_3) @[Chi.scala 15:33]
+    node _T_56 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_57 = not(io_chi_in_4_4) @[Chi.scala 14:23]
+    node _T_58 = and(chi_not_wire, io_chi_in_0_4) @[Chi.scala 15:33]
+    node _T_59 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_60 = not(io_chi_in_0_0) @[Chi.scala 14:23]
+    node _T_61 = and(chi_not_wire, io_chi_in_1_0) @[Chi.scala 15:33]
+    node _T_62 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_63 = not(io_chi_in_0_1) @[Chi.scala 14:23]
+    node _T_64 = and(chi_not_wire, io_chi_in_1_1) @[Chi.scala 15:33]
+    node _T_65 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_66 = not(io_chi_in_0_2) @[Chi.scala 14:23]
+    node _T_67 = and(chi_not_wire, io_chi_in_1_2) @[Chi.scala 15:33]
+    node _T_68 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_69 = not(io_chi_in_0_3) @[Chi.scala 14:23]
+    node _T_70 = and(chi_not_wire, io_chi_in_1_3) @[Chi.scala 15:33]
+    node _T_71 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    node _T_74 = xor(chi_b_wire, chi_wire) @[Chi.scala 17:38]
+    io_chi_out_0_0 <= _T_2 @[Chi.scala 17:24]
+    io_chi_out_0_1 <= _T_5 @[Chi.scala 17:24]
+    io_chi_out_0_2 <= _T_8 @[Chi.scala 17:24]
+    io_chi_out_0_3 <= _T_11 @[Chi.scala 17:24]
+    io_chi_out_0_4 <= _T_14 @[Chi.scala 17:24]
+    io_chi_out_1_0 <= _T_17 @[Chi.scala 17:24]
+    io_chi_out_1_1 <= _T_20 @[Chi.scala 17:24]
+    io_chi_out_1_2 <= _T_23 @[Chi.scala 17:24]
+    io_chi_out_1_3 <= _T_26 @[Chi.scala 17:24]
+    io_chi_out_1_4 <= _T_29 @[Chi.scala 17:24]
+    io_chi_out_2_0 <= _T_32 @[Chi.scala 17:24]
+    io_chi_out_2_1 <= _T_35 @[Chi.scala 17:24]
+    io_chi_out_2_2 <= _T_38 @[Chi.scala 17:24]
+    io_chi_out_2_3 <= _T_41 @[Chi.scala 17:24]
+    io_chi_out_2_4 <= _T_44 @[Chi.scala 17:24]
+    io_chi_out_3_0 <= _T_47 @[Chi.scala 17:24]
+    io_chi_out_3_1 <= _T_50 @[Chi.scala 17:24]
+    io_chi_out_3_2 <= _T_53 @[Chi.scala 17:24]
+    io_chi_out_3_3 <= _T_56 @[Chi.scala 17:24]
+    io_chi_out_3_4 <= _T_59 @[Chi.scala 17:24]
+    io_chi_out_4_0 <= _T_62 @[Chi.scala 17:24]
+    io_chi_out_4_1 <= _T_65 @[Chi.scala 17:24]
+    io_chi_out_4_2 <= _T_68 @[Chi.scala 17:24]
+    io_chi_out_4_3 <= _T_71 @[Chi.scala 17:24]
+    io_chi_out_4_4 <= _T_74 @[Chi.scala 17:24]
+
+  module Iota :
+    input clock : Clock
+    input reset : UInt<1>
+    input io_iota_in_0_0 : UInt<64>
+    input io_iota_in_0_1 : UInt<64>
+    input io_iota_in_0_2 : UInt<64>
+    input io_iota_in_0_3 : UInt<64>
+    input io_iota_in_0_4 : UInt<64>
+    input io_iota_in_1_0 : UInt<64>
+    input io_iota_in_1_1 : UInt<64>
+    input io_iota_in_1_2 : UInt<64>
+    input io_iota_in_1_3 : UInt<64>
+    input io_iota_in_1_4 : UInt<64>
+    input io_iota_in_2_0 : UInt<64>
+    input io_iota_in_2_1 : UInt<64>
+    input io_iota_in_2_2 : UInt<64>
+    input io_iota_in_2_3 : UInt<64>
+    input io_iota_in_2_4 : UInt<64>
+    input io_iota_in_3_0 : UInt<64>
+    input io_iota_in_3_1 : UInt<64>
+    input io_iota_in_3_2 : UInt<64>
+    input io_iota_in_3_3 : UInt<64>
+    input io_iota_in_3_4 : UInt<64>
+    input io_iota_in_4_0 : UInt<64>
+    input io_iota_in_4_1 : UInt<64>
+    input io_iota_in_4_2 : UInt<64>
+    input io_iota_in_4_3 : UInt<64>
+    input io_iota_in_4_4 : UInt<64>
+    output io_iota_out : UInt<64>
+
+    node RC_0 = pad(UInt<1>("h1"), 64) @[Iota.scala 9:17 Iota.scala 10:11]
+    node _T = xor(io_iota_in_0_0, RC_0) @[Iota.scala 36:34]
+    node RC_1 = pad(UInt<16>("h8082"), 64) @[Iota.scala 9:17 Iota.scala 11:11]
+    node RC_2 = UInt<64>("h800000000000808a") @[Iota.scala 9:17 Iota.scala 12:11]
+    node RC_3 = UInt<64>("h8000000080008000") @[Iota.scala 9:17 Iota.scala 13:11]
+    node RC_4 = pad(UInt<16>("h808b"), 64) @[Iota.scala 9:17 Iota.scala 14:11]
+    node RC_5 = pad(UInt<32>("h80000001"), 64) @[Iota.scala 9:17 Iota.scala 15:11]
+    node RC_6 = UInt<64>("h8000000080008081") @[Iota.scala 9:17 Iota.scala 16:11]
+    node RC_7 = UInt<64>("h8000000000008009") @[Iota.scala 9:17 Iota.scala 17:11]
+    node RC_8 = pad(UInt<8>("h8a"), 64) @[Iota.scala 9:17 Iota.scala 18:11]
+    node RC_9 = pad(UInt<8>("h88"), 64) @[Iota.scala 9:17 Iota.scala 19:11]
+    node RC_10 = pad(UInt<32>("h80008009"), 64) @[Iota.scala 9:17 Iota.scala 20:11]
+    node RC_11 = pad(UInt<32>("h8000000a"), 64) @[Iota.scala 9:17 Iota.scala 21:11]
+    node RC_12 = pad(UInt<32>("h8000808b"), 64) @[Iota.scala 9:17 Iota.scala 22:11]
+    node RC_13 = UInt<64>("h800000000000008b") @[Iota.scala 9:17 Iota.scala 23:11]
+    node RC_14 = UInt<64>("h8000000000008089") @[Iota.scala 9:17 Iota.scala 24:11]
+    node RC_15 = UInt<64>("h8000000000008003") @[Iota.scala 9:17 Iota.scala 25:11]
+    node RC_16 = UInt<64>("h8000000000008002") @[Iota.scala 9:17 Iota.scala 26:11]
+    node RC_17 = UInt<64>("h8000000000000080") @[Iota.scala 9:17 Iota.scala 27:11]
+    node RC_18 = pad(UInt<16>("h800a"), 64) @[Iota.scala 9:17 Iota.scala 28:11]
+    node RC_19 = UInt<64>("h800000008000000a") @[Iota.scala 9:17 Iota.scala 29:11]
+    node RC_20 = UInt<64>("h8000000080008081") @[Iota.scala 9:17 Iota.scala 30:11]
+    node RC_21 = UInt<64>("h8000000000008080") @[Iota.scala 9:17 Iota.scala 31:11]
+    node RC_22 = pad(UInt<32>("h80000001"), 64) @[Iota.scala 9:17 Iota.scala 32:11]
+    node RC_23 = UInt<64>("h8000000080008008") @[Iota.scala 9:17 Iota.scala 33:11]
+    io_iota_out <= _T @[Iota.scala 36:15]
+
+  module Round :
+    input clock : Clock
+    input reset : UInt<1>
+    input io_round_in_0_0 : UInt<64>
+    input io_round_in_0_1 : UInt<64>
+    input io_round_in_0_2 : UInt<64>
+    input io_round_in_0_3 : UInt<64>
+    input io_round_in_0_4 : UInt<64>
+    input io_round_in_1_0 : UInt<64>
+    input io_round_in_1_1 : UInt<64>
+    input io_round_in_1_2 : UInt<64>
+    input io_round_in_1_3 : UInt<64>
+    input io_round_in_1_4 : UInt<64>
+    input io_round_in_2_0 : UInt<64>
+    input io_round_in_2_1 : UInt<64>
+    input io_round_in_2_2 : UInt<64>
+    input io_round_in_2_3 : UInt<64>
+    input io_round_in_2_4 : UInt<64>
+    input io_round_in_3_0 : UInt<64>
+    input io_round_in_3_1 : UInt<64>
+    input io_round_in_3_2 : UInt<64>
+    input io_round_in_3_3 : UInt<64>
+    input io_round_in_3_4 : UInt<64>
+    input io_round_in_4_0 : UInt<64>
+    input io_round_in_4_1 : UInt<64>
+    input io_round_in_4_2 : UInt<64>
+    input io_round_in_4_3 : UInt<64>
+    input io_round_in_4_4 : UInt<64>
+    output io_round_out_0_0 : UInt<64>
+    output io_round_out_0_1 : UInt<64>
+    output io_round_out_0_2 : UInt<64>
+    output io_round_out_0_3 : UInt<64>
+    output io_round_out_0_4 : UInt<64>
+    output io_round_out_1_0 : UInt<64>
+    output io_round_out_1_1 : UInt<64>
+    output io_round_out_1_2 : UInt<64>
+    output io_round_out_1_3 : UInt<64>
+    output io_round_out_1_4 : UInt<64>
+    output io_round_out_2_0 : UInt<64>
+    output io_round_out_2_1 : UInt<64>
+    output io_round_out_2_2 : UInt<64>
+    output io_round_out_2_3 : UInt<64>
+    output io_round_out_2_4 : UInt<64>
+    output io_round_out_3_0 : UInt<64>
+    output io_round_out_3_1 : UInt<64>
+    output io_round_out_3_2 : UInt<64>
+    output io_round_out_3_3 : UInt<64>
+    output io_round_out_3_4 : UInt<64>
+    output io_round_out_4_0 : UInt<64>
+    output io_round_out_4_1 : UInt<64>
+    output io_round_out_4_2 : UInt<64>
+    output io_round_out_4_3 : UInt<64>
+    output io_round_out_4_4 : UInt<64>
+    output io_R_theta_out_0_0 : UInt<64>
+    output io_R_theta_out_0_1 : UInt<64>
+    output io_R_theta_out_0_2 : UInt<64>
+    output io_R_theta_out_0_3 : UInt<64>
+    output io_R_theta_out_0_4 : UInt<64>
+    output io_R_theta_out_1_0 : UInt<64>
+    output io_R_theta_out_1_1 : UInt<64>
+    output io_R_theta_out_1_2 : UInt<64>
+    output io_R_theta_out_1_3 : UInt<64>
+    output io_R_theta_out_1_4 : UInt<64>
+    output io_R_theta_out_2_0 : UInt<64>
+    output io_R_theta_out_2_1 : UInt<64>
+    output io_R_theta_out_2_2 : UInt<64>
+    output io_R_theta_out_2_3 : UInt<64>
+    output io_R_theta_out_2_4 : UInt<64>
+    output io_R_theta_out_3_0 : UInt<64>
+    output io_R_theta_out_3_1 : UInt<64>
+    output io_R_theta_out_3_2 : UInt<64>
+    output io_R_theta_out_3_3 : UInt<64>
+    output io_R_theta_out_3_4 : UInt<64>
+    output io_R_theta_out_4_0 : UInt<64>
+    output io_R_theta_out_4_1 : UInt<64>
+    output io_R_theta_out_4_2 : UInt<64>
+    output io_R_theta_out_4_3 : UInt<64>
+    output io_R_theta_out_4_4 : UInt<64>
+    output io_R_rhoPi_out_0_0 : UInt<64>
+    output io_R_rhoPi_out_0_1 : UInt<64>
+    output io_R_rhoPi_out_0_2 : UInt<64>
+    output io_R_rhoPi_out_0_3 : UInt<64>
+    output io_R_rhoPi_out_0_4 : UInt<64>
+    output io_R_rhoPi_out_1_0 : UInt<64>
+    output io_R_rhoPi_out_1_1 : UInt<64>
+    output io_R_rhoPi_out_1_2 : UInt<64>
+    output io_R_rhoPi_out_1_3 : UInt<64>
+    output io_R_rhoPi_out_1_4 : UInt<64>
+    output io_R_rhoPi_out_2_0 : UInt<64>
+    output io_R_rhoPi_out_2_1 : UInt<64>
+    output io_R_rhoPi_out_2_2 : UInt<64>
+    output io_R_rhoPi_out_2_3 : UInt<64>
+    output io_R_rhoPi_out_2_4 : UInt<64>
+    output io_R_rhoPi_out_3_0 : UInt<64>
+    output io_R_rhoPi_out_3_1 : UInt<64>
+    output io_R_rhoPi_out_3_2 : UInt<64>
+    output io_R_rhoPi_out_3_3 : UInt<64>
+    output io_R_rhoPi_out_3_4 : UInt<64>
+    output io_R_rhoPi_out_4_0 : UInt<64>
+    output io_R_rhoPi_out_4_1 : UInt<64>
+    output io_R_rhoPi_out_4_2 : UInt<64>
+    output io_R_rhoPi_out_4_3 : UInt<64>
+    output io_R_rhoPi_out_4_4 : UInt<64>
+    output io_R_chi_out_0_0 : UInt<64>
+    output io_R_chi_out_0_1 : UInt<64>
+    output io_R_chi_out_0_2 : UInt<64>
+    output io_R_chi_out_0_3 : UInt<64>
+    output io_R_chi_out_0_4 : UInt<64>
+    output io_R_chi_out_1_0 : UInt<64>
+    output io_R_chi_out_1_1 : UInt<64>
+    output io_R_chi_out_1_2 : UInt<64>
+    output io_R_chi_out_1_3 : UInt<64>
+    output io_R_chi_out_1_4 : UInt<64>
+    output io_R_chi_out_2_0 : UInt<64>
+    output io_R_chi_out_2_1 : UInt<64>
+    output io_R_chi_out_2_2 : UInt<64>
+    output io_R_chi_out_2_3 : UInt<64>
+    output io_R_chi_out_2_4 : UInt<64>
+    output io_R_chi_out_3_0 : UInt<64>
+    output io_R_chi_out_3_1 : UInt<64>
+    output io_R_chi_out_3_2 : UInt<64>
+    output io_R_chi_out_3_3 : UInt<64>
+    output io_R_chi_out_3_4 : UInt<64>
+    output io_R_chi_out_4_0 : UInt<64>
+    output io_R_chi_out_4_1 : UInt<64>
+    output io_R_chi_out_4_2 : UInt<64>
+    output io_R_chi_out_4_3 : UInt<64>
+    output io_R_chi_out_4_4 : UInt<64>
+    output io_R_iota_out : UInt<64>
+
+    inst theta of Theta @[Round.scala 13:21]
+    inst rhoPi of RhoPi @[Round.scala 14:21]
+    inst chi of Chi @[Round.scala 15:19]
+    inst iota of Iota @[Round.scala 16:20]
+    io_round_out_0_0 <= iota.io_iota_out @[Round.scala 22:27]
+    io_round_out_0_1 <= chi.io_chi_out_0_1 @[Round.scala 34:24]
+    io_round_out_0_2 <= chi.io_chi_out_0_2 @[Round.scala 34:24]
+    io_round_out_0_3 <= chi.io_chi_out_0_3 @[Round.scala 34:24]
+    io_round_out_0_4 <= chi.io_chi_out_0_4 @[Round.scala 34:24]
+    io_round_out_1_0 <= chi.io_chi_out_1_0 @[Round.scala 31:26]
+    io_round_out_1_1 <= chi.io_chi_out_1_1 @[Round.scala 31:26]
+    io_round_out_1_2 <= chi.io_chi_out_1_2 @[Round.scala 31:26]
+    io_round_out_1_3 <= chi.io_chi_out_1_3 @[Round.scala 31:26]
+    io_round_out_1_4 <= chi.io_chi_out_1_4 @[Round.scala 31:26]
+    io_round_out_2_0 <= chi.io_chi_out_2_0 @[Round.scala 31:26]
+    io_round_out_2_1 <= chi.io_chi_out_2_1 @[Round.scala 31:26]
+    io_round_out_2_2 <= chi.io_chi_out_2_2 @[Round.scala 31:26]
+    io_round_out_2_3 <= chi.io_chi_out_2_3 @[Round.scala 31:26]
+    io_round_out_2_4 <= chi.io_chi_out_2_4 @[Round.scala 31:26]
+    io_round_out_3_0 <= chi.io_chi_out_3_0 @[Round.scala 31:26]
+    io_round_out_3_1 <= chi.io_chi_out_3_1 @[Round.scala 31:26]
+    io_round_out_3_2 <= chi.io_chi_out_3_2 @[Round.scala 31:26]
+    io_round_out_3_3 <= chi.io_chi_out_3_3 @[Round.scala 31:26]
+    io_round_out_3_4 <= chi.io_chi_out_3_4 @[Round.scala 31:26]
+    io_round_out_4_0 <= chi.io_chi_out_4_0 @[Round.scala 31:26]
+    io_round_out_4_1 <= chi.io_chi_out_4_1 @[Round.scala 31:26]
+    io_round_out_4_2 <= chi.io_chi_out_4_2 @[Round.scala 31:26]
+    io_round_out_4_3 <= chi.io_chi_out_4_3 @[Round.scala 31:26]
+    io_round_out_4_4 <= chi.io_chi_out_4_4 @[Round.scala 31:26]
+    io_R_theta_out_0_0 <= theta.io_theta_out_0_0 @[Round.scala 24:27]
+    io_R_theta_out_0_1 <= theta.io_theta_out_0_1 @[Round.scala 24:27]
+    io_R_theta_out_0_2 <= theta.io_theta_out_0_2 @[Round.scala 24:27]
+    io_R_theta_out_0_3 <= theta.io_theta_out_0_3 @[Round.scala 24:27]
+    io_R_theta_out_0_4 <= theta.io_theta_out_0_4 @[Round.scala 24:27]
+    io_R_theta_out_1_0 <= theta.io_theta_out_1_0 @[Round.scala 24:27]
+    io_R_theta_out_1_1 <= theta.io_theta_out_1_1 @[Round.scala 24:27]
+    io_R_theta_out_1_2 <= theta.io_theta_out_1_2 @[Round.scala 24:27]
+    io_R_theta_out_1_3 <= theta.io_theta_out_1_3 @[Round.scala 24:27]
+    io_R_theta_out_1_4 <= theta.io_theta_out_1_4 @[Round.scala 24:27]
+    io_R_theta_out_2_0 <= theta.io_theta_out_2_0 @[Round.scala 24:27]
+    io_R_theta_out_2_1 <= theta.io_theta_out_2_1 @[Round.scala 24:27]
+    io_R_theta_out_2_2 <= theta.io_theta_out_2_2 @[Round.scala 24:27]
+    io_R_theta_out_2_3 <= theta.io_theta_out_2_3 @[Round.scala 24:27]
+    io_R_theta_out_2_4 <= theta.io_theta_out_2_4 @[Round.scala 24:27]
+    io_R_theta_out_3_0 <= theta.io_theta_out_3_0 @[Round.scala 24:27]
+    io_R_theta_out_3_1 <= theta.io_theta_out_3_1 @[Round.scala 24:27]
+    io_R_theta_out_3_2 <= theta.io_theta_out_3_2 @[Round.scala 24:27]
+    io_R_theta_out_3_3 <= theta.io_theta_out_3_3 @[Round.scala 24:27]
+    io_R_theta_out_3_4 <= theta.io_theta_out_3_4 @[Round.scala 24:27]
+    io_R_theta_out_4_0 <= theta.io_theta_out_4_0 @[Round.scala 24:27]
+    io_R_theta_out_4_1 <= theta.io_theta_out_4_1 @[Round.scala 24:27]
+    io_R_theta_out_4_2 <= theta.io_theta_out_4_2 @[Round.scala 24:27]
+    io_R_theta_out_4_3 <= theta.io_theta_out_4_3 @[Round.scala 24:27]
+    io_R_theta_out_4_4 <= theta.io_theta_out_4_4 @[Round.scala 24:27]
+    io_R_rhoPi_out_0_0 <= rhoPi.io_rhoPi_out_0_0 @[Round.scala 25:27]
+    io_R_rhoPi_out_0_1 <= rhoPi.io_rhoPi_out_0_1 @[Round.scala 25:27]
+    io_R_rhoPi_out_0_2 <= rhoPi.io_rhoPi_out_0_2 @[Round.scala 25:27]
+    io_R_rhoPi_out_0_3 <= rhoPi.io_rhoPi_out_0_3 @[Round.scala 25:27]
+    io_R_rhoPi_out_0_4 <= rhoPi.io_rhoPi_out_0_4 @[Round.scala 25:27]
+    io_R_rhoPi_out_1_0 <= rhoPi.io_rhoPi_out_1_0 @[Round.scala 25:27]
+    io_R_rhoPi_out_1_1 <= rhoPi.io_rhoPi_out_1_1 @[Round.scala 25:27]
+    io_R_rhoPi_out_1_2 <= rhoPi.io_rhoPi_out_1_2 @[Round.scala 25:27]
+    io_R_rhoPi_out_1_3 <= rhoPi.io_rhoPi_out_1_3 @[Round.scala 25:27]
+    io_R_rhoPi_out_1_4 <= rhoPi.io_rhoPi_out_1_4 @[Round.scala 25:27]
+    io_R_rhoPi_out_2_0 <= rhoPi.io_rhoPi_out_2_0 @[Round.scala 25:27]
+    io_R_rhoPi_out_2_1 <= rhoPi.io_rhoPi_out_2_1 @[Round.scala 25:27]
+    io_R_rhoPi_out_2_2 <= rhoPi.io_rhoPi_out_2_2 @[Round.scala 25:27]
+    io_R_rhoPi_out_2_3 <= rhoPi.io_rhoPi_out_2_3 @[Round.scala 25:27]
+    io_R_rhoPi_out_2_4 <= rhoPi.io_rhoPi_out_2_4 @[Round.scala 25:27]
+    io_R_rhoPi_out_3_0 <= rhoPi.io_rhoPi_out_3_0 @[Round.scala 25:27]
+    io_R_rhoPi_out_3_1 <= rhoPi.io_rhoPi_out_3_1 @[Round.scala 25:27]
+    io_R_rhoPi_out_3_2 <= rhoPi.io_rhoPi_out_3_2 @[Round.scala 25:27]
+    io_R_rhoPi_out_3_3 <= rhoPi.io_rhoPi_out_3_3 @[Round.scala 25:27]
+    io_R_rhoPi_out_3_4 <= rhoPi.io_rhoPi_out_3_4 @[Round.scala 25:27]
+    io_R_rhoPi_out_4_0 <= rhoPi.io_rhoPi_out_4_0 @[Round.scala 25:27]
+    io_R_rhoPi_out_4_1 <= rhoPi.io_rhoPi_out_4_1 @[Round.scala 25:27]
+    io_R_rhoPi_out_4_2 <= rhoPi.io_rhoPi_out_4_2 @[Round.scala 25:27]
+    io_R_rhoPi_out_4_3 <= rhoPi.io_rhoPi_out_4_3 @[Round.scala 25:27]
+    io_R_rhoPi_out_4_4 <= rhoPi.io_rhoPi_out_4_4 @[Round.scala 25:27]
+    io_R_chi_out_0_0 <= chi.io_chi_out_0_0 @[Round.scala 26:27]
+    io_R_chi_out_0_1 <= chi.io_chi_out_0_1 @[Round.scala 26:27]
+    io_R_chi_out_0_2 <= chi.io_chi_out_0_2 @[Round.scala 26:27]
+    io_R_chi_out_0_3 <= chi.io_chi_out_0_3 @[Round.scala 26:27]
+    io_R_chi_out_0_4 <= chi.io_chi_out_0_4 @[Round.scala 26:27]
+    io_R_chi_out_1_0 <= chi.io_chi_out_1_0 @[Round.scala 26:27]
+    io_R_chi_out_1_1 <= chi.io_chi_out_1_1 @[Round.scala 26:27]
+    io_R_chi_out_1_2 <= chi.io_chi_out_1_2 @[Round.scala 26:27]
+    io_R_chi_out_1_3 <= chi.io_chi_out_1_3 @[Round.scala 26:27]
+    io_R_chi_out_1_4 <= chi.io_chi_out_1_4 @[Round.scala 26:27]
+    io_R_chi_out_2_0 <= chi.io_chi_out_2_0 @[Round.scala 26:27]
+    io_R_chi_out_2_1 <= chi.io_chi_out_2_1 @[Round.scala 26:27]
+    io_R_chi_out_2_2 <= chi.io_chi_out_2_2 @[Round.scala 26:27]
+    io_R_chi_out_2_3 <= chi.io_chi_out_2_3 @[Round.scala 26:27]
+    io_R_chi_out_2_4 <= chi.io_chi_out_2_4 @[Round.scala 26:27]
+    io_R_chi_out_3_0 <= chi.io_chi_out_3_0 @[Round.scala 26:27]
+    io_R_chi_out_3_1 <= chi.io_chi_out_3_1 @[Round.scala 26:27]
+    io_R_chi_out_3_2 <= chi.io_chi_out_3_2 @[Round.scala 26:27]
+    io_R_chi_out_3_3 <= chi.io_chi_out_3_3 @[Round.scala 26:27]
+    io_R_chi_out_3_4 <= chi.io_chi_out_3_4 @[Round.scala 26:27]
+    io_R_chi_out_4_0 <= chi.io_chi_out_4_0 @[Round.scala 26:27]
+    io_R_chi_out_4_1 <= chi.io_chi_out_4_1 @[Round.scala 26:27]
+    io_R_chi_out_4_2 <= chi.io_chi_out_4_2 @[Round.scala 26:27]
+    io_R_chi_out_4_3 <= chi.io_chi_out_4_3 @[Round.scala 26:27]
+    io_R_chi_out_4_4 <= chi.io_chi_out_4_4 @[Round.scala 26:27]
+    io_R_iota_out <= iota.io_iota_out @[Round.scala 27:27]
+    theta.clock <= clock
+    theta.reset <= reset
+    theta.io_theta_in_0_0 <= io_round_in_0_0 @[Round.scala 18:27]
+    theta.io_theta_in_0_1 <= io_round_in_0_1 @[Round.scala 18:27]
+    theta.io_theta_in_0_2 <= io_round_in_0_2 @[Round.scala 18:27]
+    theta.io_theta_in_0_3 <= io_round_in_0_3 @[Round.scala 18:27]
+    theta.io_theta_in_0_4 <= io_round_in_0_4 @[Round.scala 18:27]
+    theta.io_theta_in_1_0 <= io_round_in_1_0 @[Round.scala 18:27]
+    theta.io_theta_in_1_1 <= io_round_in_1_1 @[Round.scala 18:27]
+    theta.io_theta_in_1_2 <= io_round_in_1_2 @[Round.scala 18:27]
+    theta.io_theta_in_1_3 <= io_round_in_1_3 @[Round.scala 18:27]
+    theta.io_theta_in_1_4 <= io_round_in_1_4 @[Round.scala 18:27]
+    theta.io_theta_in_2_0 <= io_round_in_2_0 @[Round.scala 18:27]
+    theta.io_theta_in_2_1 <= io_round_in_2_1 @[Round.scala 18:27]
+    theta.io_theta_in_2_2 <= io_round_in_2_2 @[Round.scala 18:27]
+    theta.io_theta_in_2_3 <= io_round_in_2_3 @[Round.scala 18:27]
+    theta.io_theta_in_2_4 <= io_round_in_2_4 @[Round.scala 18:27]
+    theta.io_theta_in_3_0 <= io_round_in_3_0 @[Round.scala 18:27]
+    theta.io_theta_in_3_1 <= io_round_in_3_1 @[Round.scala 18:27]
+    theta.io_theta_in_3_2 <= io_round_in_3_2 @[Round.scala 18:27]
+    theta.io_theta_in_3_3 <= io_round_in_3_3 @[Round.scala 18:27]
+    theta.io_theta_in_3_4 <= io_round_in_3_4 @[Round.scala 18:27]
+    theta.io_theta_in_4_0 <= io_round_in_4_0 @[Round.scala 18:27]
+    theta.io_theta_in_4_1 <= io_round_in_4_1 @[Round.scala 18:27]
+    theta.io_theta_in_4_2 <= io_round_in_4_2 @[Round.scala 18:27]
+    theta.io_theta_in_4_3 <= io_round_in_4_3 @[Round.scala 18:27]
+    theta.io_theta_in_4_4 <= io_round_in_4_4 @[Round.scala 18:27]
+    rhoPi.clock <= clock
+    rhoPi.reset <= reset
+    rhoPi.io_rhoPi_in_0_0 <= theta.io_theta_out_0_0 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_0_1 <= theta.io_theta_out_0_1 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_0_2 <= theta.io_theta_out_0_2 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_0_3 <= theta.io_theta_out_0_3 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_0_4 <= theta.io_theta_out_0_4 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_1_0 <= theta.io_theta_out_1_0 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_1_1 <= theta.io_theta_out_1_1 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_1_2 <= theta.io_theta_out_1_2 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_1_3 <= theta.io_theta_out_1_3 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_1_4 <= theta.io_theta_out_1_4 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_2_0 <= theta.io_theta_out_2_0 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_2_1 <= theta.io_theta_out_2_1 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_2_2 <= theta.io_theta_out_2_2 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_2_3 <= theta.io_theta_out_2_3 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_2_4 <= theta.io_theta_out_2_4 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_3_0 <= theta.io_theta_out_3_0 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_3_1 <= theta.io_theta_out_3_1 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_3_2 <= theta.io_theta_out_3_2 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_3_3 <= theta.io_theta_out_3_3 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_3_4 <= theta.io_theta_out_3_4 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_4_0 <= theta.io_theta_out_4_0 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_4_1 <= theta.io_theta_out_4_1 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_4_2 <= theta.io_theta_out_4_2 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_4_3 <= theta.io_theta_out_4_3 @[Round.scala 19:27]
+    rhoPi.io_rhoPi_in_4_4 <= theta.io_theta_out_4_4 @[Round.scala 19:27]
+    chi.clock <= clock
+    chi.reset <= reset
+    chi.io_chi_in_0_0 <= rhoPi.io_rhoPi_out_0_0 @[Round.scala 20:27]
+    chi.io_chi_in_0_1 <= rhoPi.io_rhoPi_out_0_1 @[Round.scala 20:27]
+    chi.io_chi_in_0_2 <= rhoPi.io_rhoPi_out_0_2 @[Round.scala 20:27]
+    chi.io_chi_in_0_3 <= rhoPi.io_rhoPi_out_0_3 @[Round.scala 20:27]
+    chi.io_chi_in_0_4 <= rhoPi.io_rhoPi_out_0_4 @[Round.scala 20:27]
+    chi.io_chi_in_1_0 <= rhoPi.io_rhoPi_out_1_0 @[Round.scala 20:27]
+    chi.io_chi_in_1_1 <= rhoPi.io_rhoPi_out_1_1 @[Round.scala 20:27]
+    chi.io_chi_in_1_2 <= rhoPi.io_rhoPi_out_1_2 @[Round.scala 20:27]
+    chi.io_chi_in_1_3 <= rhoPi.io_rhoPi_out_1_3 @[Round.scala 20:27]
+    chi.io_chi_in_1_4 <= rhoPi.io_rhoPi_out_1_4 @[Round.scala 20:27]
+    chi.io_chi_in_2_0 <= rhoPi.io_rhoPi_out_2_0 @[Round.scala 20:27]
+    chi.io_chi_in_2_1 <= rhoPi.io_rhoPi_out_2_1 @[Round.scala 20:27]
+    chi.io_chi_in_2_2 <= rhoPi.io_rhoPi_out_2_2 @[Round.scala 20:27]
+    chi.io_chi_in_2_3 <= rhoPi.io_rhoPi_out_2_3 @[Round.scala 20:27]
+    chi.io_chi_in_2_4 <= rhoPi.io_rhoPi_out_2_4 @[Round.scala 20:27]
+    chi.io_chi_in_3_0 <= rhoPi.io_rhoPi_out_3_0 @[Round.scala 20:27]
+    chi.io_chi_in_3_1 <= rhoPi.io_rhoPi_out_3_1 @[Round.scala 20:27]
+    chi.io_chi_in_3_2 <= rhoPi.io_rhoPi_out_3_2 @[Round.scala 20:27]
+    chi.io_chi_in_3_3 <= rhoPi.io_rhoPi_out_3_3 @[Round.scala 20:27]
+    chi.io_chi_in_3_4 <= rhoPi.io_rhoPi_out_3_4 @[Round.scala 20:27]
+    chi.io_chi_in_4_0 <= rhoPi.io_rhoPi_out_4_0 @[Round.scala 20:27]
+    chi.io_chi_in_4_1 <= rhoPi.io_rhoPi_out_4_1 @[Round.scala 20:27]
+    chi.io_chi_in_4_2 <= rhoPi.io_rhoPi_out_4_2 @[Round.scala 20:27]
+    chi.io_chi_in_4_3 <= rhoPi.io_rhoPi_out_4_3 @[Round.scala 20:27]
+    chi.io_chi_in_4_4 <= rhoPi.io_rhoPi_out_4_4 @[Round.scala 20:27]
+    iota.clock <= clock
+    iota.reset <= reset
+    iota.io_iota_in_0_0 <= chi.io_chi_out_0_0 @[Round.scala 21:27]
+    iota.io_iota_in_0_1 <= chi.io_chi_out_0_1 @[Round.scala 21:27]
+    iota.io_iota_in_0_2 <= chi.io_chi_out_0_2 @[Round.scala 21:27]
+    iota.io_iota_in_0_3 <= chi.io_chi_out_0_3 @[Round.scala 21:27]
+    iota.io_iota_in_0_4 <= chi.io_chi_out_0_4 @[Round.scala 21:27]
+    iota.io_iota_in_1_0 <= chi.io_chi_out_1_0 @[Round.scala 21:27]
+    iota.io_iota_in_1_1 <= chi.io_chi_out_1_1 @[Round.scala 21:27]
+    iota.io_iota_in_1_2 <= chi.io_chi_out_1_2 @[Round.scala 21:27]
+    iota.io_iota_in_1_3 <= chi.io_chi_out_1_3 @[Round.scala 21:27]
+    iota.io_iota_in_1_4 <= chi.io_chi_out_1_4 @[Round.scala 21:27]
+    iota.io_iota_in_2_0 <= chi.io_chi_out_2_0 @[Round.scala 21:27]
+    iota.io_iota_in_2_1 <= chi.io_chi_out_2_1 @[Round.scala 21:27]
+    iota.io_iota_in_2_2 <= chi.io_chi_out_2_2 @[Round.scala 21:27]
+    iota.io_iota_in_2_3 <= chi.io_chi_out_2_3 @[Round.scala 21:27]
+    iota.io_iota_in_2_4 <= chi.io_chi_out_2_4 @[Round.scala 21:27]
+    iota.io_iota_in_3_0 <= chi.io_chi_out_3_0 @[Round.scala 21:27]
+    iota.io_iota_in_3_1 <= chi.io_chi_out_3_1 @[Round.scala 21:27]
+    iota.io_iota_in_3_2 <= chi.io_chi_out_3_2 @[Round.scala 21:27]
+    iota.io_iota_in_3_3 <= chi.io_chi_out_3_3 @[Round.scala 21:27]
+    iota.io_iota_in_3_4 <= chi.io_chi_out_3_4 @[Round.scala 21:27]
+    iota.io_iota_in_4_0 <= chi.io_chi_out_4_0 @[Round.scala 21:27]
+    iota.io_iota_in_4_1 <= chi.io_chi_out_4_1 @[Round.scala 21:27]
+    iota.io_iota_in_4_2 <= chi.io_chi_out_4_2 @[Round.scala 21:27]
+    iota.io_iota_in_4_3 <= chi.io_chi_out_4_3 @[Round.scala 21:27]
+    iota.io_iota_in_4_4 <= chi.io_chi_out_4_4 @[Round.scala 21:27]
