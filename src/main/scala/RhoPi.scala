@@ -201,34 +201,34 @@ class RhoPi  extends Module{
   or_rfh_4_3 := io.rhoPi_in_4_3>>(64.U-r(4)(3))
   or_rfh_4_4 := io.rhoPi_in_4_4>>(64.U-r(4)(4))
 
-  io.rhoPi_out_0_2 := or_lfh_0_0 | or_rfh_0_0
-  io.rhoPi_out_0_0 := or_lfh_0_1 | or_rfh_0_1
-  io.rhoPi_out_0_3 := or_lfh_0_2 | or_rfh_0_2
-  io.rhoPi_out_0_1 := or_lfh_0_3 | or_rfh_0_3
-  io.rhoPi_out_0_4 := or_lfh_0_4 | or_rfh_0_4
+  io.rhoPi_out_0_0 := or_lfh_0_0 | or_rfh_0_0
+  io.rhoPi_out_1_3 := or_lfh_0_1 | or_rfh_0_1
+  io.rhoPi_out_2_1 := or_lfh_0_2 | or_rfh_0_2
+  io.rhoPi_out_3_4 := or_lfh_0_3 | or_rfh_0_3
+  io.rhoPi_out_4_2 := or_lfh_0_4 | or_rfh_0_4
 
-  io.rhoPi_out_1_2 := or_lfh_1_0 | or_rfh_1_0
+  io.rhoPi_out_0_2 := or_lfh_1_0 | or_rfh_1_0
   io.rhoPi_out_1_0 := or_lfh_1_1 | or_rfh_1_1
-  io.rhoPi_out_1_3 := or_lfh_1_2 | or_rfh_1_2
-  io.rhoPi_out_1_1 := or_lfh_1_3 | or_rfh_1_3
-  io.rhoPi_out_1_4 := or_lfh_1_4 | or_rfh_1_4
+  io.rhoPi_out_2_3 := or_lfh_1_2 | or_rfh_1_2
+  io.rhoPi_out_3_1 := or_lfh_1_3 | or_rfh_1_3
+  io.rhoPi_out_4_4 := or_lfh_1_4 | or_rfh_1_4
 
-  io.rhoPi_out_2_4 := or_lfh_2_0 | or_rfh_2_0
-  io.rhoPi_out_2_2 := or_lfh_2_1 | or_rfh_2_1
+  io.rhoPi_out_0_4 := or_lfh_2_0 | or_rfh_2_0
+  io.rhoPi_out_1_2 := or_lfh_2_1 | or_rfh_2_1
   io.rhoPi_out_2_0 := or_lfh_2_2 | or_rfh_2_2
-  io.rhoPi_out_2_3 := or_lfh_2_3 | or_rfh_2_3
-  io.rhoPi_out_2_1 := or_lfh_2_4 | or_rfh_2_4
+  io.rhoPi_out_3_3 := or_lfh_2_3 | or_rfh_2_3
+  io.rhoPi_out_4_1 := or_lfh_2_4 | or_rfh_2_4
 
-  io.rhoPi_out_3_1 := or_lfh_3_0 | or_rfh_3_0
-  io.rhoPi_out_3_4 := or_lfh_3_1 | or_rfh_3_1
-  io.rhoPi_out_3_2 := or_lfh_3_2 | or_rfh_3_2
+  io.rhoPi_out_0_1 := or_lfh_3_0 | or_rfh_3_0
+  io.rhoPi_out_1_4 := or_lfh_3_1 | or_rfh_3_1
+  io.rhoPi_out_2_2 := or_lfh_3_2 | or_rfh_3_2
   io.rhoPi_out_3_0 := or_lfh_3_3 | or_rfh_3_3
-  io.rhoPi_out_3_3 := or_lfh_3_4 | or_rfh_3_4
+  io.rhoPi_out_4_3 := or_lfh_3_4 | or_rfh_3_4
 
-  io.rhoPi_out_4_3 := or_lfh_4_0 | or_rfh_4_0
-  io.rhoPi_out_4_1 := or_lfh_4_1 | or_rfh_4_1
-  io.rhoPi_out_4_4 := or_lfh_4_2 | or_rfh_4_2
-  io.rhoPi_out_4_2 := or_lfh_4_3 | or_rfh_4_3
+  io.rhoPi_out_0_3 := or_lfh_4_0 | or_rfh_4_0
+  io.rhoPi_out_1_1 := or_lfh_4_1 | or_rfh_4_1
+  io.rhoPi_out_2_4 := or_lfh_4_2 | or_rfh_4_2
+  io.rhoPi_out_3_2 := or_lfh_4_3 | or_rfh_4_3
   io.rhoPi_out_4_0 := or_lfh_4_4 | or_rfh_4_4
 
 /*
