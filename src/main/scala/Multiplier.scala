@@ -23,7 +23,7 @@ class Multiplier extends Module {
   // Control signals
   val edge_high_reg: Bool = RegInit(false.B) // Register triggering computing on valid_in rising edge
   val run_reg: Bool = RegInit(false.B) // Register denoting whether module is currently computing result
-  val step_reg: UInt = RegInit(0.U(1.W))
+  val step_reg: UInt = RegInit(0.U(12.W))
 
   // Store edge
   edge_high_reg := io.valid_in
@@ -36,7 +36,7 @@ class Multiplier extends Module {
     multiplicator_reg := io.multiplicator
     multiplicand_reg := io.multiplicand
     product_reg := 0.U
-  }.elsewhen(run_reg & step_reg =/= width.U){
+  }.elsewhen(run_reg & (step_reg =/= width.U)){
     // All registers accounted for. (run_reg just continues as true.B)
     // Compute partial sum and add to product
     when(multiplicator_reg(0)){
