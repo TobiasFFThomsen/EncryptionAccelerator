@@ -92,9 +92,6 @@ class RhoPi  extends Module{
 
   /*Rho and Pi*/
 
-  //val rotationWire_1 = Wire(Vec(5, Vec(5, UInt(64.W))))
-  //val rotationWire_2 = Wire(Vec(5, Vec(5, UInt(64.W))))
-
   val or_lfh_0_0 = Wire(UInt(64.W))
   val or_lfh_0_1 = Wire(UInt(64.W))
   val or_lfh_0_2 = Wire(UInt(64.W))
@@ -146,8 +143,6 @@ class RhoPi  extends Module{
   val or_rfh_4_2 = Wire(UInt(64.W))
   val or_rfh_4_3 = Wire(UInt(64.W))
   val or_rfh_4_4 = Wire(UInt(64.W))
-
-
 
   or_lfh_0_0 := io.rhoPi_in_0_0<<r(0)(0)
   or_lfh_0_1 := io.rhoPi_in_0_1<<r(0)(1)
@@ -230,15 +225,4 @@ class RhoPi  extends Module{
   io.rhoPi_out_2_4 := or_lfh_4_2 | or_rfh_4_2
   io.rhoPi_out_3_2 := or_lfh_4_3 | or_rfh_4_3
   io.rhoPi_out_4_0 := or_lfh_4_4 | or_rfh_4_4
-
-/*
-  for(x <- 0 to 4) {
-    for(y <- 0 to 4) {
-      //rotationWire_1(x)(y) := io.rhoPi_in(x)(y) << r(x)(y)
-      //rotationWire_2(x)(y) := io.rhoPi_in(x)(y) >> (64.U-r(x)(y))
-      //io.rhoPi_out(y)(Math.floorMod(2*x+3*y,5)) := rotationWire_1(x)(y) | rotationWire_2(x)(y)
-    }
-  }
-
- */
 }

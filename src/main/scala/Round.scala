@@ -72,8 +72,10 @@ class Round extends Module{
 
   })
 
-    val theta   = Module(new Theta())
-    val rhoPi   = Module(new RhoPi())
+    val theta     = Module(new Theta())
+    val rhoPi     = Module(new RhoPi())
+    val chi       = Module(new Chi())
+    val iota      = Module(new Iota())
 
     theta.io.theta_in_0_0 := io.round_in_0_0
     theta.io.theta_in_0_1 := io.round_in_0_1
@@ -135,35 +137,67 @@ class Round extends Module{
     rhoPi.io.rhoPi_in_4_3 := theta.io.theta_out_4_3
     rhoPi.io.rhoPi_in_4_4 := theta.io.theta_out_4_4
 
-    io.round_out_0_0 := rhoPi.io.rhoPi_out_0_0
-    io.round_out_0_1 := rhoPi.io.rhoPi_out_0_1
-    io.round_out_0_2 := rhoPi.io.rhoPi_out_0_2
-    io.round_out_0_3 := rhoPi.io.rhoPi_out_0_3
-    io.round_out_0_4 := rhoPi.io.rhoPi_out_0_4
+    chi.io.chi_in_0_0 := rhoPi.io.rhoPi_out_0_0
+    chi.io.chi_in_0_1 := rhoPi.io.rhoPi_out_0_1
+    chi.io.chi_in_0_2 := rhoPi.io.rhoPi_out_0_2
+    chi.io.chi_in_0_3 := rhoPi.io.rhoPi_out_0_3
+    chi.io.chi_in_0_4 := rhoPi.io.rhoPi_out_0_4
 
-    io.round_out_1_0 := rhoPi.io.rhoPi_out_1_0
-    io.round_out_1_1 := rhoPi.io.rhoPi_out_1_1
-    io.round_out_1_2 := rhoPi.io.rhoPi_out_1_2
-    io.round_out_1_3 := rhoPi.io.rhoPi_out_1_3
-    io.round_out_1_4 := rhoPi.io.rhoPi_out_1_4
+    chi.io.chi_in_1_0 := rhoPi.io.rhoPi_out_1_0
+    chi.io.chi_in_1_1 := rhoPi.io.rhoPi_out_1_1
+    chi.io.chi_in_1_2 := rhoPi.io.rhoPi_out_1_2
+    chi.io.chi_in_1_3 := rhoPi.io.rhoPi_out_1_3
+    chi.io.chi_in_1_4 := rhoPi.io.rhoPi_out_1_4
 
-    io.round_out_2_0 := rhoPi.io.rhoPi_out_2_0
-    io.round_out_2_1 := rhoPi.io.rhoPi_out_2_1
-    io.round_out_2_2 := rhoPi.io.rhoPi_out_2_2
-    io.round_out_2_3 := rhoPi.io.rhoPi_out_2_3
-    io.round_out_2_4 := rhoPi.io.rhoPi_out_2_4
+    chi.io.chi_in_2_0 := rhoPi.io.rhoPi_out_2_0
+    chi.io.chi_in_2_1 := rhoPi.io.rhoPi_out_2_1
+    chi.io.chi_in_2_2 := rhoPi.io.rhoPi_out_2_2
+    chi.io.chi_in_2_3 := rhoPi.io.rhoPi_out_2_3
+    chi.io.chi_in_2_4 := rhoPi.io.rhoPi_out_2_4
 
-    io.round_out_3_0 := rhoPi.io.rhoPi_out_3_0
-    io.round_out_3_1 := rhoPi.io.rhoPi_out_3_1
-    io.round_out_3_2 := rhoPi.io.rhoPi_out_3_2
-    io.round_out_3_3 := rhoPi.io.rhoPi_out_3_3
-    io.round_out_3_4 := rhoPi.io.rhoPi_out_3_4
+    chi.io.chi_in_3_0 := rhoPi.io.rhoPi_out_3_0
+    chi.io.chi_in_3_1 := rhoPi.io.rhoPi_out_3_1
+    chi.io.chi_in_3_2 := rhoPi.io.rhoPi_out_3_2
+    chi.io.chi_in_3_3 := rhoPi.io.rhoPi_out_3_3
+    chi.io.chi_in_3_4 := rhoPi.io.rhoPi_out_3_4
 
-    io.round_out_4_0 := rhoPi.io.rhoPi_out_4_0
-    io.round_out_4_1 := rhoPi.io.rhoPi_out_4_1
-    io.round_out_4_2 := rhoPi.io.rhoPi_out_4_2
-    io.round_out_4_3 := rhoPi.io.rhoPi_out_4_3
-    io.round_out_4_4 := rhoPi.io.rhoPi_out_4_4
+    chi.io.chi_in_4_0 := rhoPi.io.rhoPi_out_4_0
+    chi.io.chi_in_4_1 := rhoPi.io.rhoPi_out_4_1
+    chi.io.chi_in_4_2 := rhoPi.io.rhoPi_out_4_2
+    chi.io.chi_in_4_3 := rhoPi.io.rhoPi_out_4_3
+    chi.io.chi_in_4_4 := rhoPi.io.rhoPi_out_4_4
+
+    iota.io.iota_in    := chi.io.chi_in_0_0
+
+    io.round_out_0_0 := iota.io.iota_out
+    io.round_out_0_1 := chi.io.chi_out_0_1
+    io.round_out_0_2 := chi.io.chi_out_0_2
+    io.round_out_0_3 := chi.io.chi_out_0_3
+    io.round_out_0_4 := chi.io.chi_out_0_4
+
+    io.round_out_1_0 := chi.io.chi_out_1_0
+    io.round_out_1_1 := chi.io.chi_out_1_1
+    io.round_out_1_2 := chi.io.chi_out_1_2
+    io.round_out_1_3 := chi.io.chi_out_1_3
+    io.round_out_1_4 := chi.io.chi_out_1_4
+
+    io.round_out_2_0 := chi.io.chi_out_2_0
+    io.round_out_2_1 := chi.io.chi_out_2_1
+    io.round_out_2_2 := chi.io.chi_out_2_2
+    io.round_out_2_3 := chi.io.chi_out_2_3
+    io.round_out_2_4 := chi.io.chi_out_2_4
+
+    io.round_out_3_0 := chi.io.chi_out_3_0
+    io.round_out_3_1 := chi.io.chi_out_3_1
+    io.round_out_3_2 := chi.io.chi_out_3_2
+    io.round_out_3_3 := chi.io.chi_out_3_3
+    io.round_out_3_4 := chi.io.chi_out_3_4
+
+    io.round_out_4_0 := chi.io.chi_out_4_0
+    io.round_out_4_1 := chi.io.chi_out_4_1
+    io.round_out_4_2 := chi.io.chi_out_4_2
+    io.round_out_4_3 := chi.io.chi_out_4_3
+    io.round_out_4_4 := chi.io.chi_out_4_4
 
 
 
