@@ -1,3 +1,4 @@
+import BigIntUnits.Multiplier
 import chisel3.iotesters.PeekPokeTester
 import org.scalatest._
 
@@ -25,7 +26,7 @@ class MultiplierTester(dut: Multiplier) extends PeekPokeTester(dut) {
   }
 }
 class MultiplierSpec extends FlatSpec with Matchers {
-  "Multiplier" should "pass" in {
+  "BigIntUnits.Multiplier" should "pass" in {
     chisel3.iotesters.Driver(() => new Multiplier) { c => new MultiplierTester(c)} should be (true)
   }
 }

@@ -1,7 +1,8 @@
+package BigIntUnits
+
 import Chisel.{Enum, switch}
 import chisel3._
 import chisel3.util.is
-import firrtl.PrimOps.AsUInt
 
 class Divider extends Module{
   val width = 2048

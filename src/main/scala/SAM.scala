@@ -1,6 +1,6 @@
 import Chisel.{PriorityEncoder, Reverse}
 import chisel3._
-
+import BigIntUnits._
 /*
 class RSA extends Module{
   val io = IO(new Bundle{
@@ -38,7 +38,9 @@ class SAM extends Module {
     val prog: UInt = Output(UInt(max_bit_width.W))
     val exp_lim: UInt = Output(UInt(max_bit_width.W))
   })
-
+  // Big integer arithmetic modules
+  val Multiplier = new BigIntUnits.Multiplier()
+  val Divider = new BigIntUnits.Divider()
   // Initial values
   // ---------------------------------------
   // Result and UI control signals
@@ -75,7 +77,7 @@ class SAM extends Module {
       run_reg := false.B
     }.elsewhen(io.t(exp_lim - progress_reg)){ // This correct?
       // Square and multiply
-      w_reg := ((w_reg * w_reg) * io.b) % io.n;
+      w_reg := ((w_reg * w_reg % io.n) * io.b) % io.n;
     }.otherwise{
       // Square
       w_reg := (w_reg * w_reg) % io.n;

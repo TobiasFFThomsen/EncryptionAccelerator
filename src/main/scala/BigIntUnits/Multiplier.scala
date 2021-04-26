@@ -1,7 +1,8 @@
-import chisel3._
+package BigIntUnits
 
-// BigInt Multiplier
-// Input 64 bit operands
+import chisel3._
+// BigInt BigIntUnits.Multiplier
+// Input 2048 bit operands
 
 class Multiplier extends Module {
   val width = 2048
