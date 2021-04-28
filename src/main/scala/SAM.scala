@@ -1,5 +1,6 @@
-import Chisel.{PriorityEncoder, Reverse}
+import Chisel.{Enum, PriorityEncoder, Reverse}
 import chisel3._
+
 import BigIntUnits._
 /*
 class RSA extends Module{
@@ -22,6 +23,7 @@ class SAM extends Module {
   valid_in must be raised and held high while operation is running (until valid_out is raised).
   */
   val max_bit_width = 2048
+  val idle :: squaring :: first_mod :: mult_b :: second_mod :: step_done :: nil = Enum(6)
 
   val io = IO(new Bundle {
     // b, t, n, w
@@ -41,6 +43,7 @@ class SAM extends Module {
   // Big integer arithmetic modules
   val Multiplier = new BigIntUnits.Multiplier()
   val Divider = new BigIntUnits.Divider()
+
   // Initial values
   // ---------------------------------------
   // Result and UI control signals
@@ -51,6 +54,7 @@ class SAM extends Module {
   val progress_reg: UInt = RegInit(0.U(max_bit_width.W)); // Register holding iteration progress
   val edge_high_reg: Bool = RegInit(false.B) // Register triggering computing on valid_in rising edge
   val exp_lim: UInt = RegInit(1.U(max_bit_width.W))
+  val state_reg: UInt = RegInit(idle)
   // ---------------------------------------
 
   // Computing
@@ -71,18 +75,38 @@ class SAM extends Module {
     progress_reg := 0.U;
     run_reg := true.B; // Progress is running
   }.elsewhen(run_reg){
-    // Compute result
+    // Setup computing
+
     when (progress_reg === exp_lim + 1.U) {
       // Done, stop iterating
       run_reg := false.B
-    }.elsewhen(io.t(exp_lim - progress_reg)){ // This correct?
-      // Square and multiply
-      w_reg := ((w_reg * w_reg % io.n) * io.b) % io.n;
-    }.otherwise{
-      // Square
-      w_reg := (w_reg * w_reg) % io.n;
+      state_reg := idle
     }
-    progress_reg := progress_reg + 1.U;
+
+    when(state_reg === idle){
+      state_reg := squaring
+      Multiplier.io.valid_in := true.B
+      Multiplier.io.multiplicator  := w_reg
+      Multiplier.io.multiplicand := w_reg
+      // io.t(exp_lim - progress_reg)
+    }.elsewhen(state_reg === squaring){
+
+    }.elsewhen(state_reg === first_mod){
+
+    }.elsewhen(state_reg === mult_b){
+
+    }.elsewhen(state_reg === second_mod){
+
+    }.otherwise{
+      // state_reg must be step_done
+      progress_reg := progress_reg + 1.U
+      state_reg := idle
+    }
+      // Square and multiply
+      // w_reg := ((w_reg * w_reg % io.n) * io.b) % io.n;
+
+      // Square
+      // w_reg := (w_reg * w_reg) % io.n;
   }
 
   // Assign output

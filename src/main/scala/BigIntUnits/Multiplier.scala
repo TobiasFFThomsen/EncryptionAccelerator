@@ -69,3 +69,8 @@ class Multiplier extends Module {
   // Result is always product_reg
   io.result := product_reg
 }
+
+object HelloMultiplier extends App {
+  println("Hello World, I will now generate the Verilog file!")
+  (new chisel3.stage.ChiselStage).emitVerilog(new Multiplier())
+}
