@@ -22,10 +22,9 @@ class Divider extends Module{
     val remainder: UInt = Output(UInt((width + 1).W))
 
     // Debugging
-    val run: Bool = Output(Bool())
     val step: UInt = Output(UInt(12.W))
     val state: UInt = Output(UInt(2.W))
-    val divisor_out = Output(UInt((width + 1).W))
+    val divisor_out: UInt = Output(UInt((width + 1).W))
   })
 
   val divisor_reg: UInt = RegInit(0.U((2 * width).W))
@@ -34,8 +33,6 @@ class Divider extends Module{
   val quotient_reg: UInt = RegInit(0.U((2 * width).W))
 
   // Control signals
-
-  val run_reg: Bool = RegInit(false.B) // Register denoting whether module is currently computing result
   val step_reg: UInt = RegInit(0.U(12.W)) // width = ceil(log2(2048 + 1))
 
   // Control. States:
@@ -50,89 +47,93 @@ class Divider extends Module{
   edge_high_reg := io.valid_in
 
 
-  when(!run_reg & io.valid_in & !edge_high_reg){
-    // Edge triggered. Reset registers
-    run_reg := true.B
-    step_reg := 0.U
-    divisor_reg := io.divisor
-    dividend_reg := io.dividend
-    quotient_reg := 0.U
-    state_reg := loading
-    state_reg_Q := 0.U
+  switch(state_reg) {
+    is(idle) {
+      state_reg_Q := shift
+      step_reg := 0.U
+      when(io.valid_in & !edge_high_reg) {
+        printf("\n")
+        printf("\nResetting divider!\n")
+        printf("%d\n", io.dividend)
+        printf("%d\n", io.divisor)
+        divisor_reg := io.divisor
+        dividend_reg := io.dividend
+        quotient_reg := 0.U
+        when(io.divisor <= io.dividend){
+          state_reg := loading
+        }.otherwise{
+          state_reg := computing
+        }
 
-  }.otherwise{
-    switch(state_reg){
-      is(idle){
-        run_reg := false.B
-        step_reg := step_reg
+      }.otherwise {
         divisor_reg := divisor_reg
         dividend_reg := dividend_reg
         quotient_reg := quotient_reg
         state_reg := idle
-        state_reg_Q := 0.U
       }
-      is(loading){
-        run_reg := true.B
-        dividend_reg := dividend_reg
-        quotient_reg := quotient_reg
-        state_reg_Q := 0.U
+    }
+    is(loading) {
+      printf("\nLoading!\n")
+      printf("%d\n", dividend_reg)
+      printf("%d\n", divisor_reg)
+      printf("%d\n", quotient_reg)
+      dividend_reg := dividend_reg
+      quotient_reg := quotient_reg
+      state_reg_Q := shift
 
-        // If state 'loading', left-shift divisor until larger than dividend.
-        // When divisor larger than dividend, right-shift once and proceed to state 'computing'
-        when(divisor_reg <= dividend_reg){
-          // Left-shifting divisor
-          divisor_reg := divisor_reg << 1
-          step_reg := step_reg + 1.U
-          state_reg := loading
-        }.otherwise{
-          // Done adjusting divisor. Proceed to state 'computing'
-          divisor_reg := divisor_reg >> 1
-          step_reg := step_reg
-          state_reg := computing
-        }
-      }
-      //-----------
-      is(computing){
-        /*
-        state_reg_Q
-        step_reg
-        divisor_reg
-        dividend_reg
-        quotient_reg
-        */
-        // Always true:
-        run_reg := true.B
+      // If state 'loading', left-shift divisor until larger than dividend.
+      // When divisor larger than dividend, right-shift once and proceed to state 'computing'
+      when(divisor_reg <= dividend_reg) {
+        // Left-shifting divisor
+        divisor_reg := divisor_reg << 1
+        step_reg := step_reg + 1.U
+        state_reg := loading
+      }.otherwise {
+        // Done adjusting divisor. Proceed to state 'computing'
+        divisor_reg := divisor_reg >> 1
+        step_reg := step_reg
         state_reg := computing
-
-        // Check if we're due to add after a prior shift:
-        when(state_reg_Q === 1.U){
-          divisor_reg := divisor_reg
-          dividend_reg := dividend_reg
-          quotient_reg := quotient_reg + 1.U
-          state_reg_Q := 0.U
-          step_reg := step_reg
-        }.otherwise{
-          // Otherwise,
-          divisor_reg := divisor_reg >> 1
-          step_reg := step_reg - 1.U
-          when(step_reg > 0.U){
-            quotient_reg := quotient_reg << 1//<< 1.U + 1.U
-            when(dividend_reg >= divisor_reg){
-              dividend_reg := dividend_reg - divisor_reg
-              state_reg_Q := 1.U
-            }.otherwise {
-              dividend_reg := dividend_reg
-              state_reg_Q := 0.U
-            }
-          }.otherwise{
-            run_reg := false.B
-            state_reg := idle // done
+      }
+    }
+    //-----------
+    is(computing) {
+      printf("\nComputing\n")
+      printf("%d\n", io.dividend)
+      printf("%d\n", io.divisor)
+      printf("%d\n", quotient_reg)
+      // Check if we're due to add after a prior shift:
+      when(state_reg_Q === add) {
+        state_reg := computing
+        divisor_reg := divisor_reg
+        dividend_reg := dividend_reg
+        quotient_reg := quotient_reg + 1.U
+        state_reg_Q := shift
+        step_reg := step_reg
+      }.otherwise {
+        // Otherwise,
+        divisor_reg := divisor_reg >> 1
+        step_reg := step_reg - 1.U
+        when(step_reg > 0.U) {
+          state_reg := computing
+          quotient_reg := quotient_reg << 1 //<< 1.U + 1.U
+          when(dividend_reg >= divisor_reg) {
+            dividend_reg := dividend_reg - divisor_reg
+            state_reg_Q := add
+          }.otherwise {
             dividend_reg := dividend_reg
-            divisor_reg := divisor_reg
-            quotient_reg := quotient_reg
-            step_reg := step_reg
-            state_reg_Q := 0.U
+            state_reg_Q := shift
           }
+        }.otherwise {
+          printf("Done\n")
+          printf("\nDividend: %d\n", io.dividend)
+          printf("divisor: %d\n", io.divisor)
+          printf("remainder: %d\n", io.remainder)
+          state_reg := idle // done
+          dividend_reg := dividend_reg
+          divisor_reg := divisor_reg
+          quotient_reg := quotient_reg
+          step_reg := step_reg
+          state_reg_Q := shift
         }
       }
     }
@@ -140,7 +141,7 @@ class Divider extends Module{
 
   // Outgoing control signal to show whether current result is valid or not
   // If unit is not running this is assumed to be the case
-  when(run_reg){
+  when(state_reg =/= idle){
     io.valid_out := false.B
   }.otherwise{
     io.valid_out := true.B
@@ -150,7 +151,6 @@ class Divider extends Module{
   io.quotient := quotient_reg
 
   //Debugging
-  io.run := run_reg
   io.step := step_reg
   io.state := state_reg
   io.divisor_out := divisor_reg

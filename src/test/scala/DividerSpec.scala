@@ -19,7 +19,6 @@ class DividerTester(dut: Divider) extends PeekPokeTester(dut) {
   var quotient: BigInt = peek(dut.io.quotient)
   var remainder: BigInt = peek(dut.io.remainder)
   var v_out: BigInt = peek(dut.io.valid_out)
-  var run: BigInt = peek(dut.io.run)
   var step: BigInt = peek(dut.io.step)
   var state: BigInt = peek(dut.io.state)
   var divisor_out: BigInt = peek(dut.io.divisor_out)
@@ -33,22 +32,36 @@ class DividerTester(dut: Divider) extends PeekPokeTester(dut) {
   System.out.println("divisor_peek: " + divisor_out)
   System.out.println()
 
-  for(a <- 0 to 6000){
+  for(a <- 0 to 8000){
     step(1)
     quotient = peek(dut.io.quotient)
     remainder = peek(dut.io.remainder)
     v_out = peek(dut.io.valid_out)
-    run = peek(dut.io.run)
     step = peek(dut.io.step)
     state = peek(dut.io.state)
     divisor_out = peek(dut.io.divisor_out)
     System.out.println("Quotient: " + quotient);
     System.out.println("Remainder: " + remainder);
     System.out.println("Valid_out: " + v_out)
-    //System.out.println("run: " + run)
-    //System.out.println("step: " + step)
-    //System.out.println("state: " + state)
-    //System.out.println("divisor_peek: " + divisor_out)
+    System.out.println()
+  }
+  poke(dut.io.valid_in, false)
+  poke(dut.io.divisor, 4)
+  poke(dut.io.dividend, 17)
+  step(1)
+  poke(dut.io.valid_in, true)
+  step(1)
+  for(a <- 0 to 40){
+    step(1)
+    quotient = peek(dut.io.quotient)
+    remainder = peek(dut.io.remainder)
+    v_out = peek(dut.io.valid_out)
+    step = peek(dut.io.step)
+    state = peek(dut.io.state)
+    divisor_out = peek(dut.io.divisor_out)
+    System.out.println("Quotient: " + quotient);
+    System.out.println("Remainder: " + remainder);
+    System.out.println("Valid_out: " + v_out)
     System.out.println()
   }
 }

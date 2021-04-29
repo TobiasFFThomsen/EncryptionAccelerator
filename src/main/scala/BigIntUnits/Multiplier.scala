@@ -15,6 +15,9 @@ class Multiplier extends Module {
     // Outputs
     val valid_out: Bool = Output(Bool())
     val result: UInt = Output(UInt((width*2).W))
+
+    // Debug
+    val run_out: Bool = Output(Bool())
   })
 
   val product_reg: UInt = RegInit(0.U((width*2).W))
@@ -37,7 +40,10 @@ class Multiplier extends Module {
     multiplicator_reg := io.multiplicator
     multiplicand_reg := io.multiplicand
     product_reg := 0.U
-  }.elsewhen(run_reg & (step_reg =/= width.U)){
+  }.elsewhen(run_reg & (step_reg =/= width.U)){ // this doesn't work
+    // printf("I am at shifting!\n")
+    // printf("%d\n", step_reg)
+    // printf("%d\n", width.U)
     // All registers accounted for. (run_reg just continues as true.B)
     // Compute partial sum and add to product
     when(multiplicator_reg(0)){
@@ -53,7 +59,7 @@ class Multiplier extends Module {
     multiplicand_reg := multiplicand_reg << 1
   }.otherwise{
     run_reg := false.B
-    step_reg := 0.U
+    step_reg := step_reg
     multiplicator_reg := multiplicator_reg
     multiplicand_reg := multiplicand_reg
     product_reg := product_reg
@@ -68,6 +74,9 @@ class Multiplier extends Module {
   }
   // Result is always product_reg
   io.result := product_reg
+
+  // Debug
+  io.run_out := run_reg
 }
 
 object HelloMultiplier extends App {
