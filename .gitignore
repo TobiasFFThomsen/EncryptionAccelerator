@@ -4,3 +4,5 @@
 *.json
 target/*
 project/*
+.bsp/*
+.idea/*
