@@ -6,3 +6,4 @@ target/*
 project/*
 .bsp/*
 .idea/*
+test_run_dir/*
