@@ -10,5 +10,4 @@ class FSM extends Module{
   val stateReg = RegInit(0.U)
   val countReg = RegInit(0.U)
 
-
 }
