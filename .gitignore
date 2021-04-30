@@ -1,0 +1,6 @@
+*.log
+*.v
+*.fir
+*.json
+target/*
+project/*
