@@ -52,10 +52,13 @@ class Divider extends Module{
       state_reg_Q := shift
       step_reg := 0.U
       when(io.valid_in & !edge_high_reg) {
+        /*
         printf("\n")
         printf("\nResetting divider!\n")
         printf("%d\n", io.dividend)
         printf("%d\n", io.divisor)
+
+         */
         divisor_reg := io.divisor
         dividend_reg := io.dividend
         quotient_reg := 0.U
@@ -73,10 +76,13 @@ class Divider extends Module{
       }
     }
     is(loading) {
+      /*
       printf("\nLoading!\n")
       printf("%d\n", dividend_reg)
       printf("%d\n", divisor_reg)
       printf("%d\n", quotient_reg)
+
+       */
       dividend_reg := dividend_reg
       quotient_reg := quotient_reg
       state_reg_Q := shift
@@ -97,10 +103,13 @@ class Divider extends Module{
     }
     //-----------
     is(computing) {
+      /*
       printf("\nComputing\n")
       printf("%d\n", io.dividend)
       printf("%d\n", io.divisor)
       printf("%d\n", quotient_reg)
+
+       */
       // Check if we're due to add after a prior shift:
       when(state_reg_Q === add) {
         state_reg := computing
@@ -124,10 +133,13 @@ class Divider extends Module{
             state_reg_Q := shift
           }
         }.otherwise {
+          /*
           printf("Done\n")
           printf("\nDividend: %d\n", io.dividend)
           printf("divisor: %d\n", io.divisor)
           printf("remainder: %d\n", io.remainder)
+
+           */
           state_reg := idle // done
           dividend_reg := dividend_reg
           divisor_reg := divisor_reg

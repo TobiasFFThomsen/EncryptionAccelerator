@@ -94,41 +94,52 @@ class SAM extends Module {
     Divider.io.dividend := 0.U
     Divider.io.divisor := 0.U
 
+
+
+
+
+
   }.elsewhen(state_reg === start){
     // Start computation
     when (progress_reg === highest_bit_pos + 1.U) {
       // Done, stop iterating
       state_reg := idle
       printf("DONE!\n")
+      printf("Result: %d\n\n", w_reg)
     }.otherwise{
       state_reg := squaring
     }
+    sub_state_reg := load
+
     w_reg := w_reg
     progress_reg := progress_reg
     Multiplier.io.valid_in := false.B
-    Multiplier.io.multiplicator  := 0.U // w_reg(2047, 0)
-    Multiplier.io.multiplicand := 0.U // w_reg(2047, 0)
+    Multiplier.io.multiplicator  := 0.U
+    Multiplier.io.multiplicand := 0.U
     Divider.io.valid_in := false.B
     Divider.io.dividend := 0.U
     Divider.io.divisor := 0.U
+
+
+
   }.elsewhen(state_reg === squaring){
     progress_reg := progress_reg
+    Divider.io.valid_in := false.B
+    Divider.io.dividend := 0.U
+    Divider.io.divisor := 0.U
+
     when(sub_state_reg === load){
-      w_reg := w_reg
       state_reg := squaring
       sub_state_reg := compute
+      printf("w_reg after start state: %d\n", w_reg)
+      w_reg := w_reg
       Multiplier.io.valid_in := true.B
       Multiplier.io.multiplicator  := w_reg(2047, 0)
       Multiplier.io.multiplicand := w_reg(2047, 0)
-      Divider.io.valid_in := false.B
-      Divider.io.dividend := 0.U
-      Divider.io.divisor := 0.U
+
     }.otherwise{
       // Square
       // w_reg := (w_reg * w_reg) % io.n;
-      Divider.io.valid_in := false.B// true.B
-      Divider.io.dividend := 0.U// w_reg
-      Divider.io.divisor := 0.U// io.n
       when(Multiplier.io.valid_out){
         // Store result. Reset multiplier
         // Start modulo reduction
@@ -151,12 +162,15 @@ class SAM extends Module {
       }
     }
 
+
     }.elsewhen(state_reg === first_mod){
       progress_reg := progress_reg
       Multiplier.io.valid_in := false.B
       Multiplier.io.multiplicator := 0.U
       Multiplier.io.multiplicand := 0.U
+
       when(sub_state_reg === load){
+        printf("w_reg after squaring state: %d\n", w_reg)
         state_reg := first_mod
         sub_state_reg := compute
 
@@ -164,6 +178,8 @@ class SAM extends Module {
         Divider.io.valid_in := true.B
         Divider.io.dividend := w_reg
         Divider.io.divisor := io.n
+
+
       }.otherwise{
         when(Divider.io.valid_out){
           // Store result. Reset divider.
@@ -192,68 +208,88 @@ class SAM extends Module {
       }
 
     }.elsewhen(state_reg === mult_b){
-    Multiplier.io.valid_in := true.B
-    Multiplier.io.multiplicator := w_reg(2047, 0)
-    Multiplier.io.multiplicand := io.b
-      // Square and multiply
-      // w_reg := ((w_reg * w_reg % io.n) * io.b) % io.n;
       progress_reg := progress_reg
-      when(Multiplier.io.valid_out){
-        // Store result. Reset multiplier
-        // printf("AFTER FIRST MOD w_reg: %d\n", w_reg)
-        w_reg := Multiplier.io.result
-        Multiplier.io.valid_in := false.B
-        Multiplier.io.multiplicator  := 0.U
-        Multiplier.io.multiplicand := 0.U
+      Divider.io.valid_in := false.B
+      Divider.io.divisor  := 0.U
+      Divider.io.dividend := 0.U
 
-        // Start modulo reduction
-
-        // printf("Doing second modulo reduction!\n")
-        state_reg := second_mod
-        Divider.io.valid_in := true.B
-        Divider.io.dividend := w_reg
-        Divider.io.divisor := io.n
-      }.otherwise{
-        // Continue squaring
+      when(sub_state_reg === load){
         state_reg := mult_b
+        sub_state_reg := compute
+        printf("w_reg after first modulo state: %d\n", w_reg)
         w_reg := w_reg
         Multiplier.io.valid_in := true.B
-        Multiplier.io.multiplicator  := w_reg(2047, 0)
-        Multiplier.io.multiplicand := w_reg(2047, 0)
+        Multiplier.io.multiplicator := w_reg(2047, 0)
+        Multiplier.io.multiplicand := io.b
+      }.otherwise{
+        when(Multiplier.io.valid_out){
+          state_reg := second_mod
+          sub_state_reg := load
+          // Store result. Reset multiplier
+          // printf("AFTER FIRST MOD w_reg: %d\n", w_reg)
+          w_reg := Multiplier.io.result
+          Multiplier.io.valid_in := false.B
+          Multiplier.io.multiplicator  := 0.U
+          Multiplier.io.multiplicand := 0.U
+        }.otherwise{
+          // Continue squaring
+          state_reg := mult_b
+          sub_state_reg := compute
 
-        Divider.io.valid_in := false.B
-        Divider.io.divisor  := 0.U
-        Divider.io.dividend := 0.U
+          w_reg := w_reg
+          Multiplier.io.valid_in := true.B
+          Multiplier.io.multiplicator  := w_reg(2047, 0)
+          Multiplier.io.multiplicand := w_reg(2047, 0)
+
+        }
       }
 
     }.elsewhen(state_reg === second_mod){
       progress_reg := progress_reg
-      // Common for all state:
       Multiplier.io.valid_in := false.B
       Multiplier.io.multiplicator := 0.U
       Multiplier.io.multiplicand := 0.U
-      when(Divider.io.valid_out){
-        // Store result. Reset divider.
-        w_reg := Divider.io.remainder
-        Divider.io.valid_in := false.B
-        Divider.io.divisor  := 0.U
-        Divider.io.dividend := 0.U
 
-        state_reg := step_done
-      }.otherwise{
-        // Continue dividing
+      when(sub_state_reg === load){
         state_reg := second_mod
+        sub_state_reg := compute
+        printf("w_reg after mult_b state: %d\n", w_reg)
         w_reg := w_reg
         Divider.io.valid_in := true.B
         Divider.io.dividend := w_reg
         Divider.io.divisor := io.n
+      }.otherwise{
+        when(Divider.io.valid_out){
+          // Store result. Reset divider.
+          state_reg := step_done
+          sub_state_reg := load
+
+          w_reg := Divider.io.remainder
+          Divider.io.valid_in := false.B
+          Divider.io.divisor  := 0.U
+          Divider.io.dividend := 0.U
+
+        }.otherwise{
+          // Continue dividing
+          state_reg := second_mod
+          sub_state_reg := compute
+
+          w_reg := w_reg
+          Divider.io.valid_in := true.B
+          Divider.io.dividend := w_reg
+          Divider.io.divisor := io.n
+        }
       }
+
+
     }.otherwise{
       // state_reg must be step_done
       // Done with computation
+      state_reg := start
+      sub_state_reg := load
+      printf("w_reg after second mod state: %d\n", w_reg)
       w_reg := w_reg
       progress_reg := progress_reg + 1.U
-      state_reg := start
       Multiplier.io.valid_in := false.B
       Multiplier.io.multiplicator := 0.U
       Multiplier.io.multiplicand := 0.U
