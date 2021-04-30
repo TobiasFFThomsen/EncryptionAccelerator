@@ -196,7 +196,10 @@ class Round extends Module{
 /**
  * An object extending App to generate the Verilog code.
  */
+
+/*
 object HelloMain extends App {
   println("Hello World, I will now generate the Verilog file!")
   (new chisel3.stage.ChiselStage).emitVerilog(new Round())
 }
+*/
