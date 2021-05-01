@@ -36,6 +36,7 @@ class Multiplier extends Module {
   val edge_high_reg: Bool = RegInit(false.B) // Register triggering computing on valid_in rising edge
   edge_high_reg := io.valid_in
 
+
   // States
   when(state_reg === idle){
     multiplicator_reg := io.multiplicator
