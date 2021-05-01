@@ -22,8 +22,7 @@ class Divider extends Module{
     val remainder: UInt = Output(UInt((width + 1).W))
   })
 
-  val divisor_reg: UInt = RegInit(0.U((2 * width).W))
-  // val divisor_reg: UInt = RegInit(0.U((width + 1).W))
+  val divisor_reg: UInt = RegInit(0.U(((2 * width) + 1).W)) // +1 because we can momentarily overshift by 1 (x2)
   val dividend_reg: UInt = RegInit(0.U((2 * width).W))
   val quotient_reg: UInt = RegInit(0.U((2 * width).W))
 
