@@ -2,8 +2,8 @@ import chisel3._
 
 class Buffer extends Module {
   val io  = IO( new Bundle {
-    //val hash_ready        = Input(Bool())
-    //val buffer_ready  = Output(Bool())
+    val hash_ready        = Input(Bool())
+    val buffer_ready  = Output(Bool())
     val buffer_in     = Input(UInt(64.W))
     val buffer_out    = Output(UInt(64.W))
     val buffer_out_round_1 = Output(UInt(64.W))
@@ -30,7 +30,7 @@ class Buffer extends Module {
   var bufferReg_9 = Reg(UInt(64.W))
 
   io.buffer_ready := false.B
-  when(io.enable) {
+  when(io.hash_ready) {
     io.buffer_ready := false.B
     bufferReg_1 := io.buffer_in
     bufferReg_2 := bufferReg_1
@@ -41,7 +41,7 @@ class Buffer extends Module {
     bufferReg_7 := bufferReg_6
     bufferReg_8 := bufferReg_7
     bufferReg_9 := bufferReg_8
-  }.elsewhen(!io.enable) {
+  }.elsewhen(!io.hash_ready) {
     io.buffer_ready := true.B
   }
   io.buffer_out := bufferReg_9
