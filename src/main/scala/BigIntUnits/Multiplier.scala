@@ -1,11 +1,15 @@
 package BigIntUnits
 
 import chisel3._
+import Chisel.Enum
 // BigInt BigIntUnits.Multiplier
 // Input 2048 bit operands
 
 class Multiplier extends Module {
+
   val width = 2048
+  val idle :: computing :: nil = Enum(2)
+
   val io = IO(new Bundle {
     // Inputs
     val multiplicator: UInt = Input(UInt(width.W))
@@ -15,71 +19,74 @@ class Multiplier extends Module {
     // Outputs
     val valid_out: Bool = Output(Bool())
     val result: UInt = Output(UInt((width*2).W))
-
-    // Debug
-    val run_out: Bool = Output(Bool())
   })
 
+  // ----------Varying registers------------------
+  // Control registers
+  val step_reg: UInt = RegInit(0.U(12.W))
+  val state_reg: UInt = RegInit(idle)
+
+  // Value registers
   val product_reg: UInt = RegInit(0.U((width*2).W))
   val multiplicator_reg: UInt = RegInit(0.U(width.W)) // right-shift register
   val multiplicand_reg: UInt = RegInit(0.U((width*2).W)) // left-shift register
-
-  // Control signals
-  val edge_high_reg: Bool = RegInit(false.B) // Register triggering computing on valid_in rising edge
-  val run_reg: Bool = RegInit(false.B) // Register denoting whether module is currently computing result
-  val step_reg: UInt = RegInit(0.U(12.W))
+  // ---------------------------------------------
 
   // Store edge
+  val edge_high_reg: Bool = RegInit(false.B) // Register triggering computing on valid_in rising edge
   edge_high_reg := io.valid_in
 
-  when(!run_reg & io.valid_in & !edge_high_reg) {
-    // All registers accounted for (X)
-    // Reset and load step on rising edge
-    run_reg := true.B
-    step_reg := 0.U
+  // States
+  when(state_reg === idle){
     multiplicator_reg := io.multiplicator
     multiplicand_reg := io.multiplicand
-    product_reg := 0.U
-  }.elsewhen(run_reg & (step_reg =/= width.U)){ // this doesn't work
-    // printf("I am at shifting!\n")
-    // printf("%d\n", step_reg)
-    // printf("%d\n", width.U)
-    // All registers accounted for. (run_reg just continues as true.B)
-    // Compute partial sum and add to product
-    when(multiplicator_reg(0)){
-      product_reg := product_reg + multiplicand_reg
+    step_reg := 0.U
+    when(io.valid_in & !edge_high_reg){
+      state_reg := computing
+      product_reg := 0.U
     }.otherwise{
+      state_reg := idle
       product_reg := product_reg
     }
-    // Update control
-    step_reg := step_reg + 1.U
-    run_reg := run_reg
-    // Update values
-    multiplicator_reg := multiplicator_reg >> 1
-    multiplicand_reg := multiplicand_reg << 1
   }.otherwise{
-    run_reg := false.B
-    step_reg := step_reg
-    multiplicator_reg := multiplicator_reg
-    multiplicand_reg := multiplicand_reg
-    product_reg := product_reg
+    // Assume state_reg === computing
+    when(step_reg =/= width.U) {
+      // Compute partial sum and add to product
+      // Update control
+      state_reg := computing
+      step_reg := step_reg + 1.U
+
+      // Update values
+      multiplicator_reg := multiplicator_reg >> 1
+      multiplicand_reg := multiplicand_reg << 1
+      when(multiplicator_reg(0)){
+        product_reg := product_reg + multiplicand_reg
+      }.otherwise{
+        product_reg := product_reg
+      }
+    }.otherwise {
+      // Done
+      // Update control
+      state_reg := idle
+      step_reg := step_reg
+
+      multiplicator_reg := multiplicator_reg
+      multiplicand_reg := multiplicand_reg
+      product_reg := product_reg
+    }
   }
 
-  // Outgoing control signal to show whether current result is valid or not
-  // If unit is not running this is assumed to be the case
-  when(run_reg){
+  // If unit is not computing this is assumed to be the case
+  when(state_reg =/= idle){
     io.valid_out := false.B
   }.otherwise{
     io.valid_out := true.B
   }
   // Result is always product_reg
   io.result := product_reg
-
-  // Debug
-  io.run_out := run_reg
 }
 
 object HelloMultiplier extends App {
-  println("Hello World, I will now generate the Verilog file!")
+  println("Hello World, I will now generate the Verilog file for Multiplier!")
   (new chisel3.stage.ChiselStage).emitVerilog(new Multiplier())
 }
