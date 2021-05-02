@@ -1,6 +1,7 @@
+import BigIntUnits.{Divider, Multiplier}
 import Chisel.{Enum, PriorityEncoder, Reverse}
 import chisel3._
-import BigIntUnits._
+
 
 class SAM extends Module {
   /*
@@ -23,13 +24,13 @@ class SAM extends Module {
     val valid_in: Bool = Input(Bool())
     val valid_out: Bool = Output(Bool())
     //Only for testing
-    val high: Bool = Output(Bool())
-    val prog: UInt = Output(UInt(max_bit_width.W))
-    val exp_lim: UInt = Output(UInt(max_bit_width.W))
+    // val high: Bool = Output(Bool())
+    // val prog: UInt = Output(UInt(max_bit_width.W))
+    // val exp_lim: UInt = Output(UInt(max_bit_width.W))
   })
   // Big integer arithmetic modules
-  val Multiplier = Module(new BigIntUnits.Multiplier())
-  val Divider = Module(new BigIntUnits.Divider())
+  val Multiplier: Multiplier = Module(new BigIntUnits.Multiplier())
+  val Divider: Divider = Module(new BigIntUnits.Divider())
 
   // Initial values
   // ---------------------------------------
@@ -52,7 +53,7 @@ class SAM extends Module {
   // 2) valid input signal is raised
   // 3) valid input signal was not raised raised on prior cycle
   val reversed_t = Reverse(io.t)
-  edge_high_reg := io.valid_in;
+  edge_high_reg := io.valid_in
 
   // ------------------------------------------------------------------------
   // https://stackoverflow.com/questions/60394862/taking-log2ceil-of-uint
@@ -71,14 +72,23 @@ class SAM extends Module {
     highest_bit_pos := 0.U
   }
 
+  // Multiplier states
+  /*
+  when(state_reg === idle || state_reg === first_mod || state_reg === second_mod){
+    Multiplier.io.valid_in := false.B
+    Multiplier.io.multiplicator := 0.U
+    Multiplier.io.multiplicand := 0.U
+  }
+  */
+
   when(state_reg === idle) {
     // No computation being performed
     // Trigger computation
     sub_state_reg := load
     when(io.valid_in & !edge_high_reg) {
       //Initialize computation if not already running and edge high
-      w_reg := 1.U;
-      progress_reg := 0.U;
+      w_reg := 1.U
+      progress_reg := 0.U
       state_reg := start
     }.otherwise {
       w_reg := w_reg
@@ -97,8 +107,8 @@ class SAM extends Module {
     when(progress_reg === highest_bit_pos + 1.U) {
       // Done, stop iterating
       state_reg := idle
-      printf("DONE!\n")
-      printf("Result: %d\n\n", w_reg)
+      // printf("DONE!\n")
+      // printf("Result: %d\n\n", w_reg)
     }.otherwise {
       state_reg := squaring
     }
@@ -122,7 +132,7 @@ class SAM extends Module {
     when(sub_state_reg === load) {
       state_reg := squaring
       sub_state_reg := compute
-      printf("w_reg after start state: %d\n", w_reg)
+      // printf("w_reg after start state: %d\n", w_reg)
       w_reg := w_reg
       Multiplier.io.valid_in := true.B
       Multiplier.io.multiplicator := w_reg(2047, 0)
@@ -159,7 +169,7 @@ class SAM extends Module {
     Multiplier.io.multiplicand := 0.U
 
     when(sub_state_reg === load) {
-      printf("w_reg after squaring state: %d\n", w_reg)
+      // printf("w_reg after squaring state: %d\n", w_reg)
       state_reg := first_mod
       sub_state_reg := compute
 
@@ -203,7 +213,7 @@ class SAM extends Module {
     when(sub_state_reg === load) {
       state_reg := mult_b
       sub_state_reg := compute
-      printf("w_reg after first modulo state: %d\n", w_reg)
+      // printf("w_reg after first modulo state: %d\n", w_reg)
       w_reg := w_reg
       Multiplier.io.valid_in := true.B
       Multiplier.io.multiplicator := w_reg(2047, 0)
@@ -239,7 +249,7 @@ class SAM extends Module {
     when(sub_state_reg === load) {
       state_reg := second_mod
       sub_state_reg := compute
-      printf("w_reg after mult_b state: %d\n", w_reg)
+      // printf("w_reg after mult_b state: %d\n", w_reg)
       w_reg := w_reg
       Divider.io.valid_in := true.B
       Divider.io.dividend := w_reg
@@ -271,8 +281,8 @@ class SAM extends Module {
     // Done with computation
     state_reg := start
     sub_state_reg := load
-    printf("w_reg after second mod state: %d\n", w_reg)
-    printf("Progress reg: %d\n", progress_reg)
+    // printf("w_reg after second mod state: %d\n", w_reg)
+    // printf("Progress reg: %d\n", progress_reg)
     w_reg := w_reg
     progress_reg := progress_reg + 1.U
     Multiplier.io.valid_in := false.B
@@ -296,9 +306,9 @@ class SAM extends Module {
   //-----------------------
 
   //For testing only:
-  io.prog := progress_reg
-  io.high := edge_high_reg
-  io.exp_lim := highest_bit_pos
+  // io.prog := progress_reg
+  // io.high := edge_high_reg
+  // io.exp_lim := highest_bit_pos
 }
 
 object HelloSAM extends App {
