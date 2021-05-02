@@ -31,9 +31,11 @@ class Sha3 extends Module{
   })
 
   val round         = Module(new Round())
-  val stateRegister = Module(new StateRegister())
-  val buffer        = Module(new Buffer())
 
+  val stateRegister = Module(new StateRegister())
+  //val buffer        = Module(new Buffer())
+
+  /*
   // r portion of the round input (576bit/64bit = 9):
   round.io.round_in_0_0 := stateRegister.io.state_out_0_0 ^ buffer.io.r_0
   round.io.round_in_1_0 := stateRegister.io.state_out_1_0 ^ buffer.io.r_1
@@ -44,7 +46,7 @@ class Sha3 extends Module{
   round.io.round_in_1_1 := stateRegister.io.state_out_1_1 ^ buffer.io.r_6
   round.io.round_in_2_1 := stateRegister.io.state_out_2_1 ^ buffer.io.r_7
   round.io.round_in_3_1 := stateRegister.io.state_out_3_1 ^ buffer.io.r_8
-
+  */
   // c portion of the round input:
   round.io.round_in_4_1 := stateRegister.io.state_out_4_1
   round.io.round_in_0_2 := stateRegister.io.state_out_0_2
@@ -88,7 +90,10 @@ class Sha3 extends Module{
   stateRegister.io.state_in_3_4 :=  round.io.round_out_3_4
   stateRegister.io.state_in_4_4 :=  round.io.round_out_4_4
 
+  /*
   buffer.io.w_in  := io.w_in
   buffer.io.w_out := io.w_out
+
+   */
 
 }
