@@ -23,10 +23,6 @@ class SAM extends Module {
     //Control signals
     val valid_in: Bool = Input(Bool())
     val valid_out: Bool = Output(Bool())
-    //Only for testing
-    // val high: Bool = Output(Bool())
-    // val prog: UInt = Output(UInt(max_bit_width.W))
-    // val exp_lim: UInt = Output(UInt(max_bit_width.W))
   })
   // Big integer arithmetic modules
   val Multiplier: Multiplier = Module(new BigIntUnits.Multiplier())
@@ -73,18 +69,33 @@ class SAM extends Module {
   }
 
   // Multiplier states
-  /*
-  when(state_reg === idle || state_reg === first_mod || state_reg === second_mod){
+  when(state_reg === squaring){
+    Multiplier.io.valid_in := true.B
+    Multiplier.io.multiplicator := w_reg(2047, 0)
+    Multiplier.io.multiplicand := w_reg(2047, 0)
+  }.elsewhen(state_reg === mult_b){
+    Multiplier.io.valid_in := true.B
+    Multiplier.io.multiplicator := w_reg(2047, 0)
+    Multiplier.io.multiplicand := io.b
+  }.otherwise{
     Multiplier.io.valid_in := false.B
     Multiplier.io.multiplicator := 0.U
     Multiplier.io.multiplicand := 0.U
   }
-  */
+
+  when(state_reg === first_mod || state_reg === second_mod){
+    Divider.io.valid_in := true.B
+    Divider.io.dividend := w_reg
+    Divider.io.divisor := io.n
+  }.otherwise{
+    Divider.io.valid_in := false.B
+    Divider.io.dividend := 0.U
+    Divider.io.divisor := 0.U
+  }
 
   when(state_reg === idle) {
     // No computation being performed
     // Trigger computation
-    sub_state_reg := load
     when(io.valid_in & !edge_high_reg) {
       //Initialize computation if not already running and edge high
       w_reg := 1.U
@@ -95,15 +106,12 @@ class SAM extends Module {
       progress_reg := progress_reg
       state_reg := idle
     }
-    Multiplier.io.valid_in := false.B
-    Multiplier.io.multiplicator := 0.U
-    Multiplier.io.multiplicand := 0.U
-    Divider.io.valid_in := false.B
-    Divider.io.dividend := 0.U
-    Divider.io.divisor := 0.U
+    sub_state_reg := load
 
   }.elsewhen(state_reg === start) {
     // Start computation
+    progress_reg := progress_reg
+
     when(progress_reg === highest_bit_pos + 1.U) {
       // Done, stop iterating
       state_reg := idle
@@ -115,28 +123,15 @@ class SAM extends Module {
     sub_state_reg := load
 
     w_reg := w_reg
-    progress_reg := progress_reg
-    Multiplier.io.valid_in := false.B
-    Multiplier.io.multiplicator := 0.U
-    Multiplier.io.multiplicand := 0.U
-    Divider.io.valid_in := false.B
-    Divider.io.dividend := 0.U
-    Divider.io.divisor := 0.U
 
   }.elsewhen(state_reg === squaring) {
     progress_reg := progress_reg
-    Divider.io.valid_in := false.B
-    Divider.io.dividend := 0.U
-    Divider.io.divisor := 0.U
 
     when(sub_state_reg === load) {
       state_reg := squaring
       sub_state_reg := compute
       // printf("w_reg after start state: %d\n", w_reg)
       w_reg := w_reg
-      Multiplier.io.valid_in := true.B
-      Multiplier.io.multiplicator := w_reg(2047, 0)
-      Multiplier.io.multiplicand := w_reg(2047, 0)
 
     }.otherwise {
       // Square
@@ -148,25 +143,16 @@ class SAM extends Module {
         sub_state_reg := load
 
         w_reg := Multiplier.io.result
-        Multiplier.io.valid_in := false.B
-        Multiplier.io.multiplicator := 0.U
-        Multiplier.io.multiplicand := 0.U
       }.otherwise {
         // Continue squaring
         state_reg := squaring
         sub_state_reg := compute
 
         w_reg := w_reg
-        Multiplier.io.valid_in := true.B
-        Multiplier.io.multiplicator := w_reg(2047, 0)
-        Multiplier.io.multiplicand := w_reg(2047, 0)
       }
     }
   }.elsewhen(state_reg === first_mod) {
     progress_reg := progress_reg
-    Multiplier.io.valid_in := false.B
-    Multiplier.io.multiplicator := 0.U
-    Multiplier.io.multiplicand := 0.U
 
     when(sub_state_reg === load) {
       // printf("w_reg after squaring state: %d\n", w_reg)
@@ -174,10 +160,6 @@ class SAM extends Module {
       sub_state_reg := compute
 
       w_reg := w_reg
-      Divider.io.valid_in := true.B
-      Divider.io.dividend := w_reg
-      Divider.io.divisor := io.n
-
     }.otherwise {
       when(Divider.io.valid_out) {
         // Store result. Reset divider.
@@ -190,34 +172,22 @@ class SAM extends Module {
         sub_state_reg := load
 
         w_reg := Divider.io.remainder
-        Divider.io.valid_in := false.B
-        Divider.io.divisor := 0.U
-        Divider.io.dividend := 0.U
       }.otherwise {
         // Continue dividing
         state_reg := first_mod
         sub_state_reg := compute
 
         w_reg := w_reg
-        Divider.io.valid_in := true.B
-        Divider.io.dividend := w_reg
-        Divider.io.divisor := io.n
       }
     }
   }.elsewhen(state_reg === mult_b) {
     progress_reg := progress_reg
-    Divider.io.valid_in := false.B
-    Divider.io.divisor := 0.U
-    Divider.io.dividend := 0.U
 
     when(sub_state_reg === load) {
       state_reg := mult_b
       sub_state_reg := compute
       // printf("w_reg after first modulo state: %d\n", w_reg)
       w_reg := w_reg
-      Multiplier.io.valid_in := true.B
-      Multiplier.io.multiplicator := w_reg(2047, 0)
-      Multiplier.io.multiplicand := io.b
     }.otherwise {
       when(Multiplier.io.valid_out) {
         state_reg := second_mod
@@ -225,35 +195,23 @@ class SAM extends Module {
         // Store result. Reset multiplier
         // printf("AFTER FIRST MOD w_reg: %d\n", w_reg)
         w_reg := Multiplier.io.result
-        Multiplier.io.valid_in := false.B
-        Multiplier.io.multiplicator := 0.U
-        Multiplier.io.multiplicand := 0.U
       }.otherwise {
-        // Continue squaring
+        // Continue multiplying
         state_reg := mult_b
         sub_state_reg := compute
 
         w_reg := w_reg
-        Multiplier.io.valid_in := true.B
-        Multiplier.io.multiplicator := w_reg(2047, 0)
-        Multiplier.io.multiplicand := w_reg(2047, 0)
 
       }
     }
   }.elsewhen(state_reg === second_mod) {
     progress_reg := progress_reg
-    Multiplier.io.valid_in := false.B
-    Multiplier.io.multiplicator := 0.U
-    Multiplier.io.multiplicand := 0.U
 
     when(sub_state_reg === load) {
       state_reg := second_mod
       sub_state_reg := compute
       // printf("w_reg after mult_b state: %d\n", w_reg)
       w_reg := w_reg
-      Divider.io.valid_in := true.B
-      Divider.io.dividend := w_reg
-      Divider.io.divisor := io.n
     }.otherwise {
       when(Divider.io.valid_out) {
         // Store result. Reset divider.
@@ -261,36 +219,23 @@ class SAM extends Module {
         sub_state_reg := load
 
         w_reg := Divider.io.remainder
-        Divider.io.valid_in := false.B
-        Divider.io.divisor := 0.U
-        Divider.io.dividend := 0.U
-
       }.otherwise {
         // Continue dividing
         state_reg := second_mod
         sub_state_reg := compute
 
         w_reg := w_reg
-        Divider.io.valid_in := true.B
-        Divider.io.dividend := w_reg
-        Divider.io.divisor := io.n
       }
     }
   }.otherwise {
     // state_reg must be step_done
     // Done with computation
+    progress_reg := progress_reg + 1.U
     state_reg := start
     sub_state_reg := load
     // printf("w_reg after second mod state: %d\n", w_reg)
     // printf("Progress reg: %d\n", progress_reg)
     w_reg := w_reg
-    progress_reg := progress_reg + 1.U
-    Multiplier.io.valid_in := false.B
-    Multiplier.io.multiplicator := 0.U
-    Multiplier.io.multiplicand := 0.U
-    Divider.io.valid_in := false.B
-    Divider.io.divisor := 0.U
-    Divider.io.dividend := 0.U
   }
 
 
@@ -304,11 +249,6 @@ class SAM extends Module {
   }
   io.result := w_reg(2047, 0)
   //-----------------------
-
-  //For testing only:
-  // io.prog := progress_reg
-  // io.high := edge_high_reg
-  // io.exp_lim := highest_bit_pos
 }
 
 object HelloSAM extends App {
