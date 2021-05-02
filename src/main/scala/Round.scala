@@ -1,4 +1,5 @@
 import chisel3._
+import chisel3.util._
 
 class Round extends Module{
   val io            = IO( new Bundle {
@@ -8,55 +9,46 @@ class Round extends Module{
     val round_in_2_0 = Input(UInt(64.W))
     val round_in_3_0 = Input(UInt(64.W))
     val round_in_4_0 = Input(UInt(64.W))
-
     val round_in_0_1 = Input(UInt(64.W))
     val round_in_1_1 = Input(UInt(64.W))
     val round_in_2_1 = Input(UInt(64.W))
     val round_in_3_1 = Input(UInt(64.W))
     val round_in_4_1 = Input(UInt(64.W))
-
     val round_in_0_2 = Input(UInt(64.W))
     val round_in_1_2 = Input(UInt(64.W))
     val round_in_2_2 = Input(UInt(64.W))
     val round_in_3_2 = Input(UInt(64.W))
     val round_in_4_2 = Input(UInt(64.W))
-
     val round_in_0_3 = Input(UInt(64.W))
     val round_in_1_3 = Input(UInt(64.W))
     val round_in_2_3 = Input(UInt(64.W))
     val round_in_3_3 = Input(UInt(64.W))
     val round_in_4_3 = Input(UInt(64.W))
-
     val round_in_0_4 = Input(UInt(64.W))
     val round_in_1_4 = Input(UInt(64.W))
     val round_in_2_4 = Input(UInt(64.W))
     val round_in_3_4 = Input(UInt(64.W))
     val round_in_4_4 = Input(UInt(64.W))
-
     val round_out_0_0 = Output(UInt(64.W))
     val round_out_1_0 = Output(UInt(64.W))
     val round_out_2_0 = Output(UInt(64.W))
     val round_out_3_0 = Output(UInt(64.W))
     val round_out_4_0 = Output(UInt(64.W))
-
     val round_out_0_1 = Output(UInt(64.W))
     val round_out_1_1 = Output(UInt(64.W))
     val round_out_2_1 = Output(UInt(64.W))
     val round_out_3_1 = Output(UInt(64.W))
     val round_out_4_1 = Output(UInt(64.W))
-
     val round_out_0_2 = Output(UInt(64.W))
     val round_out_1_2 = Output(UInt(64.W))
     val round_out_2_2 = Output(UInt(64.W))
     val round_out_3_2 = Output(UInt(64.W))
     val round_out_4_2 = Output(UInt(64.W))
-
     val round_out_0_3 = Output(UInt(64.W))
     val round_out_1_3 = Output(UInt(64.W))
     val round_out_2_3 = Output(UInt(64.W))
     val round_out_3_3 = Output(UInt(64.W))
     val round_out_4_3 = Output(UInt(64.W))
-
     val round_out_0_4 = Output(UInt(64.W))
     val round_out_1_4 = Output(UInt(64.W))
     val round_out_2_4 = Output(UInt(64.W))
@@ -191,6 +183,9 @@ class Round extends Module{
     io.round_out_4_2 := chi.io.chi_out_4_2
     io.round_out_4_3 := chi.io.chi_out_4_3
     io.round_out_4_4 := chi.io.chi_out_4_4
+
+
+    val idle :: read_buffer :: write_buffer :: Nil = Enum(3)
 
 }
 /**
