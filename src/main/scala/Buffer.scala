@@ -43,6 +43,8 @@ class Buffer extends Module {
     //val resultReady = Output(Bool())
     val hashReady   = Input(Bool())
     val dataRead    = Input(Bool())
+    val roundReady  = Input(Bool())
+    val dataValid   = Input(Bool())
   })
 
   var bufferReg_1 = RegInit(0.U(64.W))
@@ -63,10 +65,9 @@ class Buffer extends Module {
 
     when (stateReg === load)
     {
-        when((!io.hashReady))
-        {
-          when(counterReg<9.U)
-          {
+      when(io.dataValid) {
+        when((!io.hashReady)) {
+          when(counterReg < 9.U) {
             io.bufferReady := false.B
             bufferReg_1 := io.w_in
             bufferReg_2 := bufferReg_1
@@ -79,8 +80,7 @@ class Buffer extends Module {
             bufferReg_9 := bufferReg_8
             counterReg := counterReg + 1.U
             stateReg := load
-          }.otherwise
-          {
+          }.otherwise {
             io.bufferReady := true.B
             bufferReg_1 := bufferReg_1
             bufferReg_2 := bufferReg_2
@@ -91,11 +91,15 @@ class Buffer extends Module {
             bufferReg_7 := bufferReg_7
             bufferReg_8 := bufferReg_8
             bufferReg_9 := bufferReg_9
-            counterReg := 0.U
-            stateReg := load
+            when(io.roundReady) {
+              stateReg := load
+              counterReg := 0.U
+            }.otherwise {
+              stateReg := load
+              counterReg := counterReg
+            }
           }
-        }.otherwise
-        {
+        }.otherwise {
           io.bufferReady := false.B
           bufferReg_1 := bufferReg_1
           bufferReg_2 := bufferReg_2
@@ -109,6 +113,20 @@ class Buffer extends Module {
           counterReg := 0.U
           stateReg := ready_with_result
         }
+      }.otherwise{
+        io.bufferReady := false.B
+        bufferReg_1 := bufferReg_1
+        bufferReg_2 := bufferReg_2
+        bufferReg_3 := bufferReg_3
+        bufferReg_4 := bufferReg_4
+        bufferReg_5 := bufferReg_5
+        bufferReg_6 := bufferReg_6
+        bufferReg_7 := bufferReg_7
+        bufferReg_8 := bufferReg_8
+        bufferReg_9 := bufferReg_9
+        counterReg := 0.U
+        stateReg := load
+      }
     }.elsewhen(stateReg === ready_with_result)
     {
       bufferReg_1 := io.d_0
