@@ -1,0 +1,241 @@
+56
+b2
+f6
+15
+00
+22
+80
+05
+d8
+eb
+f7
+4a
+4d
+fe
+8e
+32
+82
+dc
+2f
+e5
+2f
+c4
+87
+51
+73
+84
+7c
+ee
+5c
+ff
+c6
+ec
+98
+75
+ab
+73
+10
+91
+a1
+f4
+5c
+a0
+cf
+5e
+09
+c6
+41
+eb
+4d
+47
+3d
+6c
+72
+8f
+14
+1e
+3c
+92
+91
+c1
+bc
+e4
+d1
+66
+13
+a5
+26
+e2
+8c
+35
+05
+65
+ba
+7e
+ae
+ce
+90
+04
+d1
+a3
+70
+f4
+8a
+4d
+7e
+e8
+94
+39
+16
+c3
+07
+65
+e7
+64
+ac
+06
+59
+72
+25
+49
+dc
+70
+e1
+af
+8e
+d6
+1d
+4a
+27
+aa
+cc
+b9
+17
+06
+d4
+ca
+66
+57
+67
+d5
+b2
+37
+bf
+ac
+9e
+46
+a2
+77
+46
+e2
+8c
+3e
+6f
+8c
+53
+87
+37
+a8
+27
+ee
+dd
+47
+ec
+7b
+ad
+ea
+fe
+b2
+8c
+b4
+32
+0b
+c8
+a1
+30
+30
+31
+c7
+9e
+a4
+0d
+9d
+76
+fd
+ec
+38
+be
+8c
+91
+9b
+37
+e1
+94
+a5
+72
+6f
+ad
+97
+28
+0b
+d7
+f2
+7c
+c4
+3c
+7c
+2c
+e6
+94
+53
+26
+3a
+18
+74
+18
+46
+91
+3f
+a9
+78
+
+
+
+    From last state:
+	56 b2 f6 15 00 22 80 05
+    d8 eb f7 4a 4d fe 8e 32
+    82 dc 2f e5 2f c4 87 51
+    73 84 7c ee 5c ff c6 ec
+    98 75 ab 73 10 91 a1 f4
+
+    5c a0 cf 5e 09 c6 41 eb
+    4d 47 3d 6c 72 8f 14 1e
+    3c 92 91 c1 bc e4 d1 66
+
+
+    Values reversed by hand:
+    05 80 22 00 15 f6 b2 56 64  bit
+    32 8e fe 4d 4a f7 eb d8 64  bit
+    51 87 c4 2f e5 2f d5 82 64  bit
+    ec c6 ff 5c ee 7c 84 73 64  bit 
+    f4 a1 91 10 73 ab 75 98 64  bit
+
+    eb 41 c6 09 5e cf a0 5c 64  bit 
+    1e 14 8f 72 6c 3d 47 4d 64  bit 
+    66 d1 e4 bc c1 91 92 3c 64  bit    
+                          = 512 bit    
+
+    Values from result:
+    05 80 22 00 15 f6 b2 56 
+    32 8e fe 4d 4a f7 eb d8  
+    51 87 c4 2f e5 2f dc 82 
+    ec c6 ff 5c ee 7c 84 73
+    f4 a1 91 10 73 ab 75 98
+
+    eb 41 c6 09 5e cf a0 5c 
+    1e 14 8f 72 6c 3d 47 4d 
+    66 d1 e4 bc c1 91 92 3c
+
+
+
+result = round_out_0_0(1. byte) round_0_0(2. byte) round()

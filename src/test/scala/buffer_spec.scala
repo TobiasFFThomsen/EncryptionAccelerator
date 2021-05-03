@@ -6,7 +6,7 @@ class buffer_tester (dut: Buffer) extends PeekPokeTester(dut){
   poke(dut.io.hashReady,false.B)
   poke(dut.io.roundReady,false.B)
   poke(dut.io.w_in,1.U)
-
+/*
   println("buffer reg 1: "+peek(dut.io.bufferTest_0).toString()+" buffer ready: " + peek(dut.io.bufferReady).toString())
   println("buffer reg 2: "+peek(dut.io.bufferTest_1).toString()+" buffer ready: " + peek(dut.io.bufferReady).toString())
   println("buffer reg 3: "+peek(dut.io.bufferTest_2).toString()+" buffer ready: " + peek(dut.io.bufferReady).toString())
@@ -135,6 +135,7 @@ class buffer_tester (dut: Buffer) extends PeekPokeTester(dut){
   println("buffer reg 7: "+peek(dut.io.bufferTest_6).toString()+" buffer ready: " + peek(dut.io.bufferReady).toString())
   println("buffer reg 8: "+peek(dut.io.bufferTest_7).toString()+" buffer ready: " + peek(dut.io.bufferReady).toString())
   println("buffer reg 9: "+peek(dut.io.bufferTest_8).toString()+" buffer ready: " + peek(dut.io.bufferReady).toString())
+ */
 
 }
 

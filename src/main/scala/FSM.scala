@@ -8,6 +8,7 @@ class FSM extends Module{
     val buffer_ready        = Input(Bool())
     val block_length        = Input(UInt(64.W))
     val counter_for_test    = Output(UInt(64.W))
+    val global_counter_for_test = Output(UInt(64.W))
     val select_for_xor      = Output(Bool())
     val block_length_valid  = Input(Bool())
     //val request_next_block   = Output(Bool())
@@ -45,6 +46,7 @@ class FSM extends Module{
 */
 
   io.counter_for_test := localCountReg
+  io.global_counter_for_test := globalCountReg
   switch (stateReg){
     is (idle){
       when(io.block_length_valid){

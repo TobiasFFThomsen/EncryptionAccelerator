@@ -3,7 +3,7 @@ import chisel3.util._
 
 class Buffer extends Module {
   val io  = IO( new Bundle {
-    /*
+
     val r_0  = Output(UInt(64.W))
     val r_1  = Output(UInt(64.W))
     val r_2  = Output(UInt(64.W))
@@ -14,8 +14,7 @@ class Buffer extends Module {
     val r_7  = Output(UInt(64.W))
     val r_8  = Output(UInt(64.W))
 
-*/
-
+    /*
     val bufferTest_0  = Output(UInt(64.W))
     val bufferTest_1  = Output(UInt(64.W))
     val bufferTest_2  = Output(UInt(64.W))
@@ -25,6 +24,7 @@ class Buffer extends Module {
     val bufferTest_6  = Output(UInt(64.W))
     val bufferTest_7  = Output(UInt(64.W))
     val bufferTest_8  = Output(UInt(64.W))
+     */
 
     val d_0  = Input(UInt(64.W))
     val d_1  = Input(UInt(64.W))
@@ -40,6 +40,8 @@ class Buffer extends Module {
     val w_out = Output(UInt(64.W))
 
     val bufferReady = Output(Bool())
+
+    val testing_buffer_counter = Output(UInt(64.W))
     //val resultReady = Output(Bool())
     val hashReady   = Input(Bool())
     val dataRead    = Input(Bool())
@@ -62,7 +64,7 @@ class Buffer extends Module {
   val load :: ready_with_result :: Nil = Enum(2)
   val stateReg        = RegInit(load)
   io.w_out := 0.U
-
+  io.testing_buffer_counter := counterReg
     when (stateReg === load)
     {
       when(io.dataValid) {
@@ -124,7 +126,7 @@ class Buffer extends Module {
         bufferReg_7 := bufferReg_7
         bufferReg_8 := bufferReg_8
         bufferReg_9 := bufferReg_9
-        counterReg := 0.U
+        counterReg := counterReg
         stateReg := load
       }
     }.elsewhen(stateReg === ready_with_result)
@@ -154,17 +156,15 @@ class Buffer extends Module {
       io.bufferReady := false.B
     }
 
-
-
-  io.bufferTest_0 := bufferReg_1
-  io.bufferTest_1 := bufferReg_2
-  io.bufferTest_2 := bufferReg_3
-  io.bufferTest_3 := bufferReg_4
-  io.bufferTest_4 := bufferReg_5
-  io.bufferTest_5 := bufferReg_6
-  io.bufferTest_6 := bufferReg_7
-  io.bufferTest_7 := bufferReg_8
-  io.bufferTest_8 := bufferReg_9
+  io.r_0 := bufferReg_1
+  io.r_1 := bufferReg_2
+  io.r_2 := bufferReg_3
+  io.r_3 := bufferReg_4
+  io.r_4 := bufferReg_5
+  io.r_5 := bufferReg_6
+  io.r_6 := bufferReg_7
+  io.r_7 := bufferReg_8
+  io.r_8 := bufferReg_9
 }
 
 

@@ -17,12 +17,16 @@ class buffer_and_fsm_tester(dut: Sha3) extends PeekPokeTester(dut) {
   for (i <- 0 to 8) {
     step(1)
     poke(dut.io.w_in_from_outside, i.U)
-    println("hash ready? " + peek(dut.io.testing_hash_ready) +
-            ", buffer ready? " + peek(dut.io.testing_buffer_ready) +
-            ", counter  " + peek(dut.io.testing_round_counter).toString()+
-            ", cycle "+i+
-            ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm)
-            )
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+        ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+        ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+        ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+        ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
+        ", cycle "+i+
+        ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
+    )
+
   }
 
   step(1)
@@ -31,11 +35,14 @@ class buffer_and_fsm_tester(dut: Sha3) extends PeekPokeTester(dut) {
   for(i <- 0 to 23){
     step(1)
     poke(dut.io.w_in_from_outside, i.U)
-    println("hash ready? " + peek(dut.io.testing_hash_ready) +
-      ", buffer ready? " + peek(dut.io.testing_buffer_ready) +
-      ", counter  " + peek(dut.io.testing_round_counter).toString()+
-      ", cycle "+i+
-      ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm)
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+        ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+        ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+        ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+        ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
+        ", cycle "+i+
+        ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
     )
   }
 
@@ -45,11 +52,14 @@ class buffer_and_fsm_tester(dut: Sha3) extends PeekPokeTester(dut) {
   for (i <- 0 to 4) {
     step(1)
     poke(dut.io.w_in_from_outside, i.U)
-    println("hash ready? " + peek(dut.io.testing_hash_ready) +
-      ", buffer ready? " + peek(dut.io.testing_buffer_ready) +
-      ", counter  " + peek(dut.io.testing_round_counter).toString()+
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+      ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+      ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+      ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+      ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
       ", cycle "+i+
-      ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm)
+      ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
     )
   }
 
@@ -59,29 +69,75 @@ class buffer_and_fsm_tester(dut: Sha3) extends PeekPokeTester(dut) {
   for (i <- 0 to 4) {
     step(1)
     poke(dut.io.w_in_from_outside, i.U)
-    println("hash ready? " + peek(dut.io.testing_hash_ready) +
-      ", buffer ready? " + peek(dut.io.testing_buffer_ready) +
-      ", counter  " + peek(dut.io.testing_round_counter).toString()+
-      ", cycle "+i+
-      ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm)
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+        ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+        ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+        ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+        ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
+        ", cycle "+i+
+        ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
     )
   }
 
   poke(dut.io.data_valid_from_env, true.B)
   step(1)
 
-  for (i <- 0 to 5) {
+  for (i <- 0 to 25) {
     step(1)
     poke(dut.io.w_in_from_outside, i.U)
-    println("hash ready? " + peek(dut.io.testing_hash_ready) +
-      ", buffer ready? " + peek(dut.io.testing_buffer_ready) +
-      ", round counter  " + peek(dut.io.testing_round_counter).toString()+
-      ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
-      ", cycle "+i+
-      ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm)
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+        ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+        ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+        ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+        ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
+        ", cycle "+i+
+        ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
     )
   }
 
+  for (i <- 0 to 25) {
+    step(1)
+    poke(dut.io.w_in_from_outside, i.U)
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+        ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+        ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+        ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+        ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
+        ", cycle "+i+
+        ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
+    )
+  }
+
+  for (i <- 0 to 25) {
+    step(1)
+    poke(dut.io.w_in_from_outside, i.U)
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+        ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+        ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+        ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+        ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
+        ", cycle "+i+
+        ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
+    )
+  }
+
+  for (i <- 0 to 25) {
+    step(1)
+    poke(dut.io.w_in_from_outside, i.U)
+    println(
+      "hash ready " + peek(dut.io.testing_hash_ready) +
+        ", buffer ready " + peek(dut.io.testing_buffer_ready) +
+        ", round local counter  " + peek(dut.io.testing_round_counter).toString()+
+        ", round global counter  " + peek(dut.io.testing_global_round_counter).toString()+
+        ", buffer counter " + peek(dut.io.testing_buffer_counter).toString()+
+        ", cycle "+i+
+        ", block length valid to fsm: "+  peek(dut.io.block_length_valid_to_fsm).toString()
+    )
+  }
 
   /*
   poke(dut.io.w_in,1.U)
