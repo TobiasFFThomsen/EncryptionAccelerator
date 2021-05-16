@@ -18,7 +18,8 @@ class Round extends Module{
   theta.io.theta_in       := io.round_in
   rhoPi.io.rhoPi_in       := theta.io.theta_out
   chi.io.chi_in           := rhoPi.io.rhoPi_out
-  iota.io.iota_in         := chi.io.chi_out
+  iota.io.iota_in         := chi.io.chi_out(0)(0)
+  iota.io.iota_round      := 0.U
   io.round_out(0)(0)      := iota.io.iota_out
 
   io.R_theta_out          := theta.io.theta_out

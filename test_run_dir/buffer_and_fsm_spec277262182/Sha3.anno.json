@@ -1,0 +1,34 @@
+[
+  {
+    "class":"firrtl.stage.FirrtlFileAnnotation",
+    "file":"test_run_dir/buffer_and_fsm_spec277262182/Sha3.lo.fir"
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~Sha3|Sha3>io_w_in_to_buffer",
+    "sources":[
+      "~Sha3|Sha3>io_w_in_from_outside"
+    ]
+  },
+  {
+    "class":"firrtl.transforms.CombinationalPath",
+    "sink":"~Sha3|Sha3>io_testing_buffer_ready",
+    "sources":[
+      "~Sha3|Sha3>io_data_read"
+    ]
+  },
+  {
+    "class":"logger.LogLevelAnnotation",
+    "globalLogLevel":{
+      
+    }
+  },
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.LowFirrtlEmitter"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"test_run_dir/buffer_and_fsm_spec277262182"
+  }
+]

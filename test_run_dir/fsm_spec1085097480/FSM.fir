@@ -1,0 +1,46 @@
+;buildInfoPackage: chisel3, version: 3.4.1, scalaVersion: 2.12.12, sbtVersion: 1.3.10
+circuit FSM : 
+  module FSM : 
+    input clock : Clock
+    input reset : UInt<1>
+    output io : {flip start_calculation : UInt<1>, flip buffer_ready : UInt<1>, counter_for_test : UInt<64>, select_for_xor : UInt<1>}
+    
+    reg stateReg : UInt<2>, clock with : (reset => (reset, UInt<2>("h00"))) @[FSM.scala 37:32]
+    reg countReg : UInt<6>, clock with : (reset => (reset, UInt<6>("h00"))) @[FSM.scala 38:32]
+    io.counter_for_test <= countReg @[FSM.scala 61:23]
+    node _T = eq(UInt<2>("h00"), stateReg) @[Conditional.scala 37:30]
+    when _T : @[Conditional.scala 40:58]
+      stateReg <= UInt<2>("h01") @[FSM.scala 64:16]
+      countReg <= UInt<1>("h00") @[FSM.scala 65:16]
+      io.select_for_xor <= UInt<1>("h01") @[FSM.scala 66:25]
+      node _T_1 = and(io.start_calculation, io.buffer_ready) @[FSM.scala 67:33]
+      when _T_1 : @[FSM.scala 67:52]
+        skip @[FSM.scala 67:52]
+      else : @[FSM.scala 68:18]
+        stateReg <= UInt<2>("h00") @[FSM.scala 69:18]
+        skip @[FSM.scala 68:18]
+      skip @[Conditional.scala 40:58]
+    else : @[Conditional.scala 39:67]
+      node _T_2 = eq(UInt<2>("h01"), stateReg) @[Conditional.scala 37:30]
+      when _T_2 : @[Conditional.scala 39:67]
+        io.select_for_xor <= UInt<1>("h00") @[FSM.scala 74:25]
+        node _T_3 = lt(countReg, UInt<5>("h018")) @[FSM.scala 75:20]
+        when _T_3 : @[FSM.scala 75:26]
+          stateReg <= UInt<2>("h01") @[FSM.scala 76:18]
+          node _T_4 = add(countReg, UInt<1>("h01")) @[FSM.scala 77:30]
+          node _T_5 = tail(_T_4, 1) @[FSM.scala 77:30]
+          countReg <= _T_5 @[FSM.scala 77:18]
+          skip @[FSM.scala 75:26]
+        else : @[FSM.scala 78:18]
+          countReg <= UInt<1>("h00") @[FSM.scala 79:18]
+          stateReg <= UInt<2>("h02") @[FSM.scala 80:18]
+          skip @[FSM.scala 78:18]
+        skip @[Conditional.scala 39:67]
+      else : @[Conditional.scala 39:67]
+        node _T_6 = eq(UInt<2>("h02"), stateReg) @[Conditional.scala 37:30]
+        when _T_6 : @[Conditional.scala 39:67]
+          io.select_for_xor <= UInt<1>("h00") @[FSM.scala 84:25]
+          stateReg <= UInt<2>("h00") @[FSM.scala 85:16]
+          countReg <= UInt<1>("h00") @[FSM.scala 86:16]
+          skip @[Conditional.scala 39:67]
+    
