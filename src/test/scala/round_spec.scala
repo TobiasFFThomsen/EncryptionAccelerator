@@ -4,41 +4,26 @@ import org.scalatest._
 
 class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
 
-  var pokeState = Array.ofDim[BigInt](5, 5)
+  val pokeState: Array[Array[BigInt]] = Array.ofDim[BigInt](5, 5)
 
-  // 0. Set the iota_round to 0
-  poke(dut.io.iota_round,0.U)
+  initPokeState()
 
-  // 1. Input the first r bits
-  poke(dut.io.r_in(0),0x000000000000000dL)
+  for(i <- 0 to 23) {
+    System.out.println("ROUND "+i)
 
-  for(i <- 1 to 7)
-    poke(dut.io.r_in(i),0x000000000000000L)
+    // 6. Set the iota to i
+    poke(dut.io.iota_round,i.U)
 
-  poke(dut.io.r_in(8),0x8000000000000000L)
+    // 7. Input the output of the last calculation to the round (r_in and c_in)
+    loadState()
+    printState("Input", "")
 
-  // 2. Input the c's to be zero
-  for(i <- 0 to 15)
-    poke(dut.io.c_in(i),0x000000000000000L)
+    // 4. Peek at the result (this is supposed to be the result of the first round)
+    printState("Output", "Verbose")
 
-  // 3. Peek at the input
-  printState("Input", "")
-
-  // 4. Peek at the result (this is supposed to be the result of the first round)
-  printState("Output", "Verbose")
-
-  // 5. Store the output of this calculation in some variables (the r_out and c_out)
-  storeState()
-
-  // 6. Set the iota to 1
-  poke(dut.io.iota_round,1.U)
-
-  // 7. Input the output of the last calculation to the round (r_in and c_in)
-  loadState()
-  printState("Input", "")
-
-  // 8. Peek at the result (this is supposed to be the result of the second round).
-  printState("Output", "Verbose")
+    // 5. Store the output of this calculation in some variables (the r_out and c_out)
+    storeState()
+  }
 
 
   // Helper functions
@@ -290,7 +275,41 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
     poke(dut.io.c_in(14), pokeState(4)(3))
     poke(dut.io.c_in(15), pokeState(4)(4))
   }
+
+  def initPokeState():Unit={
+
+    pokeState(0)(0) = 0x000000000000000dL
+    pokeState(1)(3) = 0x8000000000000000L
+    pokeState(0)(1) = 0x0000000000000000L
+    pokeState(0)(2) = 0x0000000000000000L
+    pokeState(0)(3) = 0x0000000000000000L
+    pokeState(0)(4) = 0x0000000000000000L
+    pokeState(1)(0) = 0x0000000000000000L
+    pokeState(1)(1) = 0x0000000000000000L
+    pokeState(1)(2) = 0x0000000000000000L
+    pokeState(1)(4) = 0x0000000000000000L
+    pokeState(2)(0) = 0x0000000000000000L
+    pokeState(2)(1) = 0x0000000000000000L
+    pokeState(2)(2) = 0x0000000000000000L
+    pokeState(2)(3) = 0x0000000000000000L
+    pokeState(2)(4) = 0x0000000000000000L
+    pokeState(3)(0) = 0x0000000000000000L
+    pokeState(3)(1) = 0x0000000000000000L
+    pokeState(3)(2) = 0x0000000000000000L
+    pokeState(3)(3) = 0x0000000000000000L
+    pokeState(3)(4) = 0x0000000000000000L
+    pokeState(4)(0) = 0x0000000000000000L
+    pokeState(4)(1) = 0x0000000000000000L
+    pokeState(4)(2) = 0x0000000000000000L
+    pokeState(4)(3) = 0x0000000000000000L
+    pokeState(4)(4) = 0x0000000000000000L
+  }
+
+
+
 }
+
+
 
 class round_spec extends FlatSpec with Matchers {
   "sha3" should "pass" in {
