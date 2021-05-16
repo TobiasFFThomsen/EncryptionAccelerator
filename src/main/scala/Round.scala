@@ -55,6 +55,7 @@ class Round extends Module{
     val round_out_3_4 = Output(UInt(64.W))
     val round_out_4_4 = Output(UInt(64.W))
 
+    /*
     val theta_out_0_0 = Output(UInt(64.W))
     val theta_out_1_0 = Output(UInt(64.W))
     val theta_out_2_0 = Output(UInt(64.W))
@@ -131,14 +132,19 @@ class Round extends Module{
     val chi_out_3_4 = Output(UInt(64.W))
     val chi_out_4_4 = Output(UInt(64.W))
     val iota_out    = Output(UInt(64.W))
+     */
 
     val counter = Input(UInt(64.W))
+
   })
 
     val theta     = Module(new Theta())
     val rhoPi     = Module(new RhoPi())
     val chi       = Module(new Chi())
     val iota      = Module(new Iota())
+    //val counterReg = RegInit(0.U(64.W))
+
+    //counterReg := io.counter
     iota.io.iota_round := io.counter
     theta.io.theta_in_0_0 := io.round_in_0_0
     theta.io.theta_in_0_1 := io.round_in_0_1
@@ -262,7 +268,7 @@ class Round extends Module{
     io.round_out_4_3 := chi.io.chi_out_4_3
     io.round_out_4_4 := chi.io.chi_out_4_4
 
-
+  /*
     val idle :: read_buffer :: write_buffer :: Nil = Enum(3)
 
   io.theta_out_0_0 := theta.io.theta_out_0_0
@@ -342,14 +348,14 @@ class Round extends Module{
   io.chi_out_4_4 := chi.io.chi_out_4_4
   io.iota_out := iota.io.iota_out
 
+   */
+
 }
 /**
  * An object extending App to generate the Verilog code.
  */
 
-/*
 object HelloMain extends App {
   println("Hello World, I will now generate the Verilog file!")
   (new chisel3.stage.ChiselStage).emitVerilog(new Round())
 }
-*/

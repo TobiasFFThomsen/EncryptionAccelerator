@@ -6,9 +6,9 @@ import org.scalatest._
 class final_sha_3_tester(dut: Sha3) extends PeekPokeTester(dut) {
 
   println("State before anything :")
-  poke(dut.io.testing_enable_state_register,false.B)
+  //poke(dut.io.testing_enable_state_register,false.B)
   poke(dut.io.data_valid_from_env, false.B)
-  poke(dut.io.testing_count_for_iota, 0.U)
+  //poke(dut.io.testing_count_for_iota, 0.U)
 
   println("tick\n")
   step(1)
@@ -340,419 +340,14 @@ class final_sha_3_tester(dut: Sha3) extends PeekPokeTester(dut) {
           "buffer[7]"+peek(dut.io.testing_buffer_content_7).toString(16)+"\n"+
           "buffer[8]"+peek(dut.io.testing_buffer_content_8).toString(16)+"\n")
 
-  //poke(dut.io.data_valid_from_env, false.B)
-  println("State before rounds")
-  println("Local round counter :"+peek(dut.io.testing_round_counter).toString())
-  println("Global round counter :"+peek(dut.io.testing_global_round_counter).toString())
-  println("Result ready :"+peek(dut.io.testing_hash_ready).toString())
-  println("Buffer ready :"+peek(dut.io.testing_buffer_ready).toString())
-  println("Buffer counter :"+peek(dut.io.testing_buffer_counter).toString())
-  println("Select for xor :"+peek(dut.io.testing_select_for_xor).toString())
-  println("State  register enable :"+peek(dut.io.testing_enable_state_register).toString())
-  println("\n")
-
-  println("Input to round :\n")
-  poke_val_0_0 = peek(dut.io.testing_round_in_0_0).toString(16)
-  poke_val_0_1 = peek(dut.io.testing_round_in_0_1).toString(16)
-  poke_val_0_2 = peek(dut.io.testing_round_in_0_2).toString(16)
-  poke_val_0_3 = peek(dut.io.testing_round_in_0_3).toString(16)
-  poke_val_0_4 = peek(dut.io.testing_round_in_0_4).toString(16)
-  println(
-    poke_val_0_0+"\t"+
-      poke_val_0_1+"\t"+
-      poke_val_0_2+"\t"+
-      poke_val_0_3+"\t"+
-      poke_val_0_4)
-
-  poke_val_1_0 = peek(dut.io.testing_round_in_1_0).toString(16)
-  poke_val_1_1 = peek(dut.io.testing_round_in_1_1).toString(16)
-  poke_val_1_2 = peek(dut.io.testing_round_in_1_2).toString(16)
-  poke_val_1_3 = peek(dut.io.testing_round_in_1_3).toString(16)
-  poke_val_1_4 = peek(dut.io.testing_round_in_1_4).toString(16)
-  println(
-    poke_val_1_0+"\t"+
-      poke_val_1_1+"\t"+
-      poke_val_1_2+"\t"+
-      poke_val_1_3+"\t"+
-      poke_val_1_4)
-
-  poke_val_2_0 = peek(dut.io.testing_round_in_2_0).toString(16)
-  poke_val_2_1 = peek(dut.io.testing_round_in_2_1).toString(16)
-  poke_val_2_2 = peek(dut.io.testing_round_in_2_2).toString(16)
-  poke_val_2_3 = peek(dut.io.testing_round_in_2_3).toString(16)
-  poke_val_2_4 = peek(dut.io.testing_round_in_2_4).toString(16)
-  println(
-    poke_val_2_0+"\t"+
-      poke_val_2_1+"\t"+
-      poke_val_2_2+"\t"+
-      poke_val_2_3+"\t"+
-      poke_val_2_4)
-
-  poke_val_3_0 = peek(dut.io.testing_round_in_3_0).toString(16)
-  poke_val_3_1 = peek(dut.io.testing_round_in_3_1).toString(16)
-  poke_val_3_2 = peek(dut.io.testing_round_in_3_2).toString(16)
-  poke_val_3_3 = peek(dut.io.testing_round_in_3_3).toString(16)
-  poke_val_3_4 = peek(dut.io.testing_round_in_3_4).toString(16)
-  println(
-    poke_val_3_0+"\t"+
-      poke_val_3_1+"\t"+
-      poke_val_3_2+"\t"+
-      poke_val_3_3+"\t"+
-      poke_val_3_4)
-
-  poke_val_4_0 = peek(dut.io.testing_round_in_4_0).toString(16)
-  poke_val_4_1 = peek(dut.io.testing_round_in_4_1).toString(16)
-  poke_val_4_2 = peek(dut.io.testing_round_in_4_2).toString(16)
-  poke_val_4_3 = peek(dut.io.testing_round_in_4_3).toString(16)
-  poke_val_4_4 = peek(dut.io.testing_round_in_4_4).toString(16)
-  println(
-    poke_val_4_0+"\t"+
-      poke_val_4_1+"\t"+
-      poke_val_4_2+"\t"+
-      poke_val_4_3+"\t"+
-      poke_val_4_4)
 
   println("\n")
+  //poke(dut.io.testing_enable_state_register, true.B)
+  poke(dut.io.testing_count_for_iota, 0.U)
 
-  println("Output from state register:\n")
-
-  poke_val_0_0 = peek(dut.io.testing_state_reg_0_0).toString(16)
-  poke_val_0_1 = peek(dut.io.testing_state_reg_0_1).toString(16)
-  poke_val_0_2 = peek(dut.io.testing_state_reg_0_2).toString(16)
-  poke_val_0_3 = peek(dut.io.testing_state_reg_0_3).toString(16)
-  poke_val_0_4 = peek(dut.io.testing_state_reg_0_4).toString(16)
-  println(
-    poke_val_0_0+"\t"+
-      poke_val_0_1+"\t"+
-      poke_val_0_2+"\t"+
-      poke_val_0_3+"\t"+
-      poke_val_0_4)
-
-  poke_val_1_0 = peek(dut.io.testing_state_reg_1_0).toString(16)
-  poke_val_1_1 = peek(dut.io.testing_state_reg_1_1).toString(16)
-  poke_val_1_2 = peek(dut.io.testing_state_reg_1_2).toString(16)
-  poke_val_1_3 = peek(dut.io.testing_state_reg_1_3).toString(16)
-  poke_val_1_4 = peek(dut.io.testing_state_reg_1_4).toString(16)
-  println(
-    poke_val_1_0+"\t"+
-      poke_val_1_1+"\t"+
-      poke_val_1_2+"\t"+
-      poke_val_1_3+"\t"+
-      poke_val_1_4)
-
-  poke_val_2_0 = peek(dut.io.testing_state_reg_2_0).toString(16)
-  poke_val_2_1 = peek(dut.io.testing_state_reg_2_1).toString(16)
-  poke_val_2_2 = peek(dut.io.testing_state_reg_2_2).toString(16)
-  poke_val_2_3 = peek(dut.io.testing_state_reg_2_3).toString(16)
-  poke_val_2_4 = peek(dut.io.testing_state_reg_2_4).toString(16)
-  println(
-    poke_val_2_0+"\t"+
-      poke_val_2_1+"\t"+
-      poke_val_2_2+"\t"+
-      poke_val_2_3+"\t"+
-      poke_val_2_4)
-
-  poke_val_3_0 = peek(dut.io.testing_state_reg_3_0).toString(16)
-  poke_val_3_1 = peek(dut.io.testing_state_reg_3_1).toString(16)
-  poke_val_3_2 = peek(dut.io.testing_state_reg_3_2).toString(16)
-  poke_val_3_3 = peek(dut.io.testing_state_reg_3_3).toString(16)
-  poke_val_3_4 = peek(dut.io.testing_state_reg_3_4).toString(16)
-  println(
-    poke_val_3_0+"\t"+
-      poke_val_3_1+"\t"+
-      poke_val_3_2+"\t"+
-      poke_val_3_3+"\t"+
-      poke_val_3_4)
-
-  poke_val_4_0 = peek(dut.io.testing_state_reg_4_0).toString(16)
-  poke_val_4_1 = peek(dut.io.testing_state_reg_4_1).toString(16)
-  poke_val_4_2 = peek(dut.io.testing_state_reg_4_2).toString(16)
-  poke_val_4_3 = peek(dut.io.testing_state_reg_4_3).toString(16)
-  poke_val_4_4 = peek(dut.io.testing_state_reg_4_4).toString(16)
-  println(
-    poke_val_4_0+"\t"+
-      poke_val_4_1+"\t"+
-      poke_val_4_2+"\t"+
-      poke_val_4_3+"\t"+
-      poke_val_4_4)
-
-  println("Output from round:\n")
-
-  poke_val_0_0 = peek(dut.io.testing_round_out_0_0).toString(16)
-  poke_val_0_1 = peek(dut.io.testing_round_out_0_1).toString(16)
-  poke_val_0_2 = peek(dut.io.testing_round_out_0_2).toString(16)
-  poke_val_0_3 = peek(dut.io.testing_round_out_0_3).toString(16)
-  poke_val_0_4 = peek(dut.io.testing_round_out_0_4).toString(16)
-  println(
-    poke_val_0_0+"\t"+
-      poke_val_0_1+"\t"+
-      poke_val_0_2+"\t"+
-      poke_val_0_3+"\t"+
-      poke_val_0_4)
-
-  poke_val_1_0 = peek(dut.io.testing_round_out_1_0).toString(16)
-  poke_val_1_1 = peek(dut.io.testing_round_out_1_1).toString(16)
-  poke_val_1_2 = peek(dut.io.testing_round_out_1_2).toString(16)
-  poke_val_1_3 = peek(dut.io.testing_round_out_1_3).toString(16)
-  poke_val_1_4 = peek(dut.io.testing_round_out_1_4).toString(16)
-  println(
-    poke_val_1_0+"\t"+
-      poke_val_1_1+"\t"+
-      poke_val_1_2+"\t"+
-      poke_val_1_3+"\t"+
-      poke_val_1_4)
-
-  poke_val_2_0 = peek(dut.io.testing_round_out_2_0).toString(16)
-  poke_val_2_1 = peek(dut.io.testing_round_out_2_1).toString(16)
-  poke_val_2_2 = peek(dut.io.testing_round_out_2_2).toString(16)
-  poke_val_2_3 = peek(dut.io.testing_round_out_2_3).toString(16)
-  poke_val_2_4 = peek(dut.io.testing_round_out_2_4).toString(16)
-  println(
-    poke_val_2_0+"\t"+
-      poke_val_2_1+"\t"+
-      poke_val_2_2+"\t"+
-      poke_val_2_3+"\t"+
-      poke_val_2_4)
-
-  poke_val_3_0 = peek(dut.io.testing_round_out_3_0).toString(16)
-  poke_val_3_1 = peek(dut.io.testing_round_out_3_1).toString(16)
-  poke_val_3_2 = peek(dut.io.testing_round_out_3_2).toString(16)
-  poke_val_3_3 = peek(dut.io.testing_round_out_3_3).toString(16)
-  poke_val_3_4 = peek(dut.io.testing_round_out_3_4).toString(16)
-  println(
-    poke_val_3_0+"\t"+
-      poke_val_3_1+"\t"+
-      poke_val_3_2+"\t"+
-      poke_val_3_3+"\t"+
-      poke_val_3_4)
-
-  poke_val_4_0 = peek(dut.io.testing_round_out_4_0).toString(16)
-  poke_val_4_1 = peek(dut.io.testing_round_out_4_1).toString(16)
-  poke_val_4_2 = peek(dut.io.testing_round_out_4_2).toString(16)
-  poke_val_4_3 = peek(dut.io.testing_round_out_4_3).toString(16)
-  poke_val_4_4 = peek(dut.io.testing_round_out_4_4).toString(16)
-  println(
-    poke_val_4_0+"\t"+
-      poke_val_4_1+"\t"+
-      poke_val_4_2+"\t"+
-      poke_val_4_3+"\t"+
-      poke_val_4_4)
-
-
-
-
-
-  println("\n")
-  poke(dut.io.testing_enable_state_register, true.B)
-  poke(dut.io.testing_count_for_iota, 1.U)
-  println("tick\n")
-  step(1)
-
-  println("Local round counter :"+peek(dut.io.testing_round_counter).toString())
-  println("Global round counter :"+peek(dut.io.testing_global_round_counter).toString())
-  println("Result ready :"+peek(dut.io.testing_hash_ready).toString())
-  println("Buffer ready :"+peek(dut.io.testing_buffer_ready).toString())
-  println("Buffer counter :"+peek(dut.io.testing_buffer_counter).toString())
-  println("Select for xor :"+peek(dut.io.testing_select_for_xor).toString())
-  println("State register enable :"+peek(dut.io.testing_enable_state_register).toString())
-
-  println("Input to round :\n")
-  poke_val_0_0 = peek(dut.io.testing_round_in_0_0).toString(16)
-  poke_val_0_1 = peek(dut.io.testing_round_in_0_1).toString(16)
-  poke_val_0_2 = peek(dut.io.testing_round_in_0_2).toString(16)
-  poke_val_0_3 = peek(dut.io.testing_round_in_0_3).toString(16)
-  poke_val_0_4 = peek(dut.io.testing_round_in_0_4).toString(16)
-  println(
-    poke_val_0_0+"\t"+
-      poke_val_0_1+"\t"+
-      poke_val_0_2+"\t"+
-      poke_val_0_3+"\t"+
-      poke_val_0_4)
-
-  poke_val_1_0 = peek(dut.io.testing_round_in_1_0).toString(16)
-  poke_val_1_1 = peek(dut.io.testing_round_in_1_1).toString(16)
-  poke_val_1_2 = peek(dut.io.testing_round_in_1_2).toString(16)
-  poke_val_1_3 = peek(dut.io.testing_round_in_1_3).toString(16)
-  poke_val_1_4 = peek(dut.io.testing_round_in_1_4).toString(16)
-  println(
-    poke_val_1_0+"\t"+
-      poke_val_1_1+"\t"+
-      poke_val_1_2+"\t"+
-      poke_val_1_3+"\t"+
-      poke_val_1_4)
-
-  poke_val_2_0 = peek(dut.io.testing_round_in_2_0).toString(16)
-  poke_val_2_1 = peek(dut.io.testing_round_in_2_1).toString(16)
-  poke_val_2_2 = peek(dut.io.testing_round_in_2_2).toString(16)
-  poke_val_2_3 = peek(dut.io.testing_round_in_2_3).toString(16)
-  poke_val_2_4 = peek(dut.io.testing_round_in_2_4).toString(16)
-  println(
-    poke_val_2_0+"\t"+
-      poke_val_2_1+"\t"+
-      poke_val_2_2+"\t"+
-      poke_val_2_3+"\t"+
-      poke_val_2_4)
-
-  poke_val_3_0 = peek(dut.io.testing_round_in_3_0).toString(16)
-  poke_val_3_1 = peek(dut.io.testing_round_in_3_1).toString(16)
-  poke_val_3_2 = peek(dut.io.testing_round_in_3_2).toString(16)
-  poke_val_3_3 = peek(dut.io.testing_round_in_3_3).toString(16)
-  poke_val_3_4 = peek(dut.io.testing_round_in_3_4).toString(16)
-  println(
-    poke_val_3_0+"\t"+
-      poke_val_3_1+"\t"+
-      poke_val_3_2+"\t"+
-      poke_val_3_3+"\t"+
-      poke_val_3_4)
-
-  poke_val_4_0 = peek(dut.io.testing_round_in_4_0).toString(16)
-  poke_val_4_1 = peek(dut.io.testing_round_in_4_1).toString(16)
-  poke_val_4_2 = peek(dut.io.testing_round_in_4_2).toString(16)
-  poke_val_4_3 = peek(dut.io.testing_round_in_4_3).toString(16)
-  poke_val_4_4 = peek(dut.io.testing_round_in_4_4).toString(16)
-  println(
-    poke_val_4_0+"\t"+
-      poke_val_4_1+"\t"+
-      poke_val_4_2+"\t"+
-      poke_val_4_3+"\t"+
-      poke_val_4_4)
-
-  println("\n")
-
-  println("Output from state register :\n")
-
-  poke_val_0_0 = peek(dut.io.testing_state_reg_0_0).toString(16)
-  poke_val_0_1 = peek(dut.io.testing_state_reg_0_1).toString(16)
-  poke_val_0_2 = peek(dut.io.testing_state_reg_0_2).toString(16)
-  poke_val_0_3 = peek(dut.io.testing_state_reg_0_3).toString(16)
-  poke_val_0_4 = peek(dut.io.testing_state_reg_0_4).toString(16)
-  println(
-    poke_val_0_0+"\t"+
-      poke_val_0_1+"\t"+
-      poke_val_0_2+"\t"+
-      poke_val_0_3+"\t"+
-      poke_val_0_4)
-
-  poke_val_1_0 = peek(dut.io.testing_state_reg_1_0).toString(16)
-  poke_val_1_1 = peek(dut.io.testing_state_reg_1_1).toString(16)
-  poke_val_1_2 = peek(dut.io.testing_state_reg_1_2).toString(16)
-  poke_val_1_3 = peek(dut.io.testing_state_reg_1_3).toString(16)
-  poke_val_1_4 = peek(dut.io.testing_state_reg_1_4).toString(16)
-  println(
-    poke_val_1_0+"\t"+
-      poke_val_1_1+"\t"+
-      poke_val_1_2+"\t"+
-      poke_val_1_3+"\t"+
-      poke_val_1_4)
-
-  poke_val_2_0 = peek(dut.io.testing_state_reg_2_0).toString(16)
-  poke_val_2_1 = peek(dut.io.testing_state_reg_2_1).toString(16)
-  poke_val_2_2 = peek(dut.io.testing_state_reg_2_2).toString(16)
-  poke_val_2_3 = peek(dut.io.testing_state_reg_2_3).toString(16)
-  poke_val_2_4 = peek(dut.io.testing_state_reg_2_4).toString(16)
-  println(
-    poke_val_2_0+"\t"+
-      poke_val_2_1+"\t"+
-      poke_val_2_2+"\t"+
-      poke_val_2_3+"\t"+
-      poke_val_2_4)
-
-  poke_val_3_0 = peek(dut.io.testing_state_reg_3_0).toString(16)
-  poke_val_3_1 = peek(dut.io.testing_state_reg_3_1).toString(16)
-  poke_val_3_2 = peek(dut.io.testing_state_reg_3_2).toString(16)
-  poke_val_3_3 = peek(dut.io.testing_state_reg_3_3).toString(16)
-  poke_val_3_4 = peek(dut.io.testing_state_reg_3_4).toString(16)
-  println(
-    poke_val_3_0+"\t"+
-      poke_val_3_1+"\t"+
-      poke_val_3_2+"\t"+
-      poke_val_3_3+"\t"+
-      poke_val_3_4)
-
-  poke_val_4_0 = peek(dut.io.testing_state_reg_4_0).toString(16)
-  poke_val_4_1 = peek(dut.io.testing_state_reg_4_1).toString(16)
-  poke_val_4_2 = peek(dut.io.testing_state_reg_4_2).toString(16)
-  poke_val_4_3 = peek(dut.io.testing_state_reg_4_3).toString(16)
-  poke_val_4_4 = peek(dut.io.testing_state_reg_4_4).toString(16)
-  println(
-    poke_val_4_0+"\t"+
-      poke_val_4_1+"\t"+
-      poke_val_4_2+"\t"+
-      poke_val_4_3+"\t"+
-      poke_val_4_4)
-
-  println("\n")
-  println("Output from round:\n")
-  println("counter: "+peek(dut.io.testing_count_for_iota).toString())
-
-  poke_val_0_0 = peek(dut.io.testing_round_out_0_0).toString(16)
-  poke_val_0_1 = peek(dut.io.testing_round_out_0_1).toString(16)
-  poke_val_0_2 = peek(dut.io.testing_round_out_0_2).toString(16)
-  poke_val_0_3 = peek(dut.io.testing_round_out_0_3).toString(16)
-  poke_val_0_4 = peek(dut.io.testing_round_out_0_4).toString(16)
-  println(
-    poke_val_0_0+"\t"+
-      poke_val_0_1+"\t"+
-      poke_val_0_2+"\t"+
-      poke_val_0_3+"\t"+
-      poke_val_0_4)
-
-  poke_val_1_0 = peek(dut.io.testing_round_out_1_0).toString(16)
-  poke_val_1_1 = peek(dut.io.testing_round_out_1_1).toString(16)
-  poke_val_1_2 = peek(dut.io.testing_round_out_1_2).toString(16)
-  poke_val_1_3 = peek(dut.io.testing_round_out_1_3).toString(16)
-  poke_val_1_4 = peek(dut.io.testing_round_out_1_4).toString(16)
-  println(
-    poke_val_1_0+"\t"+
-      poke_val_1_1+"\t"+
-      poke_val_1_2+"\t"+
-      poke_val_1_3+"\t"+
-      poke_val_1_4)
-
-  poke_val_2_0 = peek(dut.io.testing_round_out_2_0).toString(16)
-  poke_val_2_1 = peek(dut.io.testing_round_out_2_1).toString(16)
-  poke_val_2_2 = peek(dut.io.testing_round_out_2_2).toString(16)
-  poke_val_2_3 = peek(dut.io.testing_round_out_2_3).toString(16)
-  poke_val_2_4 = peek(dut.io.testing_round_out_2_4).toString(16)
-  println(
-    poke_val_2_0+"\t"+
-      poke_val_2_1+"\t"+
-      poke_val_2_2+"\t"+
-      poke_val_2_3+"\t"+
-      poke_val_2_4)
-
-  poke_val_3_0 = peek(dut.io.testing_round_out_3_0).toString(16)
-  poke_val_3_1 = peek(dut.io.testing_round_out_3_1).toString(16)
-  poke_val_3_2 = peek(dut.io.testing_round_out_3_2).toString(16)
-  poke_val_3_3 = peek(dut.io.testing_round_out_3_3).toString(16)
-  poke_val_3_4 = peek(dut.io.testing_round_out_3_4).toString(16)
-  println(
-    poke_val_3_0+"\t"+
-      poke_val_3_1+"\t"+
-      poke_val_3_2+"\t"+
-      poke_val_3_3+"\t"+
-      poke_val_3_4)
-
-  poke_val_4_0 = peek(dut.io.testing_round_out_4_0).toString(16)
-  poke_val_4_1 = peek(dut.io.testing_round_out_4_1).toString(16)
-  poke_val_4_2 = peek(dut.io.testing_round_out_4_2).toString(16)
-  poke_val_4_3 = peek(dut.io.testing_round_out_4_3).toString(16)
-  poke_val_4_4 = peek(dut.io.testing_round_out_4_4).toString(16)
-  println(
-    poke_val_4_0+"\t"+
-      poke_val_4_1+"\t"+
-      poke_val_4_2+"\t"+
-      poke_val_4_3+"\t"+
-      poke_val_4_4)
-
-
-
-
-/*
   for(i <- 0 to 30)
     {
-    println("tick\n")
-    step(1)
+
     println("Local round counter :"+peek(dut.io.testing_round_counter).toString())
     println("Global round counter :"+peek(dut.io.testing_global_round_counter).toString())
     println("Result ready :"+peek(dut.io.testing_hash_ready).toString())
@@ -821,10 +416,225 @@ class final_sha_3_tester(dut: Sha3) extends PeekPokeTester(dut) {
         poke_val_4_2+"\t"+
         poke_val_4_3+"\t"+
         poke_val_4_4)
-    println("\n")
+        println("\n")
+
+      poke(dut.io.testing_count_for_iota, i.U)
+      println("tick\n")
+      step(1)
   }
 
-*/
+
+
+
+
+
+
+
+
+
+
+  /*
+    //poke(dut.io.data_valid_from_env, false.B)
+    println("State before rounds")
+    println("Local round counter :"+peek(dut.io.testing_round_counter).toString())
+    println("Global round counter :"+peek(dut.io.testing_global_round_counter).toString())
+    println("Result ready :"+peek(dut.io.testing_hash_ready).toString())
+    println("Buffer ready :"+peek(dut.io.testing_buffer_ready).toString())
+    println("Buffer counter :"+peek(dut.io.testing_buffer_counter).toString())
+    println("Select for xor :"+peek(dut.io.testing_select_for_xor).toString())
+    println("State  register enable :"+peek(dut.io.testing_enable_state_register).toString())
+    println("\n")
+
+    println("Input to round :\n")
+    poke_val_0_0 = peek(dut.io.testing_round_in_0_0).toString(16)
+    poke_val_0_1 = peek(dut.io.testing_round_in_0_1).toString(16)
+    poke_val_0_2 = peek(dut.io.testing_round_in_0_2).toString(16)
+    poke_val_0_3 = peek(dut.io.testing_round_in_0_3).toString(16)
+    poke_val_0_4 = peek(dut.io.testing_round_in_0_4).toString(16)
+    println(
+      poke_val_0_0+"\t"+
+        poke_val_0_1+"\t"+
+        poke_val_0_2+"\t"+
+        poke_val_0_3+"\t"+
+        poke_val_0_4)
+
+    poke_val_1_0 = peek(dut.io.testing_round_in_1_0).toString(16)
+    poke_val_1_1 = peek(dut.io.testing_round_in_1_1).toString(16)
+    poke_val_1_2 = peek(dut.io.testing_round_in_1_2).toString(16)
+    poke_val_1_3 = peek(dut.io.testing_round_in_1_3).toString(16)
+    poke_val_1_4 = peek(dut.io.testing_round_in_1_4).toString(16)
+    println(
+      poke_val_1_0+"\t"+
+        poke_val_1_1+"\t"+
+        poke_val_1_2+"\t"+
+        poke_val_1_3+"\t"+
+        poke_val_1_4)
+
+    poke_val_2_0 = peek(dut.io.testing_round_in_2_0).toString(16)
+    poke_val_2_1 = peek(dut.io.testing_round_in_2_1).toString(16)
+    poke_val_2_2 = peek(dut.io.testing_round_in_2_2).toString(16)
+    poke_val_2_3 = peek(dut.io.testing_round_in_2_3).toString(16)
+    poke_val_2_4 = peek(dut.io.testing_round_in_2_4).toString(16)
+    println(
+      poke_val_2_0+"\t"+
+        poke_val_2_1+"\t"+
+        poke_val_2_2+"\t"+
+        poke_val_2_3+"\t"+
+        poke_val_2_4)
+
+    poke_val_3_0 = peek(dut.io.testing_round_in_3_0).toString(16)
+    poke_val_3_1 = peek(dut.io.testing_round_in_3_1).toString(16)
+    poke_val_3_2 = peek(dut.io.testing_round_in_3_2).toString(16)
+    poke_val_3_3 = peek(dut.io.testing_round_in_3_3).toString(16)
+    poke_val_3_4 = peek(dut.io.testing_round_in_3_4).toString(16)
+    println(
+      poke_val_3_0+"\t"+
+        poke_val_3_1+"\t"+
+        poke_val_3_2+"\t"+
+        poke_val_3_3+"\t"+
+        poke_val_3_4)
+
+    poke_val_4_0 = peek(dut.io.testing_round_in_4_0).toString(16)
+    poke_val_4_1 = peek(dut.io.testing_round_in_4_1).toString(16)
+    poke_val_4_2 = peek(dut.io.testing_round_in_4_2).toString(16)
+    poke_val_4_3 = peek(dut.io.testing_round_in_4_3).toString(16)
+    poke_val_4_4 = peek(dut.io.testing_round_in_4_4).toString(16)
+    println(
+      poke_val_4_0+"\t"+
+        poke_val_4_1+"\t"+
+        poke_val_4_2+"\t"+
+        poke_val_4_3+"\t"+
+        poke_val_4_4)
+
+    println("\n")
+
+    println("Output from state register:\n")
+
+    poke_val_0_0 = peek(dut.io.testing_state_reg_0_0).toString(16)
+    poke_val_0_1 = peek(dut.io.testing_state_reg_0_1).toString(16)
+    poke_val_0_2 = peek(dut.io.testing_state_reg_0_2).toString(16)
+    poke_val_0_3 = peek(dut.io.testing_state_reg_0_3).toString(16)
+    poke_val_0_4 = peek(dut.io.testing_state_reg_0_4).toString(16)
+    println(
+      poke_val_0_0+"\t"+
+        poke_val_0_1+"\t"+
+        poke_val_0_2+"\t"+
+        poke_val_0_3+"\t"+
+        poke_val_0_4)
+
+    poke_val_1_0 = peek(dut.io.testing_state_reg_1_0).toString(16)
+    poke_val_1_1 = peek(dut.io.testing_state_reg_1_1).toString(16)
+    poke_val_1_2 = peek(dut.io.testing_state_reg_1_2).toString(16)
+    poke_val_1_3 = peek(dut.io.testing_state_reg_1_3).toString(16)
+    poke_val_1_4 = peek(dut.io.testing_state_reg_1_4).toString(16)
+    println(
+      poke_val_1_0+"\t"+
+        poke_val_1_1+"\t"+
+        poke_val_1_2+"\t"+
+        poke_val_1_3+"\t"+
+        poke_val_1_4)
+
+    poke_val_2_0 = peek(dut.io.testing_state_reg_2_0).toString(16)
+    poke_val_2_1 = peek(dut.io.testing_state_reg_2_1).toString(16)
+    poke_val_2_2 = peek(dut.io.testing_state_reg_2_2).toString(16)
+    poke_val_2_3 = peek(dut.io.testing_state_reg_2_3).toString(16)
+    poke_val_2_4 = peek(dut.io.testing_state_reg_2_4).toString(16)
+    println(
+      poke_val_2_0+"\t"+
+        poke_val_2_1+"\t"+
+        poke_val_2_2+"\t"+
+        poke_val_2_3+"\t"+
+        poke_val_2_4)
+
+    poke_val_3_0 = peek(dut.io.testing_state_reg_3_0).toString(16)
+    poke_val_3_1 = peek(dut.io.testing_state_reg_3_1).toString(16)
+    poke_val_3_2 = peek(dut.io.testing_state_reg_3_2).toString(16)
+    poke_val_3_3 = peek(dut.io.testing_state_reg_3_3).toString(16)
+    poke_val_3_4 = peek(dut.io.testing_state_reg_3_4).toString(16)
+    println(
+      poke_val_3_0+"\t"+
+        poke_val_3_1+"\t"+
+        poke_val_3_2+"\t"+
+        poke_val_3_3+"\t"+
+        poke_val_3_4)
+
+    poke_val_4_0 = peek(dut.io.testing_state_reg_4_0).toString(16)
+    poke_val_4_1 = peek(dut.io.testing_state_reg_4_1).toString(16)
+    poke_val_4_2 = peek(dut.io.testing_state_reg_4_2).toString(16)
+    poke_val_4_3 = peek(dut.io.testing_state_reg_4_3).toString(16)
+    poke_val_4_4 = peek(dut.io.testing_state_reg_4_4).toString(16)
+    println(
+      poke_val_4_0+"\t"+
+        poke_val_4_1+"\t"+
+        poke_val_4_2+"\t"+
+        poke_val_4_3+"\t"+
+        poke_val_4_4)
+
+    println("Output from round:\n")
+
+    poke_val_0_0 = peek(dut.io.testing_round_out_0_0).toString(16)
+    poke_val_0_1 = peek(dut.io.testing_round_out_0_1).toString(16)
+    poke_val_0_2 = peek(dut.io.testing_round_out_0_2).toString(16)
+    poke_val_0_3 = peek(dut.io.testing_round_out_0_3).toString(16)
+    poke_val_0_4 = peek(dut.io.testing_round_out_0_4).toString(16)
+    println(
+      poke_val_0_0+"\t"+
+        poke_val_0_1+"\t"+
+        poke_val_0_2+"\t"+
+        poke_val_0_3+"\t"+
+        poke_val_0_4)
+
+    poke_val_1_0 = peek(dut.io.testing_round_out_1_0).toString(16)
+    poke_val_1_1 = peek(dut.io.testing_round_out_1_1).toString(16)
+    poke_val_1_2 = peek(dut.io.testing_round_out_1_2).toString(16)
+    poke_val_1_3 = peek(dut.io.testing_round_out_1_3).toString(16)
+    poke_val_1_4 = peek(dut.io.testing_round_out_1_4).toString(16)
+    println(
+      poke_val_1_0+"\t"+
+        poke_val_1_1+"\t"+
+        poke_val_1_2+"\t"+
+        poke_val_1_3+"\t"+
+        poke_val_1_4)
+
+    poke_val_2_0 = peek(dut.io.testing_round_out_2_0).toString(16)
+    poke_val_2_1 = peek(dut.io.testing_round_out_2_1).toString(16)
+    poke_val_2_2 = peek(dut.io.testing_round_out_2_2).toString(16)
+    poke_val_2_3 = peek(dut.io.testing_round_out_2_3).toString(16)
+    poke_val_2_4 = peek(dut.io.testing_round_out_2_4).toString(16)
+    println(
+      poke_val_2_0+"\t"+
+        poke_val_2_1+"\t"+
+        poke_val_2_2+"\t"+
+        poke_val_2_3+"\t"+
+        poke_val_2_4)
+
+    poke_val_3_0 = peek(dut.io.testing_round_out_3_0).toString(16)
+    poke_val_3_1 = peek(dut.io.testing_round_out_3_1).toString(16)
+    poke_val_3_2 = peek(dut.io.testing_round_out_3_2).toString(16)
+    poke_val_3_3 = peek(dut.io.testing_round_out_3_3).toString(16)
+    poke_val_3_4 = peek(dut.io.testing_round_out_3_4).toString(16)
+    println(
+      poke_val_3_0+"\t"+
+        poke_val_3_1+"\t"+
+        poke_val_3_2+"\t"+
+        poke_val_3_3+"\t"+
+        poke_val_3_4)
+
+    poke_val_4_0 = peek(dut.io.testing_round_out_4_0).toString(16)
+    poke_val_4_1 = peek(dut.io.testing_round_out_4_1).toString(16)
+    poke_val_4_2 = peek(dut.io.testing_round_out_4_2).toString(16)
+    poke_val_4_3 = peek(dut.io.testing_round_out_4_3).toString(16)
+    poke_val_4_4 = peek(dut.io.testing_round_out_4_4).toString(16)
+    println(
+      poke_val_4_0+"\t"+
+        poke_val_4_1+"\t"+
+        poke_val_4_2+"\t"+
+        poke_val_4_3+"\t"+
+        poke_val_4_4)
+
+
+
+  */
 
 
 

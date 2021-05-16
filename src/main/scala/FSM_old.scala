@@ -1,7 +1,7 @@
 import chisel3._
 import chisel3.util._
 
-class FSM extends Module{
+class FSM_old extends Module{
   val io  = IO( new Bundle {
     //val start_calculation   = Input(Bool())
     val hash_ready          = Output(Bool())
@@ -11,6 +11,7 @@ class FSM extends Module{
     val global_counter_for_test = Output(UInt(64.W))
     val select_for_xor      = Output(Bool())
     val block_length_valid  = Input(Bool())
+    val enable_state_reg    = Output(Bool())
     //val request_next_block   = Output(Bool())
   })
 
@@ -21,12 +22,15 @@ class FSM extends Module{
   val xor_sel              = RegInit(false.B)
 
   when(stateReg === done) {
+    io.enable_state_reg := false.B
     io.hash_ready := true.B
   }.otherwise{
+    io.enable_state_reg := false.B
     io.hash_ready := false.B
   }
 
   when(stateReg === idle){
+    io.enable_state_reg := false.B
     when(io.buffer_ready){
       //io.select_for_xor := true.B
       xor_sel := true.B
@@ -37,6 +41,7 @@ class FSM extends Module{
     }
   }.otherwise
   {
+    io.enable_state_reg := true.B
       //io.select_for_xor := false.B
     xor_sel := false.B
   }
@@ -52,6 +57,7 @@ class FSM extends Module{
   io.global_counter_for_test := globalCountReg
   switch (stateReg){
     is (idle){
+      io.enable_state_reg := false.B
       when(io.block_length_valid){
         stateReg := calc_round
         localCountReg := 0.U
@@ -76,14 +82,17 @@ class FSM extends Module{
     is (calc_round) {
       globalCountReg := globalCountReg
       when(localCountReg<23.U){
+        io.enable_state_reg := true.B
         stateReg := calc_round
         localCountReg := localCountReg + 1.U
       }.otherwise{
+        io.enable_state_reg := false.B
         localCountReg := 0.U
         stateReg := idle
       }
     }
     is (done){
+      io.enable_state_reg := false.B
       globalCountReg := 0.U
       stateReg := idle
       localCountReg := 0.U

@@ -2,7 +2,7 @@ import chisel3._
 import chisel3.iotesters.PeekPokeTester
 import org.scalatest._
 
-class fsm_tester (dut: FSM) extends PeekPokeTester(dut) {
+class fsm_tester (dut: FSM_old) extends PeekPokeTester(dut) {
   poke(dut.io.buffer_ready, true.B)
   println("counter : "+peek(dut.io.counter).toString()+" select for xor: "+peek(dut.io.select_for_xor).toString())
   for(i <- 0 to 24){
@@ -24,6 +24,6 @@ class fsm_tester (dut: FSM) extends PeekPokeTester(dut) {
 }
 class fsm_spec extends FlatSpec with Matchers {
   "FSM" should "pass" in {
-    chisel3.iotesters.Driver(() => new FSM()) { c => new fsm_tester(c)} should be (true)
+    chisel3.iotesters.Driver(() => new FSM_old()) { c => new fsm_tester(c)} should be (true)
   }
 }

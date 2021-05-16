@@ -15,7 +15,7 @@ class Sha3 extends Module{
     val data_valid_to_buffer          = Output(Bool())
 
 
-    val testing_enable_state_register = Input(Bool())
+    val testing_enable_state_register = Output(Bool())
     val testing_round_counter         = Output(UInt(64.W))
     val testing_global_round_counter  = Output(UInt(64.W))
     val testing_buffer_counter        = Output(UInt(64.W))
@@ -118,11 +118,12 @@ class Sha3 extends Module{
   })
 
   val buffer          = Module(new Buffer())
-  val fsm             = Module(new FSM())
+  val fsm             = Module(new FSM_old())
   val round           = Module(new Round())
   val stateRegister   = Module(new StateRegister())
 
-  round.io.counter :=  io.testing_round_counter
+  round.io.counter :=  io.testing_count_for_iota
+  // round.io.counter :=  fsm.io.counter
   io.data_valid_to_buffer  := io.data_valid_from_env
 
   val block_length_reg  = RegInit(0.U(64.W))
@@ -132,9 +133,9 @@ class Sha3 extends Module{
   fsm.io.buffer_ready         := buffer.io.bufferReady
   fsm.io.block_length_valid   := io.block_length_valid_to_fsm
 
+  io.testing_enable_state_register := stateRegister.io.enable
 
-  stateRegister.io.enable         := io.testing_enable_state_register
-
+  stateRegister.io.enable         := fsm.io.enable_state_reg
   buffer.io.roundReady            := fsm.io.select_for_xor
   buffer.io.dataRead              := io.data_read
   buffer.io.hashReady             := fsm.io.hash_ready
