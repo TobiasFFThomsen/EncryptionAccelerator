@@ -5,6 +5,8 @@ class Theta extends Module{
     val io          = IO( new Bundle {
       val theta_in  = Input(Vec(5, Vec(5,UInt(64.W))))
       val theta_out = Output(Vec(5, Vec(5,UInt(64.W))))
+      val c_out     = Output(Vec(5,UInt(64.W)))
+      val d_out     = Output(Vec(5,UInt(64.W)))
     })
 
   val st  = Wire(Vec(5,Vec(5,UInt(64.W))))
@@ -51,6 +53,8 @@ class Theta extends Module{
         st(x)(y) := io.theta_in(x)(y)^d(x)
 
   io.theta_out := st
+  io.d_out := d
+  io.c_out := c
 }
 
 
