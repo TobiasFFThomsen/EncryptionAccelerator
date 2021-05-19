@@ -22,7 +22,10 @@ class Sha3 extends Module {
   })
 
   val round           = Module(new Round())
-  val stateRegister   = Module(new StateRegister())
+  //val stateRegister   = Module(new StateRegister())
+
+  //val dummy = Vec(5,Vec(5, UInt(64.W)))
+  val stateReg = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
 
   // Signals for testing
   io.theta_d    := round.io.R_theta_d_out
@@ -32,8 +35,8 @@ class Sha3 extends Module {
   io.chi_out    := round.io.R_chi_out
   io.iota_out   := round.io.R_iota_out
   
-  stateRegister.io.registerIn := io.register_in
-  io.register_out := stateRegister.io.registerOut
+  stateReg := io.register_in
+  io.register_out := stateReg
 
 
   // The iota round tells the iota module what number in the table it should xor with.
@@ -55,15 +58,15 @@ class Sha3 extends Module {
 
   // Rate (r) =  9 * 64 = 576 bits
   when(io.buffer_ready){
-    round.io.round_in(0)(0) := io.r_in(0)^stateRegister.io.registerOut(0)(0)
-    round.io.round_in(1)(0) := io.r_in(1)^stateRegister.io.registerOut(0)(1)
-    round.io.round_in(2)(0) := io.r_in(2)^stateRegister.io.registerOut(0)(2)
-    round.io.round_in(3)(0) := io.r_in(3)^stateRegister.io.registerOut(0)(3)
-    round.io.round_in(4)(0) := io.r_in(4)^stateRegister.io.registerOut(0)(4)
-    round.io.round_in(0)(1) := io.r_in(5)^stateRegister.io.registerOut(1)(0)
-    round.io.round_in(1)(1) := io.r_in(6)^stateRegister.io.registerOut(1)(1)
-    round.io.round_in(2)(1) := io.r_in(7)^stateRegister.io.registerOut(1)(2)
-    round.io.round_in(3)(1) := io.r_in(8)^stateRegister.io.registerOut(1)(3)
+    round.io.round_in(0)(0) := io.r_in(0)^stateReg(0)(0)
+    round.io.round_in(1)(0) := io.r_in(1)^stateReg(0)(1)
+    round.io.round_in(2)(0) := io.r_in(2)^stateReg(0)(2)
+    round.io.round_in(3)(0) := io.r_in(3)^stateReg(0)(3)
+    round.io.round_in(4)(0) := io.r_in(4)^stateReg(0)(4)
+    round.io.round_in(0)(1) := io.r_in(5)^stateReg(1)(0)
+    round.io.round_in(1)(1) := io.r_in(6)^stateReg(1)(1)
+    round.io.round_in(2)(1) := io.r_in(7)^stateReg(1)(2)
+    round.io.round_in(3)(1) := io.r_in(8)^stateReg(1)(3)
   }.otherwise{
     round.io.round_in(0)(0) := io.r_in(0)
     round.io.round_in(1)(0) := io.r_in(1)
@@ -100,8 +103,8 @@ class Sha3 extends Module {
     }
   }
 
-  stateRegister.io.registerIn := round.io.round_out
-  round.io.round_in           := stateRegister.io.registerOut
+  stateReg := round.io.round_out
+  round.io.round_in           := stateReg
 
 }
 

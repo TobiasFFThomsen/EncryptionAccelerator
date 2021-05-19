@@ -8,10 +8,10 @@ class StateRegister extends Module {
   })
 
   val stateReg = Reg(Vec(5, Vec(5, UInt(64.W))))
-  stateReg := io.registerIn
+  //stateReg := io.registerIn
 
-  for(x <- 0 to 4)
-    for(y <- 0 to 4)
-      io.registerOut(x)(y) := stateReg(x)(y)
+  io.registerOut := stateReg
+
+  stateReg:= io.registerIn
 
 }

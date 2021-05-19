@@ -6,7 +6,6 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
 
   val stateRegister: Array[Array[BigInt]] = Array.ofDim[BigInt](5, 5)
 
-  initStateRegister()
   printState("Input", "Verbose")
   
 
@@ -67,6 +66,10 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
       peekState(4)(2) = peek(dut.io.c_in(13)).toString(16)
       peekState(4)(3) = peek(dut.io.c_in(14)).toString(16)
       peekState(4)(4) = peek(dut.io.c_in(15)).toString(16)
+
+      for(x <- 0 to 4)
+        for(y <- 0 to 4)
+          register_out(x)(y) = peek(dut.io.register_out(x)(y)).toString(16)
 
       System.out.println("Register out (Round in)")
       System.out.println("\n")
@@ -208,6 +211,7 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
    }
 
   def initStateRegister():Unit={
+    System.out.println("test")
     for(x <- 0 to 4)
       for(y <- 0 to 4)
         poke(dut.io.register_in(x)(y),0x0000000000000000L)
