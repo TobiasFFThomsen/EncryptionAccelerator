@@ -5,9 +5,14 @@ import org.scalatest._
 class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
 
   val stateRegister: Array[Array[BigInt]] = Array.ofDim[BigInt](5, 5)
+  System.out.println("State register before the first round:\n")
+  printRound("Input", "Verbose")
 
-  printState("Input", "Verbose")
-  
+  poke(dut.io.iota_round, 0.U)
+
+  System.out.println("Round 1\n")
+
+  printRound("Input", "Verbose")
 
   /*
   for(i <- 0 to 23) {
@@ -28,7 +33,7 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
 
 
   // Helper functions
-  def printState(s:String, arg:String):Unit={
+  def printRound(s:String, arg:String):Unit={
     System.out.println("\n\n PRINTING "+s+" OF ROUND")
     val peekState     = Array.ofDim[String](5, 5)
     val thetaOut      = Array.ofDim[String](5, 5)
