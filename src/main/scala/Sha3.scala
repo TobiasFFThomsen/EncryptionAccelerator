@@ -3,9 +3,9 @@ import chisel3._
 class Sha3 extends Module {
   val io            = IO( new Bundle {
 
-    val iota_round  = Input(UInt(64.W))
-    val r_in        = Input(Vec(9, UInt(64.W)))
-    val c_in        = Input(Vec(16,UInt(64.W)))
+    val iota_round   = Input(UInt(64.W))
+    val r_in         = Input(Vec(9, UInt(64.W)))
+    val c_in         = Input(Vec(16,UInt(64.W)))
     val buffer_ready = Input(Bool())
 
     // For testing:
@@ -31,6 +31,7 @@ class Sha3 extends Module {
   io.rhoPi_out  := round.io.R_rhoPi_out
   io.chi_out    := round.io.R_chi_out
   io.iota_out   := round.io.R_iota_out
+  
   stateRegister.io.registerIn := io.register_in
   io.register_out := stateRegister.io.registerOut
 

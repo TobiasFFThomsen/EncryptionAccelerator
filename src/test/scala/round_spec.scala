@@ -7,8 +7,10 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
   val stateRegister: Array[Array[BigInt]] = Array.ofDim[BigInt](5, 5)
 
   initStateRegister()
-  printState("Output", "Verbose")
+  printState("Input", "Verbose")
+  
 
+  /*
   for(i <- 0 to 23) {
     System.out.println("ROUND "+i)
 
@@ -23,6 +25,7 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
 
     // 4. Store the output of this calculation in some variables (the r_out and c_out)
   }
+  */
 
 
   // Helper functions
