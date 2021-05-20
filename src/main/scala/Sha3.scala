@@ -1,9 +1,10 @@
 import chisel3._
+import chisel3.util._
 
 class Sha3 extends Module {
   val io            = IO( new Bundle {
 
-    val iota_round   = Input(UInt(64.W))
+    //val iota_round   = Input(UInt(64.W))
     val r_in         = Input(Vec(9, UInt(64.W)))
     val c_in         = Input(Vec(16,UInt(64.W)))
     val buffer_ready = Input(Bool())
@@ -16,9 +17,12 @@ class Sha3 extends Module {
     val rhoPi_out = Output(Vec(5,Vec(5,UInt(64.W))))
     val chi_out   = Output(Vec(5,Vec(5,UInt(64.W))))
     val iota_out  = Output(UInt(64.W))
+    val iota_xor_val_out = Output(UInt(64.W))
+    val iota_round       = Output(UInt(64.W))
     val round_in  = Output(Vec(5,Vec(5,UInt(64.W))))
     //val register_in   = Input(Vec(5,Vec(5,UInt(64.W))))
     val register_out  = Output(Vec(5,Vec(5,UInt(64.W))))
+    //val state = Output(String)
 
   })
 
@@ -29,7 +33,11 @@ class Sha3 extends Module {
   val stateReg = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
 
   // Initializing the counter register
-
+  val idle ::  rounds :: done :: Nil = Enum(3)
+  //val counterReg    = RegInit(0.U)
+  val next_state    = RegInit(idle)
+  val xor_select    = RegInit(false.B)
+  val iota_round    = RegInit(0.U(16.W))
 
   // Signals for testing
   io.theta_d      := round.io.R_theta_d_out
@@ -40,10 +48,13 @@ class Sha3 extends Module {
   io.iota_out     := round.io.R_iota_out
   io.round_in     := round.io.round_in
   io.register_out := stateReg
+  io.iota_xor_val_out := round.io.R_iota_xor_val_out
+  io.iota_round       := round.io.R_iota_round
   /*
         ALSO FOR TESTING:
-         For some reason we need to reverse the rows and columns.
-   */
+  */
+
+
 
   for(x <- 0 to 4){
     for(y <- 0 to 4){
@@ -52,15 +63,43 @@ class Sha3 extends Module {
   }
 
 
+  switch(next_state){
+    is(idle) {
+      xor_select := true.B
+      iota_round := 0.U
+      when(io.buffer_ready){
+        next_state  := rounds
+      }.otherwise{
+        next_state := idle
+        //xor_select := false.B
+      }
+    }
+    is(rounds) {
+      xor_select := false.B
+      stateReg   := round.io.round_out
+      when(iota_round < 23.U){
+        next_state := rounds
+        iota_round := iota_round + 1.U
+      }.otherwise{
+        iota_round := iota_round
+        next_state := idle
+      }
+    }
+  }
+
+
+
+
+
   // The iota round tells the iota module what number in the table it should xor with.
-  round.io.R_iota_round := io.iota_round
+  round.io.R_iota_round := iota_round
 
   // Connecting the state register.
-  stateReg            := round.io.round_out
-  round.io.round_in   := stateReg
+  //round.io.round_in   := stateReg
 
   // Rate (r) =  9 * 64 = 576 bits.
-  when(io.buffer_ready){
+
+  when(xor_select){
     round.io.round_in(0)(0) := io.r_in(0)^stateReg(0)(0)
     round.io.round_in(1)(0) := io.r_in(1)^stateReg(1)(0)
     round.io.round_in(2)(0) := io.r_in(2)^stateReg(2)(0)
@@ -99,8 +138,6 @@ class Sha3 extends Module {
   round.io.round_in(2)(4) := stateReg(2)(4)
   round.io.round_in(3)(4) := stateReg(3)(4)
   round.io.round_in(4)(4) := stateReg(4)(4)
-
-
 
 }
 

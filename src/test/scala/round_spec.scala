@@ -7,81 +7,41 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
   var IOBuffer:Array[BigInt] = new Array[BigInt](9)
 
   ///////////////////////////INIT///////////////////////////////////
-
   System.out.println("Initializing the input buffer...\n")
   System.out.println("\n")
   initIOBuffer()
 
-  System.out.println("Input to round after initializing the buffer:\n")
-  printInputToRound()
-
   System.out.println("Setting the buffer_ready signal to TRUE...\n")
   System.out.println("\n")
   poke(dut.io.buffer_ready, true.B)
-  poke(dut.io.iota_round, 0.U)
-
-  System.out.println("tick")
-  System.out.println("\n")
-  step(1)
-
-  System.out.println("Setting the buffer_ready signal to FALSE...\n")
-  System.out.println("\n")
-  poke(dut.io.buffer_ready, false.B)
 
   System.out.println("round 0")
   System.out.println("\n")
   printInputToRound()
 
-  ////////////////////////////ROUND N////////////////////////////////
-
-  for(i <- 1 to 23)
-  {
-    poke(dut.io.iota_round, i.U)
-
+  for(i <- 0 to 23){
     System.out.println("tick")
     System.out.println("\n")
     step(1)
 
-    System.out.println("Round "+i)
+    System.out.println("round "+i)
     System.out.println("\n")
     printInputToRound()
+    printRoundInternals()
   }
 
 
 
-  //System.out.println("Setting the buffer_ready signal to FALSE...\n")
-  //System.out.println("\n")
-
-  /*
-  poke(dut.io.iota_round, 1.U)
-
-  System.out.println("tick")
-  System.out.println("\n")
-  step(1)
-
-  System.out.println("Input to round 1:\n")
-  printInputToRound()
-
-   */
-
-
-
-  /*
-  for(i <- 1 to 23){
-    System.out.println("Input to round before the " + (i+1) +" round:\n")
-    printInputToRound()
-
-    System.out.println("tick")
-    step(1)
-  }
-  */
 
 
   // Helper functions
   def printInputToRound():Unit={
     val round_in      = Array.ofDim[String](5, 5)
     val register_out  = Array.ofDim[String](5, 5)
+    val iota_xor_val  = peek(dut.io.iota_xor_val_out).toString(16)
+    val iota_round    = peek(dut.io.iota_round).toString(16)
 
+    System.out.println("iota round " +iota_round+ " iota xor val out "+iota_xor_val)
     //////////REGISTER OUT////////////
     System.out.println("Register OUT")
 
@@ -154,7 +114,7 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
 
     for(x <- 0 to 4)
       for(y <- 0 to 4)
-        iotaOut(x)(y) = peek(dut.io.rhoPi_out(x)(y)).toString(16)
+        iotaOut(x)(y) = peek(dut.io.chi_out(x)(y)).toString(16)
     iotaOut(0)(0) = peek(dut.io.iota_out).toString(16)
 
     for(x <- 0 to 4)

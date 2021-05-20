@@ -1,10 +1,10 @@
-[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(round_spec, org.scalatest.tools.Framework$$anon$1@4f65db12, false, [SuiteSelector])[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning TaskDef(round_spec, org.scalatest.tools.Framework$$anon$1@73910b37, false, [SuiteSelector])[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mround_spec:[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32msha3[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32m- should pass[0m[0m
 [0m[[0m[0mdebug[0m] [0m[0mSummary for ScalaCheck not available.[0m
 [0m[[0m[0minfo[0m] [0m[0mScalaTest[0m
-[0m[[0m[0minfo[0m] [0m[0m[36mRun completed in 10 seconds, 645 milliseconds.[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[36mRun completed in 56 seconds, 919 milliseconds.[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mTotal number of tests run: 1[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mSuites: completed 1, aborted 0[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[36mTests: succeeded 1, failed 0, canceled 0, ignored 0, pending 0[0m[0m

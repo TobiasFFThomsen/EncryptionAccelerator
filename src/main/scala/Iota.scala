@@ -6,6 +6,7 @@ class Iota extends Module{
     val iota_in     = Input(UInt(64.W))
     val iota_round  = Input(UInt(64.W))
     val iota_out    = Output(UInt(64.W))
+    val iota_xor_val = Output(UInt(64.W))
   })
 
   val RC  = Wire(Vec(24, UInt(64.W)))
@@ -34,6 +35,7 @@ class Iota extends Module{
   RC(22)  := BigInt("0000000080000001", 16).U
   RC(23)  := BigInt("8000000080008008", 16).U
 
+  io.iota_xor_val := RC(io.iota_round)
   /*Iota*/
   io.iota_out := io.iota_in^RC(io.iota_round)
 }
