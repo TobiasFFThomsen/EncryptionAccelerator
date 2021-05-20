@@ -16,95 +16,91 @@ class Sha3 extends Module {
     val rhoPi_out = Output(Vec(5,Vec(5,UInt(64.W))))
     val chi_out   = Output(Vec(5,Vec(5,UInt(64.W))))
     val iota_out  = Output(UInt(64.W))
-    val register_in   = Input(Vec(5,Vec(5,UInt(64.W))))
+    val round_in  = Output(Vec(5,Vec(5,UInt(64.W))))
+    //val register_in   = Input(Vec(5,Vec(5,UInt(64.W))))
     val register_out  = Output(Vec(5,Vec(5,UInt(64.W))))
 
   })
 
-  val round           = Module(new Round())
-  //val stateRegister   = Module(new StateRegister())
+  // Instantiating the Round module
+  val round    = Module(new Round())
 
-  //val dummy = Vec(5,Vec(5, UInt(64.W)))
+  // Initializing the state register
   val stateReg = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
 
+  // Initializing the counter register
+
+
   // Signals for testing
-  io.theta_d    := round.io.R_theta_d_out
-  io.theta_c    := round.io.R_theta_c_out
-  io.theta_out  := round.io.R_theta_out
-  io.rhoPi_out  := round.io.R_rhoPi_out
-  io.chi_out    := round.io.R_chi_out
-  io.iota_out   := round.io.R_iota_out
-  
-  stateReg := io.register_in
+  io.theta_d      := round.io.R_theta_d_out
+  io.theta_c      := round.io.R_theta_c_out
+  io.theta_out    := round.io.R_theta_out
+  io.rhoPi_out    := round.io.R_rhoPi_out
+  io.chi_out      := round.io.R_chi_out
+  io.iota_out     := round.io.R_iota_out
+  io.round_in     := round.io.round_in
   io.register_out := stateReg
+  /*
+        ALSO FOR TESTING:
+         For some reason we need to reverse the rows and columns.
+   */
+
+  for(x <- 0 to 4){
+    for(y <- 0 to 4){
+      io.round_out(x)(y) := round.io.round_out(x)(y)
+    }
+  }
 
 
   // The iota round tells the iota module what number in the table it should xor with.
   round.io.R_iota_round := io.iota_round
 
-  /*
-    poke(dut.io.r_in(0),stateRegister(0)(0))
-    poke(dut.io.r_in(1),stateRegister(0)(1))
-    poke(dut.io.r_in(2),stateRegister(0)(2))
-    poke(dut.io.r_in(3),stateRegister(0)(3))
-    poke(dut.io.r_in(4),stateRegister(0)(4))
-    poke(dut.io.r_in(5),stateRegister(1)(0))
-    poke(dut.io.r_in(6),stateRegister(1)(1))
-    poke(dut.io.r_in(7),stateRegister(1)(2))
-    poke(dut.io.r_in(8),stateRegister(1)(3))
-   */
+  // Connecting the state register.
+  stateReg            := round.io.round_out
+  round.io.round_in   := stateReg
 
-
-
-  // Rate (r) =  9 * 64 = 576 bits
+  // Rate (r) =  9 * 64 = 576 bits.
   when(io.buffer_ready){
     round.io.round_in(0)(0) := io.r_in(0)^stateReg(0)(0)
-    round.io.round_in(1)(0) := io.r_in(1)^stateReg(0)(1)
-    round.io.round_in(2)(0) := io.r_in(2)^stateReg(0)(2)
-    round.io.round_in(3)(0) := io.r_in(3)^stateReg(0)(3)
-    round.io.round_in(4)(0) := io.r_in(4)^stateReg(0)(4)
-    round.io.round_in(0)(1) := io.r_in(5)^stateReg(1)(0)
+    round.io.round_in(1)(0) := io.r_in(1)^stateReg(1)(0)
+    round.io.round_in(2)(0) := io.r_in(2)^stateReg(2)(0)
+    round.io.round_in(3)(0) := io.r_in(3)^stateReg(3)(0)
+    round.io.round_in(4)(0) := io.r_in(4)^stateReg(4)(0)
+    round.io.round_in(0)(1) := io.r_in(5)^stateReg(0)(1)
     round.io.round_in(1)(1) := io.r_in(6)^stateReg(1)(1)
-    round.io.round_in(2)(1) := io.r_in(7)^stateReg(1)(2)
-    round.io.round_in(3)(1) := io.r_in(8)^stateReg(1)(3)
+    round.io.round_in(2)(1) := io.r_in(7)^stateReg(2)(1)
+    round.io.round_in(3)(1) := io.r_in(8)^stateReg(3)(1)
   }.otherwise{
-    round.io.round_in(0)(0) := io.r_in(0)
-    round.io.round_in(1)(0) := io.r_in(1)
-    round.io.round_in(2)(0) := io.r_in(2)
-    round.io.round_in(3)(0) := io.r_in(3)
-    round.io.round_in(4)(0) := io.r_in(4)
-    round.io.round_in(0)(1) := io.r_in(5)
-    round.io.round_in(1)(1) := io.r_in(6)
-    round.io.round_in(2)(1) := io.r_in(7)
-    round.io.round_in(3)(1) := io.r_in(8)
+    round.io.round_in(0)(0) := stateReg(0)(0)
+    round.io.round_in(1)(0) := stateReg(1)(0)
+    round.io.round_in(2)(0) := stateReg(2)(0)
+    round.io.round_in(3)(0) := stateReg(3)(0)
+    round.io.round_in(4)(0) := stateReg(4)(0)
+    round.io.round_in(0)(1) := stateReg(0)(1)
+    round.io.round_in(1)(1) := stateReg(1)(1)
+    round.io.round_in(2)(1) := stateReg(2)(1)
+    round.io.round_in(3)(1) := stateReg(3)(1)
   }
 
   // Capacity (c) = 16*64 = 1024 bits
-  round.io.round_in(4)(1) := io.c_in(0)
-  round.io.round_in(0)(2) := io.c_in(1)
-  round.io.round_in(1)(2) := io.c_in(2)
-  round.io.round_in(2)(2) := io.c_in(3)
-  round.io.round_in(3)(2) := io.c_in(4)
-  round.io.round_in(4)(2) := io.c_in(5)
-  round.io.round_in(0)(3) := io.c_in(6)
-  round.io.round_in(1)(3) := io.c_in(7)
-  round.io.round_in(2)(3) := io.c_in(8)
-  round.io.round_in(3)(3) := io.c_in(9)
-  round.io.round_in(4)(3) := io.c_in(10)
-  round.io.round_in(0)(4) := io.c_in(11)
-  round.io.round_in(1)(4) := io.c_in(12)
-  round.io.round_in(2)(4) := io.c_in(13)
-  round.io.round_in(3)(4) := io.c_in(14)
-  round.io.round_in(4)(4) := io.c_in(15)
+  round.io.round_in(4)(1) := stateReg(4)(1)
+  round.io.round_in(0)(2) := stateReg(0)(2)
+  round.io.round_in(1)(2) := stateReg(1)(2)
+  round.io.round_in(2)(2) := stateReg(2)(2)
+  round.io.round_in(3)(2) := stateReg(3)(2)
+  round.io.round_in(4)(2) := stateReg(4)(2)
+  round.io.round_in(0)(3) := stateReg(0)(3)
+  round.io.round_in(1)(3) := stateReg(1)(3)
+  round.io.round_in(2)(3) := stateReg(2)(3)
+  round.io.round_in(3)(3) := stateReg(3)(3)
+  round.io.round_in(4)(3) := stateReg(4)(3)
+  round.io.round_in(0)(4) := stateReg(0)(4)
+  round.io.round_in(1)(4) := stateReg(1)(4)
+  round.io.round_in(2)(4) := stateReg(2)(4)
+  round.io.round_in(3)(4) := stateReg(3)(4)
+  round.io.round_in(4)(4) := stateReg(4)(4)
 
-  for(x <- 0 to 4){
-    for(y <- 0 to 4){
-      io.round_out(x)(y) := round.io.round_out(y)(x)
-    }
-  }
 
-  stateReg := round.io.round_out
-  round.io.round_in           := stateReg
 
 }
 
