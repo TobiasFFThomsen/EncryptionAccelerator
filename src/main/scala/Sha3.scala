@@ -5,15 +5,15 @@ class Sha3 extends Module {
   val io            = IO( new Bundle {
 
     //val iota_round   = Input(UInt(64.W))
-    val r_in         = Input(Vec(9, UInt(64.W)))
+    val data_in      = Input(UInt(64.W))
     val c_in         = Input(Vec(16,UInt(64.W)))
     val buffer_ready = Input(Bool())
-
+    val enable_buffer = Input(Bool())
     // For testing:
     val round_out = Output(Vec(5,Vec(5,UInt(64.W))))
     val theta_out = Output(Vec(5,Vec(5,UInt(64.W))))
-    val theta_d   = Output(Vec(5,UInt(64.W)))
     val theta_c   = Output(Vec(5,UInt(64.W)))
+    val theta_d   = Output(Vec(5,UInt(64.W)))
     val rhoPi_out = Output(Vec(5,Vec(5,UInt(64.W))))
     val chi_out   = Output(Vec(5,Vec(5,UInt(64.W))))
     val iota_out  = Output(UInt(64.W))
@@ -28,7 +28,7 @@ class Sha3 extends Module {
 
   // Instantiating the Round module
   val round    = Module(new Round())
-
+  val buffer   = Module(new Buffer())
   // Initializing the state register
   val stateReg = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
 
@@ -38,6 +38,11 @@ class Sha3 extends Module {
   val next_state    = RegInit(idle)
   val xor_select    = RegInit(false.B)
   val iota_round    = RegInit(0.U(16.W))
+
+  // Signals
+  buffer.io.dataIn  := io.data_in
+  buffer.io.enable  := io.enable_buffer
+
 
   // Signals for testing
   io.theta_d      := round.io.R_theta_d_out
@@ -50,11 +55,6 @@ class Sha3 extends Module {
   io.register_out := stateReg
   io.iota_xor_val_out := round.io.R_iota_xor_val_out
   io.iota_round       := round.io.R_iota_round
-  /*
-        ALSO FOR TESTING:
-  */
-
-
 
   for(x <- 0 to 4){
     for(y <- 0 to 4){
@@ -71,7 +71,6 @@ class Sha3 extends Module {
         next_state  := rounds
       }.otherwise{
         next_state := idle
-        //xor_select := false.B
       }
     }
     is(rounds) {
@@ -100,15 +99,15 @@ class Sha3 extends Module {
   // Rate (r) =  9 * 64 = 576 bits.
 
   when(xor_select){
-    round.io.round_in(0)(0) := io.r_in(0)^stateReg(0)(0)
-    round.io.round_in(1)(0) := io.r_in(1)^stateReg(1)(0)
-    round.io.round_in(2)(0) := io.r_in(2)^stateReg(2)(0)
-    round.io.round_in(3)(0) := io.r_in(3)^stateReg(3)(0)
-    round.io.round_in(4)(0) := io.r_in(4)^stateReg(4)(0)
-    round.io.round_in(0)(1) := io.r_in(5)^stateReg(0)(1)
-    round.io.round_in(1)(1) := io.r_in(6)^stateReg(1)(1)
-    round.io.round_in(2)(1) := io.r_in(7)^stateReg(2)(1)
-    round.io.round_in(3)(1) := io.r_in(8)^stateReg(3)(1)
+    round.io.round_in(0)(0) := buffer.io.dataOut(8)^stateReg(0)(0)
+    round.io.round_in(1)(0) := buffer.io.dataOut(7)^stateReg(1)(0)
+    round.io.round_in(2)(0) := buffer.io.dataOut(6)^stateReg(2)(0)
+    round.io.round_in(3)(0) := buffer.io.dataOut(5)^stateReg(3)(0)
+    round.io.round_in(4)(0) := buffer.io.dataOut(4)^stateReg(4)(0)
+    round.io.round_in(0)(1) := buffer.io.dataOut(3)^stateReg(0)(1)
+    round.io.round_in(1)(1) := buffer.io.dataOut(2)^stateReg(1)(1)
+    round.io.round_in(2)(1) := buffer.io.dataOut(1)^stateReg(2)(1)
+    round.io.round_in(3)(1) := buffer.io.dataOut(0)^stateReg(3)(1)
   }.otherwise{
     round.io.round_in(0)(0) := stateReg(0)(0)
     round.io.round_in(1)(0) := stateReg(1)(0)

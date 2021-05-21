@@ -1,1 +1,1 @@
-["sha3_spec","round_spec"]
+["round_spec","sha3_spec","buffer_spec"]

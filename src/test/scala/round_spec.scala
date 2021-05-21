@@ -8,18 +8,27 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
 
   ///////////////////////////INIT///////////////////////////////////
   System.out.println("Initializing the input buffer...\n")
+  poke(dut.io.buffer_ready, false.B)
   System.out.println("\n")
   initIOBuffer()
+  printInputToRound()
 
   System.out.println("Setting the buffer_ready signal to TRUE...\n")
   System.out.println("\n")
   poke(dut.io.buffer_ready, true.B)
 
+
   System.out.println("round 0")
   System.out.println("\n")
   printInputToRound()
 
+
+
+  ///////////////////////////ROUNDS//////////////////////////////////
+
+
   for(i <- 0 to 23){
+
     System.out.println("tick")
     System.out.println("\n")
     step(1)
@@ -29,9 +38,6 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
     printInputToRound()
     printRoundInternals()
   }
-
-
-
 
 
   // Helper functions
@@ -202,13 +208,18 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
         )
    }
 
-  def initIOBuffer():Unit={
-    poke(dut.io.r_in(0),0x000000000000000dL)
+  def initIOBuffer():Unit= {
+    poke(dut.io.enable_buffer, true.B)
+    poke(dut.io.data_in,0x000000000000000dL)
+    step(1)
 
-    for(i <- 1 to 7)
-      poke(dut.io.r_in(i),0x0000000000000000L)
-
-    poke(dut.io.r_in(8),0x8000000000000000L)
+    for(i <- 1 to 7) {
+      poke(dut.io.data_in,0x0000000000000000L)
+      step(1)
+    }
+    poke(dut.io.data_in,0x8000000000000000L)
+    step(1)
+    poke(dut.io.enable_buffer, false.B)
   }
 }
 
