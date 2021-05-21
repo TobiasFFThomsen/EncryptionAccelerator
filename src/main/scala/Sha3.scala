@@ -9,6 +9,7 @@ class Sha3 extends Module {
     val c_in         = Input(Vec(16,UInt(64.W)))
     val buffer_ready = Input(Bool())
     val enable_buffer = Input(Bool())
+    val result        = Output(UInt(512.W))
     // For testing:
     val round_out = Output(Vec(5,Vec(5,UInt(64.W))))
     val theta_out = Output(Vec(5,Vec(5,UInt(64.W))))
@@ -137,6 +138,102 @@ class Sha3 extends Module {
   round.io.round_in(2)(4) := stateReg(2)(4)
   round.io.round_in(3)(4) := stateReg(3)(4)
   round.io.round_in(4)(4) := stateReg(4)(4)
+
+/*
+  io.result := Cat(Seq( stateReg(0)(0)(3,0),
+                        stateReg(0)(0)(7,3)
+    ,
+                        stateReg(0)(0)(12,8),
+                        stateReg(0)(0)(16,12),
+                        stateReg(0)(0)(20,16),
+                        stateReg(0)(0)(24,20),
+                        stateReg(0)(0)(28,24),
+                        stateReg(0)(0)(32,28),
+                        stateReg(0)(0)(36,32),
+                        stateReg(0)(0)(40,36),
+                        stateReg(0)(0)(40,36),
+  ))
+ */
+
+
+  io.result := Cat(Seq(
+                        stateReg(0)(0)(7,0),
+                        stateReg(0)(0)(15,8),
+                        stateReg(0)(0)(23,16),
+                        stateReg(0)(0)(31,24),
+                        stateReg(0)(0)(39,32),
+                        stateReg(0)(0)(47,40),
+                        stateReg(0)(0)(55,48),
+                        stateReg(0)(0)(63,56),
+
+                        stateReg(1)(0)(7,0),
+                        stateReg(1)(0)(15,8),
+                        stateReg(1)(0)(23,16),
+                        stateReg(1)(0)(31,24),
+                        stateReg(1)(0)(39,32),
+                        stateReg(1)(0)(47,40),
+                        stateReg(1)(0)(55,48),
+                        stateReg(1)(0)(63,56),
+
+                        stateReg(2)(0)(7,0),
+                        stateReg(2)(0)(15,8),
+                        stateReg(2)(0)(23,16),
+                        stateReg(2)(0)(31,24),
+                        stateReg(2)(0)(39,32),
+                        stateReg(2)(0)(47,40),
+                        stateReg(2)(0)(55,48),
+                        stateReg(2)(0)(63,56),
+
+
+                        stateReg(3)(0)(7,0),
+                        stateReg(3)(0)(15,8),
+                        stateReg(3)(0)(23,16),
+                        stateReg(3)(0)(31,24),
+                        stateReg(3)(0)(39,32),
+                        stateReg(3)(0)(47,40),
+                        stateReg(3)(0)(55,48),
+                        stateReg(3)(0)(63,56),
+
+
+                        stateReg(4)(0)(7,0),
+                        stateReg(4)(0)(15,8),
+                        stateReg(4)(0)(23,16),
+                        stateReg(4)(0)(31,24),
+                        stateReg(4)(0)(39,32),
+                        stateReg(4)(0)(47,40),
+                        stateReg(4)(0)(55,48),
+                        stateReg(4)(0)(63,56),
+
+                        stateReg(0)(1)(7,0),
+                        stateReg(0)(1)(15,8),
+                        stateReg(0)(1)(23,16),
+                        stateReg(0)(1)(31,24),
+                        stateReg(0)(1)(39,32),
+                        stateReg(0)(1)(47,40),
+                        stateReg(0)(1)(55,48),
+                        stateReg(0)(1)(63,56),
+
+                        stateReg(1)(1)(7,0),
+                        stateReg(1)(1)(15,8),
+                        stateReg(1)(1)(23,16),
+                        stateReg(1)(1)(31,24),
+                        stateReg(1)(1)(39,32),
+                        stateReg(1)(1)(47,40),
+                        stateReg(1)(1)(55,48),
+                        stateReg(1)(1)(63,56),
+
+                        stateReg(2)(1)(7,0),
+                        stateReg(2)(1)(15,8),
+                        stateReg(2)(1)(23,16),
+                        stateReg(2)(1)(31,24),
+                        stateReg(2)(1)(39,32),
+                        stateReg(2)(1)(47,40),
+                        stateReg(2)(1)(55,48),
+                        stateReg(2)(1)(63,56),
+                  ))
+
+  //^(stateReg(0)(0))(12,8)^(stateReg(0)(0))(12,8)
+
 
 }
 

@@ -9,25 +9,13 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
   ///////////////////////////INIT///////////////////////////////////
   System.out.println("Initializing the input buffer...\n")
   poke(dut.io.buffer_ready, false.B)
-  System.out.println("\n")
   initIOBuffer()
-  printInputToRound()
-
-  System.out.println("Setting the buffer_ready signal to TRUE...\n")
-  System.out.println("\n")
-  poke(dut.io.buffer_ready, true.B)
-
-
-  System.out.println("round 0")
-  System.out.println("\n")
-  printInputToRound()
-
-
 
   ///////////////////////////ROUNDS//////////////////////////////////
+  System.out.println("Setting buffer_ready to true...\n")
+  poke(dut.io.buffer_ready, true.B)
 
-
-  for(i <- 0 to 23){
+  for(i <- 0 to 24){
 
     System.out.println("tick")
     System.out.println("\n")
@@ -38,6 +26,9 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
     printInputToRound()
     printRoundInternals()
   }
+
+  System.out.println("result: "+peek(dut.io.result).toString(16))
+
 
 
   // Helper functions
