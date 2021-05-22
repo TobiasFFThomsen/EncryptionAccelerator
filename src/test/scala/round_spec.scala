@@ -10,26 +10,14 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
   System.out.println("Initializing the input buffer...\n")
   poke(dut.io.buffer_ready, false.B)
   initIOBuffer()
+  printInputToRound()
 
   ///////////////////////////ROUNDS//////////////////////////////////
   System.out.println("Setting buffer_ready to true...\n")
   poke(dut.io.buffer_ready, true.B)
-
-  for(i <- 0 to 24){
-
-    System.out.println("tick")
-    System.out.println("\n")
-    step(1)
-
-    System.out.println("round "+i)
-    System.out.println("\n")
-    printInputToRound()
-    printRoundInternals()
-  }
+  step(25)
 
   System.out.println("result: "+peek(dut.io.result).toString(16))
-
-
 
   // Helper functions
   def printInputToRound():Unit={
@@ -75,7 +63,6 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
       )
     System.out.println("\n")
   }
-
   def printRoundInternals():Unit={
 
     val round_out     = Array.ofDim[String](5, 5)
@@ -198,18 +185,119 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
           "\t"+round_out(4)(y)
         )
    }
+  var printIOBufferCounter = 0
+  def printIOBuffer():Unit = {
 
+    System.out.println("iteration: "+printIOBufferCounter)
+    printIOBufferCounter = printIOBufferCounter+1
+    val IO_buffer       = Array.ofDim[String](9)
+    val IO_buffer_32    = Array.ofDim[String](18)
+
+    for(i <- 0 to 8)
+      IO_buffer(i) = peek(dut.io.IObuffer_content(i)).toString(16)
+
+    for(i <- 0 to 17)
+      IO_buffer_32(i) = peek(dut.io.IObuffer_content_32(i)).toString(16)
+
+    System.out.println("64-bit values: ")
+    System.out.println( IO_buffer(0)+", "+IO_buffer(1)+", "+IO_buffer(2)+", "+
+                        IO_buffer(3)+", "+IO_buffer(4)+", "+IO_buffer(5)+", "+
+                        IO_buffer(6)+", "+IO_buffer(7)+", "+IO_buffer(8)
+                      )
+    System.out.println("\n")
+
+    System.out.println("32-bit values: ")
+    System.out.println( IO_buffer_32(0)+", "+IO_buffer_32(1)+", "+IO_buffer_32(2)+", "+
+                        IO_buffer_32(3)+", "+IO_buffer_32(4)+", "+IO_buffer_32(5)+", "+
+                        IO_buffer_32(6)+", "+IO_buffer_32(7)+", "+IO_buffer_32(8)+", "+
+                        IO_buffer_32(9)+", "+IO_buffer_32(10)+", "+IO_buffer_32(11)+", "+
+                        IO_buffer_32(12)+", "+IO_buffer_32(13)+", "+IO_buffer_32(14)+", "+
+                        IO_buffer_32(15)+", "+IO_buffer_32(16)+", "+IO_buffer_32(17)
+    )
+    System.out.println("\n")
+    System.out.println("------------------------------------------------------")
+  }
   def initIOBuffer():Unit= {
     poke(dut.io.enable_buffer, true.B)
-    poke(dut.io.data_in,0x000000000000000dL)
-    step(1)
 
-    for(i <- 1 to 7) {
-      poke(dut.io.data_in,0x0000000000000000L)
-      step(1)
-    }
-    poke(dut.io.data_in,0x8000000000000000L)
+    poke(dut.io.data_in,0x00000000)
     step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x0000000d)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    poke(dut.io.data_in,0x00000000)
+    step(1)
+    printIOBuffer()
+
+    //
+
+    poke(dut.io.data_in,0x80000000)
+    step(1)
+    printIOBuffer()
+
     poke(dut.io.enable_buffer, false.B)
   }
 }

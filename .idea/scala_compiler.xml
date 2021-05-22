@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ScalaCompilerConfiguration">
     <profile name="sbt 1" modules="sha3">
+      <option name="postfixOps" value="true" />
       <option name="deprecationWarnings" value="true" />
       <parameters>
         <parameter value="-Xsource:2.11" />

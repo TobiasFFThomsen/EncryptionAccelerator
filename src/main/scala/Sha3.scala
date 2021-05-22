@@ -5,7 +5,7 @@ class Sha3 extends Module {
   val io            = IO( new Bundle {
 
     //val iota_round   = Input(UInt(64.W))
-    val data_in      = Input(UInt(64.W))
+    val data_in      = Input(UInt(32.W))
     val c_in         = Input(Vec(16,UInt(64.W)))
     val buffer_ready = Input(Bool())
     val enable_buffer = Input(Bool())
@@ -21,6 +21,10 @@ class Sha3 extends Module {
     val iota_xor_val_out = Output(UInt(64.W))
     val iota_round       = Output(UInt(64.W))
     val round_in  = Output(Vec(5,Vec(5,UInt(64.W))))
+
+    val IObuffer_content = Output(Vec(9,UInt(64.W)))
+    val IObuffer_content_32 = Output(Vec(18,UInt(32.W)))
+
     //val register_in   = Input(Vec(5,Vec(5,UInt(64.W))))
     val register_out  = Output(Vec(5,Vec(5,UInt(64.W))))
     //val state = Output(String)
@@ -38,7 +42,8 @@ class Sha3 extends Module {
   //val counterReg    = RegInit(0.U)
   val next_state    = RegInit(idle)
   val xor_select    = RegInit(false.B)
-  val iota_round    = RegInit(0.U(16.W))
+  val iota_round    = RegInit(0.U(8.W))
+  val status_reg    = RegInit(0.U(8.W))
 
   // Signals
   buffer.io.dataIn  := io.data_in
@@ -56,6 +61,8 @@ class Sha3 extends Module {
   io.register_out := stateReg
   io.iota_xor_val_out := round.io.R_iota_xor_val_out
   io.iota_round       := round.io.R_iota_round
+  io.IObuffer_content := buffer.io.dataOut
+  io.IObuffer_content_32  := buffer.io.data_32_out
 
   for(x <- 0 to 4){
     for(y <- 0 to 4){

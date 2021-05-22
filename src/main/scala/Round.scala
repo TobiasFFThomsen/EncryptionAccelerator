@@ -43,32 +43,4 @@ class Round extends Module{
         io.round_out(x)(y) := chi.io.chi_out(x)(y)
     }
   }
-
-  /*
-  io.round_out(1)(0) := chi.io.chi_out(1)(0)
-  io.round_out(2)(0) := chi.io.chi_out(2)(0)
-  io.round_out(3)(0) := chi.io.chi_out(3)(0)
-  io.round_out(4)(0) := chi.io.chi_out(4)(0)
-  io.round_out(0)(1) := chi.io.chi_out(0)(1)
-  io.round_out(1)(1) := chi.io.chi_out(1)(1)
-  io.round_out(2)(1) := chi.io.chi_out(2)(1)
-  io.round_out(3)(1) := chi.io.chi_out(3)(1)
-  io.round_out(4)(1) := chi.io.chi_out(4)(1)
-  io.round_out(0)(2) := chi.io.chi_out(0)(2)
-  io.round_out(1)(2) := chi.io.chi_out(1)(2)
-  io.round_out(2)(2) := chi.io.chi_out(2)(2)
-  io.round_out(3)(2) := chi.io.chi_out(3)(2)
-  io.round_out(4)(2) := chi.io.chi_out(4)(2)
-  io.round_out(0)(3) := chi.io.chi_out(0)(3)
-  io.round_out(1)(3) := chi.io.chi_out(1)(3)
-  io.round_out(2)(3) := chi.io.chi_out(2)(3)
-  io.round_out(3)(3) := chi.io.chi_out(3)(3)
-  io.round_out(4)(3) := chi.io.chi_out(4)(3)
-  io.round_out(0)(4) := chi.io.chi_out(0)(4)
-  io.round_out(1)(4) := chi.io.chi_out(1)(4)
-  io.round_out(2)(4) := chi.io.chi_out(2)(4)
-  io.round_out(3)(4) := chi.io.chi_out(3)(4)
-  io.round_out(4)(4) := chi.io.chi_out(4)(4)
-   */
-
 }
