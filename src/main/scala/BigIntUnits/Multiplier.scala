@@ -51,13 +51,12 @@ class Multiplier extends Module {
       // Compute partial sum and add to product
       // Update control
       state_reg := computing
-      step_reg := step_reg + 1.U
-
       // Update values
+      step_reg := step_reg + 1.U
       multiplicator_reg := multiplicator_reg >> 1
       multiplicand_reg := multiplicand_reg << 1
       when(multiplicator_reg(0)){
-        product_reg := product_reg + multiplicand_reg     // TODO: THIS IS EXTREMELY HEAVY
+        product_reg := product_reg + multiplicand_reg
       }
     }.otherwise {
       // Done

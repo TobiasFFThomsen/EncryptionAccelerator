@@ -9,6 +9,7 @@ class CycledMultiplier extends Module {
 
   val width = 2048
   val idle :: computing :: nil = Enum(2)
+  val idle2 :: adding :: nil2 = Enum(2)
 
   val io = IO(new Bundle {
     // Inputs
@@ -25,12 +26,18 @@ class CycledMultiplier extends Module {
   // Control registers
   val step_reg: UInt = RegInit(0.U(12.W))
   val state_reg: UInt = RegInit(idle)
+  val sub_state_reg: UInt = RegInit(idle2)
 
   // Value registers
   val product_reg: UInt = RegInit(0.U((width*2).W))
   val multiplicator_reg: UInt = RegInit(0.U(width.W)) // right-shift register
   val multiplicand_reg: UInt = RegInit(0.U((width*2).W)) // left-shift register
   // ---------------------------------------------
+
+  val cycledAdder: CycledAdder = Module(new CycledAdder(2*width, 32))
+  cycledAdder.io.adder := product_reg
+  cycledAdder.io.addend := multiplicand_reg
+  cycledAdder.io.valid_in := false.B
 
   // Store edge
   val edge_high_reg: Bool = RegInit(false.B) // Register triggering computing on valid_in rising edge
@@ -49,16 +56,27 @@ class CycledMultiplier extends Module {
     // Assume state_reg === computing
     when(step_reg =/= width.U) {
       // Compute partial sum and add to product
-      // Update control
-      state_reg := computing
-      step_reg := step_reg + 1.U
-
       // Update values
-      multiplicator_reg := multiplicator_reg >> 1
-      multiplicand_reg := multiplicand_reg << 1
-      when(multiplicator_reg(0)){
-        product_reg := product_reg + multiplicand_reg     // TODO: THIS IS EXTREMELY HEAVY
+      when(sub_state_reg === idle2){
+
+        when(multiplicator_reg(0)){
+          cycledAdder.io.valid_in := true.B
+          sub_state_reg := adding
+        }.otherwise{
+          multiplicator_reg := multiplicator_reg >> 1
+          multiplicand_reg := multiplicand_reg << 1
+          step_reg := step_reg + 1.U
+        }
+
+      }.elsewhen(cycledAdder.io.valid_out){
+        // Assume sub_state summing
+        step_reg := step_reg + 1.U
+        multiplicator_reg := multiplicator_reg >> 1
+        multiplicand_reg := multiplicand_reg << 1
+        sub_state_reg := idle2
+        product_reg := cycledAdder.io.result
       }
+
     }.otherwise {
       // Done
       state_reg := idle

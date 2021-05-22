@@ -1,4 +1,4 @@
-import BigIntUnits.{Divider, Multiplier}
+import BigIntUnits.{Divider, Multiplier, CycledAdder}
 import Chisel.{Enum, PriorityEncoder, Reverse}
 import chisel3._
 

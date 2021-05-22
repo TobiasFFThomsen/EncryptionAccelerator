@@ -3,14 +3,14 @@ import chisel3.iotesters.PeekPokeTester
 import org.scalatest._
 
 class CycledAdderTester3(dut: CycledAdder) extends PeekPokeTester(dut) {
-  var out: Seq[BigInt] = peek(dut.io.out)
+  //var out: Seq[BigInt] = peek(dut.io.out)
   //var adder: Seq[BigInt] = peek(dut.io.adder_out)
   //var addend: Seq[BigInt] = peek(dut.io.addend_out)
   var result: BigInt = peek(dut.io.result)
   //var partial: BigInt = peek(dut.io.partial_out)
   var valid_out: BigInt = peek(dut.io.valid_out)
   var overflow: BigInt = peek(dut.io.overflow)
-  System.out.println("Out vector        : " + out)
+  //System.out.println("Out vector        : " + out)
   System.out.println("Interpreted result: " + result)
   //System.out.println("Adder vetor       : " + adder)
   //System.out.println("Addend vector     : " + addend)
@@ -25,14 +25,14 @@ class CycledAdderTester3(dut: CycledAdder) extends PeekPokeTester(dut) {
 
   for(i <- 0 until 130){
     step(1)
-    out = peek(dut.io.out)
+    //out = peek(dut.io.out)
     result = peek(dut.io.result)
     //adder = peek(dut.io.adder_out)
     //addend = peek(dut.io.addend_out)
     //partial = peek(dut.io.partial_out)
     valid_out = peek(dut.io.valid_out)
     overflow = peek(dut.io.overflow)
-    System.out.println("Out vector        : " + out)
+    //System.out.println("Out vector        : " + out)
     System.out.println("Interpreted result: " + result)
     //System.out.println("Adder vector      : " + adder)
     //System.out.println("Addend vector     : " + addend)

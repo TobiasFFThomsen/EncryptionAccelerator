@@ -12,12 +12,11 @@ class CycledAdder(fullDataWidth: Int, regDataWidth: Int) extends Module{
     // Inputs
     val adder: UInt = Input(UInt((fullDataWidth).W))
     val addend: UInt = Input(UInt((fullDataWidth + 1).W))
-
     val valid_in: Bool = Input(Bool())
 
     // Outputs
     val valid_out: Bool = Output(Bool())
-    val out = Output(Vec(registerCount, UInt(regDataWidth.W)))
+    // val out = Output(Vec(registerCount, UInt(regDataWidth.W)))
     val result: UInt = Output(UInt((fullDataWidth + 1).W))
     val overflow: UInt = Output(UInt(1.W))
 
@@ -40,7 +39,7 @@ class CycledAdder(fullDataWidth: Int, regDataWidth: Int) extends Module{
   io.overflow := carry_reg
 
   io.result := Cat(sum_reg.io.out)
-  io.out := sum_reg.io.out
+  //io.out := sum_reg.io.out
 
   val adder_vec: Vec[UInt] = Wire(Vec(registerCount, UInt(regDataWidth.W)))
   val addend_vec: Vec[UInt] = Wire(Vec(registerCount, UInt(regDataWidth.W)))
