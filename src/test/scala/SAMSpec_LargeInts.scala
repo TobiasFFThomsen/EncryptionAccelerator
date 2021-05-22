@@ -2,11 +2,6 @@ import chisel3.iotesters.PeekPokeTester
 import org.scalatest._
 
 class SAMTester2(dut: SAM) extends PeekPokeTester(dut) {
-  // 5^2 mod 7
-  // 5^(10b) mod 7
-  val a_lim = 3
-  val b_lim = 5
-  var cycle = 0
 
   poke(dut.io.valid_in, false)
   step(1)
