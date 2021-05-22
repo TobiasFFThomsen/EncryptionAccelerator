@@ -32,6 +32,7 @@ class Divider extends Module{
   // Control. States:
   val state_reg: UInt = RegInit(idle)
   val state_reg_Q: UInt = RegInit(shift)
+
   when(state_reg =/= computing){
     state_reg_Q := shift
   }
@@ -60,32 +61,24 @@ class Divider extends Module{
       dividend_reg := io.dividend
       quotient_reg := 0.U
 
-    }.otherwise {
-      state_reg := idle
-      dividend_reg := dividend_reg
-      quotient_reg := quotient_reg
     }
+
   }.elsewhen(state_reg === loading){
-    //state_reg_Q := shift
-    dividend_reg := dividend_reg
-    quotient_reg := quotient_reg
 
     // If state 'loading', left-shift divisor until larger than dividend.
     // When divisor larger than dividend, right-shift once and proceed to state 'computing'
     when(divisor_reg <= dividend_reg) {
       // Left-shifting divisor
       divisor_reg := divisor_reg << 1
-      state_reg := loading
       step_reg := step_reg + 1.U
     }.otherwise {
       // Done adjusting divisor. Proceed to state 'computing'
       divisor_reg := divisor_reg >> 1
       state_reg := computing
-      step_reg := step_reg
     }
   }.otherwise{
+    // Assume state computing
     when((step_reg > 0.U) || (state_reg_Q === add)) { // Must also allow last substate_Q "add"
-      state_reg := computing
 
       when(state_reg_Q === shift) {
         step_reg := step_reg - 1.U
@@ -93,31 +86,21 @@ class Divider extends Module{
         when(dividend_reg >= divisor_reg){
           state_reg_Q := add
           dividend_reg := dividend_reg - divisor_reg
-        }.otherwise{
-          state_reg_Q := shift
-          dividend_reg := dividend_reg
         }
 
         quotient_reg := quotient_reg << 1
         divisor_reg := divisor_reg >> 1
       }.otherwise {
         // state_reg_Q === add
-        step_reg := step_reg
         state_reg_Q := shift
 
         quotient_reg := quotient_reg + 1.U
-        divisor_reg := divisor_reg
-        dividend_reg := dividend_reg
+
       }
     }.otherwise {
       // Done
       state_reg := idle
       state_reg_Q := shift
-      step_reg := step_reg
-
-      dividend_reg := dividend_reg
-      divisor_reg := divisor_reg
-      quotient_reg := quotient_reg
     }
   }
 

@@ -5,7 +5,7 @@ import Chisel.Enum
 // BigInt BigIntUnits.Multiplier
 // Input 2048 bit operands
 
-class Multiplier extends Module {
+class CycledMultiplier extends Module {
 
   val width = 2048
   val idle :: computing :: nil = Enum(2)
@@ -75,7 +75,7 @@ class Multiplier extends Module {
   io.result := product_reg
 }
 
-object GenerateMultiplierVerilog extends App {
-  println("Generating the Verilog file for Multiplier!")
-  (new chisel3.stage.ChiselStage).emitVerilog(new Multiplier())
+object GenerateCycledMultiplierVerilog extends App {
+  println("Generating the Verilog file for CycledMultiplier!")
+  (new chisel3.stage.ChiselStage).emitVerilog(new CycledMultiplier())
 }
