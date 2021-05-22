@@ -9,7 +9,8 @@ class Sha3 extends Module {
     val c_in         = Input(Vec(16,UInt(64.W)))
     val buffer_ready = Input(Bool())
     val enable_buffer = Input(Bool())
-    val result        = Output(UInt(512.W))
+    val result_512        = Output(UInt(512.W))
+    val result_32         = Output(Vec(16,UInt(32.W)))
     // For testing:
     val round_out = Output(Vec(5,Vec(5,UInt(64.W))))
     val theta_out = Output(Vec(5,Vec(5,UInt(64.W))))
@@ -35,8 +36,8 @@ class Sha3 extends Module {
   val round    = Module(new Round())
   val buffer   = Module(new Buffer())
   // Initializing the state register
-  val stateReg = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
-
+  val stateReg  = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
+  val resultReg = RegInit(VecInit(Seq.fill(16)(0.U(32.W))))
   // Initializing the counter register
   val idle ::  rounds :: done :: Nil = Enum(3)
   //val counterReg    = RegInit(0.U)
@@ -163,76 +164,117 @@ class Sha3 extends Module {
  */
 
 
-  io.result := Cat(Seq(
+  resultReg(0)  := Cat(Seq(stateReg(0)(0)(7,0),stateReg(0)(0)(15,8),stateReg(0)(0)(23,16),stateReg(0)(0)(31,24)))
+  //resultReg(0)  := Cat(Seq(stateReg(0)(0)(31,24),stateReg(0)(0)(7,0),stateReg(0)(0)(15,8),stateReg(0)(0)(23,16)))
+
+  resultReg(1)  := Cat(Seq(stateReg(0)(0)(39,32),stateReg(0)(0)(47,40),stateReg(0)(0)(55,48),stateReg(0)(0)(63,56)))
+  resultReg(2)  := Cat(Seq(stateReg(1)(0)(7,0),stateReg(1)(0)(15,8),stateReg(1)(0)(23,16),stateReg(1)(0)(31,24)))
+  resultReg(3)  := Cat(Seq(stateReg(1)(0)(39,32),stateReg(1)(0)(47,40),stateReg(1)(0)(55,48),stateReg(1)(0)(63,56)))
+  resultReg(4)  := Cat(Seq(stateReg(2)(0)(7,0),stateReg(2)(0)(15,8),stateReg(2)(0)(23,16),stateReg(2)(0)(31,24)))
+  resultReg(5)  := Cat(Seq(stateReg(2)(0)(39,32),stateReg(2)(0)(47,40),stateReg(2)(0)(55,48),stateReg(2)(0)(63,56)))
+  resultReg(6)  := Cat(Seq(stateReg(3)(0)(7,0),stateReg(3)(0)(15,8),stateReg(3)(0)(23,16),stateReg(3)(0)(31,24)))
+  resultReg(7)  := Cat(Seq(stateReg(3)(0)(39,32),stateReg(3)(0)(47,40),stateReg(3)(0)(55,48),stateReg(3)(0)(63,56)))
+  resultReg(8)  := Cat(Seq(stateReg(4)(0)(7,0),stateReg(4)(0)(15,8),stateReg(4)(0)(23,16),stateReg(4)(0)(31,24)))
+  resultReg(9)  := Cat(Seq(stateReg(4)(0)(39,32),stateReg(4)(0)(47,40),stateReg(4)(0)(55,48),stateReg(4)(0)(63,56)))
+  resultReg(10) := Cat(Seq(stateReg(0)(1)(7,0),stateReg(0)(1)(15,8),stateReg(0)(1)(23,16),stateReg(0)(1)(31,24)))
+  resultReg(11) := Cat(Seq(stateReg(0)(1)(39,32),stateReg(0)(1)(47,40),stateReg(0)(1)(55,48),stateReg(0)(1)(63,56)))
+  resultReg(12) := Cat(Seq(stateReg(1)(1)(7,0),stateReg(1)(1)(15,8),stateReg(1)(1)(23,16),stateReg(1)(1)(31,24)))
+  resultReg(13) := Cat(Seq(stateReg(1)(1)(39,32),stateReg(1)(1)(47,40),stateReg(1)(1)(55,48),stateReg(1)(1)(63,56)))
+  resultReg(14) := Cat(Seq(stateReg(2)(1)(7,0),stateReg(2)(1)(15,8),stateReg(2)(1)(23,16),stateReg(2)(1)(31,24)))
+  resultReg(15) := Cat(Seq(stateReg(2)(1)(39,32),stateReg(2)(1)(47,40),stateReg(2)(1)(55,48),stateReg(2)(1)(63,56)))
+
+  io.result_512 := Cat(Seq(
+                        //0
                         stateReg(0)(0)(7,0),
                         stateReg(0)(0)(15,8),
                         stateReg(0)(0)(23,16),
                         stateReg(0)(0)(31,24),
+
+                        //1
                         stateReg(0)(0)(39,32),
                         stateReg(0)(0)(47,40),
                         stateReg(0)(0)(55,48),
                         stateReg(0)(0)(63,56),
 
+                        //2
                         stateReg(1)(0)(7,0),
                         stateReg(1)(0)(15,8),
                         stateReg(1)(0)(23,16),
                         stateReg(1)(0)(31,24),
+
+                        //3
                         stateReg(1)(0)(39,32),
                         stateReg(1)(0)(47,40),
                         stateReg(1)(0)(55,48),
                         stateReg(1)(0)(63,56),
 
+                        //4
                         stateReg(2)(0)(7,0),
                         stateReg(2)(0)(15,8),
                         stateReg(2)(0)(23,16),
                         stateReg(2)(0)(31,24),
+
+                        //5
                         stateReg(2)(0)(39,32),
                         stateReg(2)(0)(47,40),
                         stateReg(2)(0)(55,48),
                         stateReg(2)(0)(63,56),
 
-
+                        //6
                         stateReg(3)(0)(7,0),
                         stateReg(3)(0)(15,8),
                         stateReg(3)(0)(23,16),
                         stateReg(3)(0)(31,24),
+
+                        //7
                         stateReg(3)(0)(39,32),
                         stateReg(3)(0)(47,40),
                         stateReg(3)(0)(55,48),
                         stateReg(3)(0)(63,56),
 
-
+                        //8
                         stateReg(4)(0)(7,0),
                         stateReg(4)(0)(15,8),
                         stateReg(4)(0)(23,16),
                         stateReg(4)(0)(31,24),
+
+                        //9
                         stateReg(4)(0)(39,32),
                         stateReg(4)(0)(47,40),
                         stateReg(4)(0)(55,48),
                         stateReg(4)(0)(63,56),
 
+                        //10
                         stateReg(0)(1)(7,0),
                         stateReg(0)(1)(15,8),
                         stateReg(0)(1)(23,16),
                         stateReg(0)(1)(31,24),
+
+                        //11
                         stateReg(0)(1)(39,32),
                         stateReg(0)(1)(47,40),
                         stateReg(0)(1)(55,48),
                         stateReg(0)(1)(63,56),
 
+                        //12
                         stateReg(1)(1)(7,0),
                         stateReg(1)(1)(15,8),
                         stateReg(1)(1)(23,16),
                         stateReg(1)(1)(31,24),
+
+                        //13
                         stateReg(1)(1)(39,32),
                         stateReg(1)(1)(47,40),
                         stateReg(1)(1)(55,48),
                         stateReg(1)(1)(63,56),
 
+                        //14
                         stateReg(2)(1)(7,0),
                         stateReg(2)(1)(15,8),
                         stateReg(2)(1)(23,16),
                         stateReg(2)(1)(31,24),
+
+                        //15
                         stateReg(2)(1)(39,32),
                         stateReg(2)(1)(47,40),
                         stateReg(2)(1)(55,48),
@@ -241,7 +283,7 @@ class Sha3 extends Module {
 
   //^(stateReg(0)(0))(12,8)^(stateReg(0)(0))(12,8)
 
-
+  io.result_32 := resultReg
 }
 
 

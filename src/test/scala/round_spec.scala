@@ -15,9 +15,14 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
   ///////////////////////////ROUNDS//////////////////////////////////
   System.out.println("Setting buffer_ready to true...\n")
   poke(dut.io.buffer_ready, true.B)
+
   step(25)
 
-  System.out.println("result: "+peek(dut.io.result).toString(16))
+  step(1)
+
+  System.out.println("result: "+peek(dut.io.result_512).toString(16))
+  for(i <- 0 to 15)
+    System.out.println("result ["+i+"]: "+peek(dut.io.result_32(i)).toString(16))
 
   // Helper functions
   def printInputToRound():Unit={
