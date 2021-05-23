@@ -223,7 +223,7 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
     System.out.println("------------------------------------------------------")
   }
   def initIOBuffer():Unit= {
-    poke(dut.io.enable_buffer, true.B)
+    //poke(dut.io.enable_buffer, true.B)
 
     poke(dut.io.data_in,0x00000000)
     step(1)
@@ -303,7 +303,7 @@ class round_tester(dut: Sha3) extends PeekPokeTester(dut)  {
     step(1)
     printIOBuffer()
 
-    poke(dut.io.enable_buffer, false.B)
+    //poke(dut.io.enable_buffer, false.B)
   }
 }
 

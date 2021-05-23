@@ -1,14 +1,7 @@
 [
   {
     "class":"firrtl.stage.FirrtlFileAnnotation",
-    "file":"test_run_dir/round_spec1827498495/Sha3.lo.fir"
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~Sha3|Sha3>io_enable_buffer",
-    "sources":[
-      "~Sha3|Sha3>io_buffer_ready"
-    ]
+    "file":"test_run_dir/round_spec2073884875/Sha3.lo.fir"
   },
   {
     "class":"logger.LogLevelAnnotation",
@@ -22,6 +15,6 @@
   },
   {
     "class":"firrtl.transforms.BlackBoxTargetDirAnno",
-    "targetDir":"test_run_dir/round_spec1827498495"
+    "targetDir":"test_run_dir/round_spec2073884875"
   }
 ]

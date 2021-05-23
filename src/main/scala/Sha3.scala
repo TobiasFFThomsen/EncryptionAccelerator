@@ -8,7 +8,7 @@ class Sha3 extends Module {
     val data_in      = Input(UInt(32.W))
     val c_in         = Input(Vec(16,UInt(64.W)))
     val buffer_ready = Input(Bool())
-    val enable_buffer = Input(Bool())
+    val enable_buffer = Output(Bool())
     val result_512        = Output(UInt(512.W))
     val result_32         = Output(Vec(16,UInt(32.W)))
     // For testing:
@@ -39,7 +39,7 @@ class Sha3 extends Module {
   val stateReg  = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
   val resultReg = RegInit(VecInit(Seq.fill(16)(0.U(32.W))))
   // Initializing the counter register
-  val idle ::  rounds :: done :: Nil = Enum(3)
+  val idle :: rounds :: result_ready :: Nil = Enum(3)
   //val counterReg    = RegInit(0.U)
   val next_state    = RegInit(idle)
   val xor_select    = RegInit(false.B)
@@ -71,15 +71,14 @@ class Sha3 extends Module {
     }
   }
 
-
+  io.enable_buffer := true.B
   switch(next_state){
     is(idle) {
       xor_select := true.B
       iota_round := 0.U
       when(io.buffer_ready){
         next_state  := rounds
-      }.otherwise{
-        next_state := idle
+        io.enable_buffer := false.B
       }
     }
     is(rounds) {
@@ -88,10 +87,14 @@ class Sha3 extends Module {
       when(iota_round < 23.U){
         next_state := rounds
         iota_round := iota_round + 1.U
+        io.enable_buffer := false.B
       }.otherwise{
         iota_round := iota_round
         next_state := idle
       }
+    }
+    is(result_ready) {
+
     }
   }
 
@@ -165,8 +168,6 @@ class Sha3 extends Module {
 
 
   resultReg(0)  := Cat(Seq(stateReg(0)(0)(7,0),stateReg(0)(0)(15,8),stateReg(0)(0)(23,16),stateReg(0)(0)(31,24)))
-  //resultReg(0)  := Cat(Seq(stateReg(0)(0)(31,24),stateReg(0)(0)(7,0),stateReg(0)(0)(15,8),stateReg(0)(0)(23,16)))
-
   resultReg(1)  := Cat(Seq(stateReg(0)(0)(39,32),stateReg(0)(0)(47,40),stateReg(0)(0)(55,48),stateReg(0)(0)(63,56)))
   resultReg(2)  := Cat(Seq(stateReg(1)(0)(7,0),stateReg(1)(0)(15,8),stateReg(1)(0)(23,16),stateReg(1)(0)(31,24)))
   resultReg(3)  := Cat(Seq(stateReg(1)(0)(39,32),stateReg(1)(0)(47,40),stateReg(1)(0)(55,48),stateReg(1)(0)(63,56)))
@@ -282,7 +283,7 @@ class Sha3 extends Module {
                   ))
 
   //^(stateReg(0)(0))(12,8)^(stateReg(0)(0))(12,8)
-
+  //io.enable_buffer := true.B
   io.result_32 := resultReg
 }
 
