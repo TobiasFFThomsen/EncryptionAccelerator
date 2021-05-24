@@ -57,15 +57,15 @@ class SMA_Accelerator() extends AcceleratorDevice(){
 
   // Pseudo control flow:
   when(state_reg === state_idle){
-    when(running_state === run_with_load){
-      state_reg := state_mem_load
-      status_reg := mem_loading
-    }
-    .elsewhen(running_state === run_without_load) {
-    	
+  	
+    when(running_state === run_without_load) {
       state_reg := state_comp
       status_reg := computing
       sma.io.valid_in := true.B
+    }
+    .elsewhen(running_state === run_with_load){
+      state_reg := state_mem_load
+      status_reg := mem_loading
     }
 
   }.elsewhen(state_reg === state_mem_load){
@@ -189,30 +189,35 @@ class SMA_Accelerator() extends AcceleratorDevice(){
   // On write, store data in result register
   // Acknowledge but ignore writes if not in state idle
   when (master_reg.Cmd === OcpCmd.WR && state_reg === idle) {
-    when(master_reg.Addr(5, 2) === Bits("b0000")){
+    when(master_reg.Addr(5, 2) === 0.U){
       n_start_addr := master_reg.Data
 
-    }.elsewhen(master_reg.Addr(5, 2) === Bits("b0010")){
+    }.elsewhen(master_reg.Addr(5, 2) === 2.U){
       b_start_addr := master_reg.Data
 
-    }.elsewhen(master_reg.Addr(5, 2) === Bits("b0100")){
+    }.elsewhen(master_reg.Addr(5, 2) === 4.U){
       t_start_addr := master_reg.Data
 
-    }.elsewhen(master_reg.Addr(5, 2) === Bits("b0110")){
+    }.elsewhen(master_reg.Addr(5, 2) === 6.U){
       dest_addr := master_reg.Data
 
-    }.elsewhen(master_reg.Addr(5, 2) === Bits("b0111")){
-      running_state := run_without_load
+    }.elsewhen(master_reg.Addr(5, 2) === 7.U){
+    
+    	running_state := run_with_load
 
-    }.elsewhen(master_reg.Addr(8, 2) === Bits("b01100")) {
+    }.elsewhen(master_reg.Addr(5, 2) === 8.U){
+    
+    	running_state := run_without_load
+
+    }.elsewhen(master_reg.Addr(8, 2) === 12.U) {
       bReg.io.shift_in := master_reg.Data
       bReg.io.enable := 1.U
 
-    }.elsewhen(master_reg.Addr(8, 2) === Bits("b01101")) {
+    }.elsewhen(master_reg.Addr(8, 2) === 13.U) {
       tReg.io.shift_in := master_reg.Data
       tReg.io.enable := 1.U
 
-    }.elsewhen(master_reg.Addr(8, 2) === Bits("b01110")) {
+    }.elsewhen(master_reg.Addr(8, 2) === 14.U) {
       nReg.io.shift_in := master_reg.Data
       nReg.io.enable := 1.U
       
@@ -221,8 +226,7 @@ class SMA_Accelerator() extends AcceleratorDevice(){
 
   when (master_reg.Cmd === OcpCmd.RD) {
     when(master_reg.Addr(8, 2) === Bits("b00000")) {
-      //data := n_start_addr
-      data := state_reg
+      data := n_start_addr
 
     }.elsewhen(master_reg.Addr(8, 2) === Bits("b00010")) {
       data := b_start_addr

@@ -447,7 +447,7 @@ class Patmos(configFile: String, binFile: String, datFile: String) extends Modul
 
 	registerPins(ramConf.name, ramCtrl.io)
   
-	/*
+	
 	// Connect single core and SMA accelerator to ram
 	val memarbiter = //Module(new ocp.TdmArbiter(2, ADDR_WIDTH, DATA_WIDTH, BURST_LENGTH)) //Module(new ocp.Arbiter(2, ADDR_WIDTH, DATA_WIDTH, BURST_LENGTH))
       if(ramCtrl.isInstanceOf[DDR3Bridge] || ramCtrl.isInstanceOf[OCRamCtrl]) {
@@ -466,8 +466,8 @@ class Patmos(configFile: String, binFile: String, datFile: String) extends Modul
 	memarbiter.io.slave.S <> ramCtrl.io.ocp.S
 	
 	ramCtrl.io.superMode := false.B
-	*/
 	
+	/*
   // TODO: fix memory arbiter to have configurable memory timing.
   // E.g., it does not work with on-chip main memory.
   if (cores.length == 1) {
@@ -488,7 +488,7 @@ class Patmos(configFile: String, binFile: String, datFile: String) extends Modul
     ramCtrl.io.ocp.M <> memarbiter.io.slave.M
     memarbiter.io.slave.S <> ramCtrl.io.ocp.S
     ramCtrl.io.superMode := false.B
-  }
+  }*/
 
   override val io = IO(new PatmosBundle(pins.map{case (pinid, devicepin) => pinid -> DataMirror.internal.chiselTypeClone(devicepin)}.toSeq: _*))
 

@@ -2,7 +2,7 @@
 #include <limits.h>
 #include <machine/patmos.h>
 
-#define BIT_WIDTH (unsigned int)256
+#define BIT_WIDTH (unsigned int)128
 #define BITS_PER_ELEMENT (unsigned int)32
 #define MAX_ELEMENTS (unsigned int)((BIT_WIDTH)/BITS_PER_ELEMENT)
 
@@ -14,15 +14,14 @@
 #define MEM_WRITE_ERR 5
 #define SUCCESS 6
 
-#define RUN_WITH_LOAD 1
-#define RUN_WITHOUT_LOAD 2
-
 #define N_START_ADDR (PATMOS_IO_SAM)
 #define B_START_ADDR (PATMOS_IO_SAM + 8)
 #define T_START_ADDR (PATMOS_IO_SAM + 16)
 #define DEST_ADDR (PATMOS_IO_SAM + 24)
-#define SMA_RUNNING_STATE (PATMOS_IO_SAM + 28)
-#define SMA_STATUS (PATMOS_IO_SAM + 32)
+#define SMA_WRITE_RUN_WITH_LOAD (PATMOS_IO_SAM + 28)
+#define SMA_WRITE_RUN_WITHOUT_LOAD (PATMOS_IO_SAM + 32)
+#define SMA_READ_RUNNING_STATE (PATMOS_IO_SAM + 28)
+#define SMA_READ_STATUS (PATMOS_IO_SAM + 32)
 #define SMA_TEST (PATMOS_IO_SAM + 36)
 #define SMA_BURST_STATE (PATMOS_IO_SAM + 40)
 #define SMA_BURST_CNT (PATMOS_IO_SAM + 44)
@@ -42,8 +41,10 @@ static volatile _IODEV int *sma_n_start_addr   = (volatile _IODEV int *)N_START_
 static volatile _IODEV int *sma_b_start_addr   = (volatile _IODEV int *)B_START_ADDR;
 static volatile _IODEV int *sma_t_start_addr   = (volatile _IODEV int *)T_START_ADDR;
 static volatile _IODEV int *sma_dest_addr   = (volatile _IODEV int *)DEST_ADDR;
-static volatile _IODEV int *sma_running_state   = (volatile _IODEV int *)SMA_RUNNING_STATE;
-static volatile _IODEV int *sma_status   = (volatile _IODEV int *)SMA_STATUS;
+static volatile _IODEV int *sma_write_run_with_load   = (volatile _IODEV int *)SMA_WRITE_RUN_WITH_LOAD;
+static volatile _IODEV int *sma_write_run_without_load    = (volatile _IODEV int *)SMA_WRITE_RUN_WITHOUT_LOAD;
+static volatile _IODEV int *sma_read_running_state   = (volatile _IODEV int *)SMA_READ_RUNNING_STATE;
+static volatile _IODEV int *sma_status   = (volatile _IODEV int *)SMA_READ_STATUS;
 static volatile _IODEV int *sma_result   = (volatile _IODEV int *)SMA_RESULT;
 static volatile _IODEV int *sma_burst_state   = (volatile _IODEV int *)SMA_BURST_STATE;
 static volatile _IODEV int *sma_burst_cnt   = (volatile _IODEV int *)SMA_BURST_CNT;
@@ -54,12 +55,15 @@ static volatile _IODEV int *sma_state  = (volatile _IODEV int *)SMA_STATE;
 
 void get_current_clock_cycles(unsigned int *);
 void get_current_clock_time(unsigned int *);
-void run_without_load(void);
 void write_b_reg(unsigned int *, unsigned int);
 void write_t_reg(unsigned int *, unsigned int);
 void write_n_reg(unsigned int *, unsigned int);
-void run_sma_software(unsigned int *, unsigned int *, unsigned int *, unsigned int *);
-void run_sma_hardware(unsigned int *, unsigned int *, unsigned int *, unsigned int *);
+void write_b_addr_reg(unsigned int);
+void write_t_addr_reg(unsigned int);
+void write_n_addr_reg(unsigned int);
+void run_sma_software(unsigned int*, unsigned int*, unsigned int*, unsigned int *);
+void run_sma_hardware_without_load(unsigned int *, unsigned int *, unsigned int *, unsigned int *);
+void run_sma_hardware_with_load(unsigned int, unsigned int, unsigned int, unsigned int *);
 void init(unsigned int *, unsigned int *, unsigned int *, unsigned int *, unsigned int);
 void print_number(unsigned int *, unsigned int);
 void read_b_reg(unsigned int *a, unsigned int size);
@@ -67,31 +71,49 @@ void read_t_reg(unsigned int *a, unsigned int size);
 void read_n_reg(unsigned int *a, unsigned int size);
 void clear_number(unsigned int *);
 
+
+#define SOFTWARE_TEST 			0
+#define HARDWARE_TEST 			1
+#define HARDWARE_TEST_WITH_LOAD	2
+
 int main() {
+
+	// Choose your test
+	// Write e.g. chosen_test = SOFTWARE_TEST
+	//unsigned int chosen_test = SOFTWARE_TEST;
+	//unsigned int chosen_test = HARDWARE_TEST;
+	unsigned int chosen_test = HARDWARE_TEST_WITH_LOAD;
 
 	unsigned int b[MAX_ELEMENTS];
 	unsigned int t[MAX_ELEMENTS];
 	unsigned int n[MAX_ELEMENTS];
 	unsigned int w[MAX_ELEMENTS];
-	unsigned int first_clk_cycles_software[2], second_clk_cycles_software[2];
-	unsigned int first_clk_cycles_hardware[2], second_clk_cycles_hardware[2];
+	unsigned int first_clk_cycles[2], second_clk_cycles[2];
 	
-	init(b,t,n,w,4);
+	init(b,t,n,w,2);
 	
-	//get_current_clock_cycles(first_clk_cycles_software);
+	switch(chosen_test) {
 	
-	//run_sma_software(b,t,n,w);
-	
-	//get_current_clock_cycles(second_clk_cycles_software);
-	
-	get_current_clock_cycles(first_clk_cycles_hardware);
-
-	run_sma_hardware(b,t,n,w);
-	
-	get_current_clock_cycles(second_clk_cycles_hardware);
-	
-	//printf("SMA WITHOUT accelerator: %u clock cycles\n", second_clk_cycles_software[0] - first_clk_cycles_software[0]);
-	printf("SMA WITH accelerator: %u clock cycles\n", second_clk_cycles_hardware[0] - first_clk_cycles_hardware[0]);
+		
+		case SOFTWARE_TEST: get_current_clock_cycles(first_clk_cycles);
+							run_sma_software(b,t,n,w);
+							get_current_clock_cycles(second_clk_cycles);
+							printf("SMA WITHOUT accelerator: %u clock cycles\n", second_clk_cycles[0] - first_clk_cycles[0]);
+							break;
+							
+		case HARDWARE_TEST: get_current_clock_cycles(first_clk_cycles);
+							run_sma_hardware_without_load(b,t,n,w);
+							get_current_clock_cycles(second_clk_cycles);
+							printf("SMA WITH accelerator WITH OCP Core: %u clock cycles\n", second_clk_cycles[0] - first_clk_cycles[0]);
+							break;
+							
+		case HARDWARE_TEST_WITH_LOAD: 
+							get_current_clock_cycles(first_clk_cycles);
+							run_sma_hardware_with_load((unsigned int)b,(unsigned int)t,(unsigned int)n,w);
+							get_current_clock_cycles(second_clk_cycles);
+							printf("SMA WITH accelerator WITH OCP Burst: %u clock cycles\n", second_clk_cycles[0] - first_clk_cycles[0]);
+							break;
+	}
 }
 
 
@@ -151,32 +173,29 @@ void init(unsigned int *b, unsigned int *t, unsigned int *n, unsigned int *w, un
 				n[0] = 778231;
 				break;
 		
-		case 5: // b = 8803120365140871558429975712366592, 
-				// t = 352125131519391705592227760323953874,
-				// n = 778231
-				b[1] = 1;
-				b[2] = 1000;
-				b[3] = 111111;
-				t[0] = 1234;
-				t[1] = 7;
-				t[2] = 99999;
-				t[3] = 4444444;
-				n[0] = 778231;
-				break;
-		
 		default:
 				break;
 	}
 }
 
+void run_without_load(void) {
+	
+	*sma_write_run_without_load = 1;
+}
 
-void run_sma_hardware(unsigned int *b, unsigned int *t, unsigned int *n, unsigned int *w) {
+void run_with_load(void) {
+	
+	*sma_write_run_with_load = 1;
+}
+
+void run_sma_hardware_without_load(unsigned int *b, unsigned int *t, unsigned int *n, unsigned int *w) {
 	
 	write_b_reg(b, MAX_ELEMENTS);
 	write_t_reg(t, MAX_ELEMENTS);
 	write_n_reg(n, MAX_ELEMENTS);
 	
 	run_without_load();
+	
 	while((*sma_status != SUCCESS) && !((*sma_status == MEM_LOAD_ERR) || (*sma_status == MEM_WRITE_ERR)));
 	
 	for(int i = 0; i < SMA_RW_CNT; i++) {
@@ -188,14 +207,33 @@ void run_sma_hardware(unsigned int *b, unsigned int *t, unsigned int *n, unsigne
 		
 		else {
 			
-			w[i] = 0;	
+			return;
 		}
 	}
 }
 
-void run_without_load(void) {
+void run_sma_hardware_with_load(unsigned int b_addr, unsigned int t_addr, unsigned int n_addr, unsigned int *w) {
 	
-	*sma_running_state = 1;
+	write_b_addr_reg(b_addr);
+	write_t_addr_reg(t_addr);
+	write_n_addr_reg(n_addr);
+	
+	run_with_load();
+	
+	while((*sma_status != SUCCESS) && !((*sma_status == MEM_LOAD_ERR) || (*sma_status == MEM_WRITE_ERR)));
+	
+	for(int i = 0; i < SMA_RW_CNT; i++) {
+		
+		if(i < MAX_ELEMENTS) {
+		
+			w[i] = *(sma_result + i*4);
+		}
+		
+		else {
+			
+			return;
+		}
+	}
 }
 
 void get_current_clock_cycles(unsigned int *a) {
@@ -246,6 +284,25 @@ void read_n_reg(unsigned int *a, unsigned int size) {
 	}
 }
 
+
+void write_b_addr_reg(unsigned int addr) {
+	
+	*sma_b_start_addr = addr;
+}
+
+
+void write_t_addr_reg(unsigned int addr) {
+	
+	*sma_t_start_addr = addr;
+}
+
+
+void write_n_addr_reg(unsigned int addr) {
+	
+	*sma_n_start_addr = addr;
+}
+
+
 void write_b_reg(unsigned int *a, unsigned int size) {
 	
 	
@@ -262,6 +319,7 @@ void write_b_reg(unsigned int *a, unsigned int size) {
 		}
 	}
 }
+
 
 void write_t_reg(unsigned int *a, unsigned int size) {
 	
@@ -296,6 +354,7 @@ void write_n_reg(unsigned int *a, unsigned int size) {
 		}
 	}
 }
+
 
 void multiply(unsigned int *, unsigned int *, unsigned int *);
 void add(unsigned int *, unsigned int *, unsigned int *);
