@@ -2,7 +2,6 @@ import chisel3._
 
 class Iota extends Module{
   val io  = IO( new Bundle {
-    //val iota_in  = Input(Vec(5, Vec(5,UInt(64.W))))
     val iota_in     = Input(UInt(64.W))
     val iota_round  = Input(UInt(64.W))
     val iota_out    = Output(UInt(64.W))
@@ -36,6 +35,7 @@ class Iota extends Module{
   RC(23)  := BigInt("8000000080008008", 16).U
 
   io.iota_xor_val := RC(io.iota_round)
+
   /*Iota*/
   io.iota_out := io.iota_in^RC(io.iota_round)
 }

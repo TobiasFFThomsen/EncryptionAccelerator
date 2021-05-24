@@ -3,15 +3,19 @@ import chisel3.util._
 
 class Sha3 extends Module {
   val io            = IO( new Bundle {
-    val data_in           = Input(UInt(32.W))
     val buffer_ready      = Input(Bool())
     val enable_buffer     = Input(Bool())
-    val result_32         = Output(Vec(16,UInt(32.W)))
-    val status_reg        = Output(UInt(32.W))
-    val m_len             = Input(UInt(32.W))
+    //val result_32         = Output(Vec(16,UInt(32.W)))
+    //val status_reg        = Output(UInt(32.W))
+    //val data_in           = Input(UInt(32.W))
+    //val m_len             = Input(UInt(32.W))
+
+    // Dummy signals for synthesis
+    val select            = Input(Bool())
+    val dummy_output      = Output(Bits())
 
     // For testing:
-    /*
+    /* These signals should be commented in when running peek poke tests
     val round_out           = Output(Vec(5,Vec(5,UInt(64.W))))
     val theta_out           = Output(Vec(5,Vec(5,UInt(64.W))))
     val theta_c             = Output(Vec(5,UInt(64.W)))
@@ -28,6 +32,8 @@ class Sha3 extends Module {
      */
   })
 
+  val m_len = 1.U
+
   // Instantiating the Round module
   val round    = Module(new Round())
   val buffer   = Module(new Buffer())
@@ -37,8 +43,8 @@ class Sha3 extends Module {
   val stateReg  = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
   val resultReg = RegInit(VecInit(Seq.fill(16)(0.U(32.W))))
 
+  // State enum
   val idle :: error :: rounds :: result_ready :: Nil = Enum(4)
-
 
   // Registers
   val state_reg         = RegInit(idle)
@@ -48,12 +54,33 @@ class Sha3 extends Module {
   val current_message   = RegInit(0.U(32.W))
 
   // Signals
-  io.status_reg := status_reg
-  buffer.io.dataIn  := io.data_in
   buffer.io.enable  := io.enable_buffer
 
+
+  // Signals when peek poke testing:
+  // io.status_reg     := status_reg
+  // buffer.io.dataIn  := io.data_in
+
+  /* Signals for synthesis:
+      (Hardcoding a value to make the algorithm run, without having to assign ports to switches or buttons in a
+      constraint file):
+
+   */
+  when(io.select){
+    buffer.io.dataIn := 0x01234567.U
+  }otherwise{
+    buffer.io.dataIn := 0x76543210.U
+  }
+
+  when((resultReg(0))(0)===1.U){
+    io.dummy_output := true.B
+  }.otherwise{
+    io.dummy_output := false.B
+  }
+
+
   // Signals for testing
-  /*
+  /* These signals have to be commented in, when running the peek poke tests:
   io.next_state := state_reg
   io.theta_d              := round.io.R_theta_d_out
   io.theta_c              := round.io.R_theta_c_out
@@ -66,23 +93,22 @@ class Sha3 extends Module {
   io.iota_xor_val_out     := round.io.R_iota_xor_val_out
   io.iota_round           := round.io.R_iota_round
   io.buffer_content_32    := buffer.io.data_32_out
-
-  for(x <- 0 to 4){
-    for(y <- 0 to 4){
-      io.round_out(x)(y) := round.io.round_out(x)(y)
-    }
-  }
+  io.round_out            := round.io.round_out
   */
 
+  /*State machine controlling the SHA3 accelerator*/
+  /*Replace the m_len value with the commented-out input of the same name (in this case io.m_len)
+  (found in the io bundle in the top of this file)
+  case this module is used together with the SHA_top module, as a io device for patmos*/
   switch(state_reg){
     is(idle) {
-      when(io.buffer_ready && io.m_len > 0.U){
+      when(io.buffer_ready && m_len > 0.U){
         xor_select := true.B
         iota_round := 0.U
         status_reg := 1.U
         state_reg  := rounds
         current_message := current_message + 1.U
-      }.elsewhen(io.buffer_ready && io.m_len <= 0.U){
+      }.elsewhen(io.buffer_ready && m_len <= 0.U){
         state_reg := error
       }
     }
@@ -91,7 +117,7 @@ class Sha3 extends Module {
       stateReg   := round.io.round_out
       when(iota_round < 24.U){
         iota_round := iota_round + 1.U
-      }.elsewhen(current_message===io.m_len){
+      }.elsewhen(current_message===m_len){
         resultReg(0)  := Cat(Seq(stateReg(0)(0)(7,0),stateReg(0)(0)(15,8),stateReg(0)(0)(23,16),stateReg(0)(0)(31,24)))
         resultReg(1)  := Cat(Seq(stateReg(0)(0)(39,32),stateReg(0)(0)(47,40),stateReg(0)(0)(55,48),stateReg(0)(0)(63,56)))
         resultReg(2)  := Cat(Seq(stateReg(1)(0)(7,0),stateReg(1)(0)(15,8),stateReg(1)(0)(23,16),stateReg(1)(0)(31,24)))
@@ -171,7 +197,10 @@ class Sha3 extends Module {
   round.io.round_in(3)(4) := stateReg(3)(4)
   round.io.round_in(4)(4) := stateReg(4)(4)
 
-  io.result_32 := resultReg
+  //io.result_32 := resultReg
 }
-
-
+/*Generating the verilog HD*/
+object sha3_verilog extends App {
+  println("Generating the Verilog file for CycledMultiplier!")
+  (new chisel3.stage.ChiselStage).emitVerilog(new Sha3())
+}

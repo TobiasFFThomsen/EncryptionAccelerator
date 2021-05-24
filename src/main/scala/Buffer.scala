@@ -4,11 +4,12 @@ import chisel3.util._
 class Buffer extends Module {
   val io            = IO( new Bundle {
 
-        val dataIn  = Input(UInt(32.W))
-        val dataOut = Output(Vec(9,UInt(64.W)))
-        //for testing:
+        val dataIn      = Input(UInt(32.W))
+        val dataOut     = Output(Vec(9,UInt(64.W)))
+
+        //FOR TESTING:
         val data_32_out = Output(Vec(18,UInt(32.W)))
-        val enable  = Input(Bool())
+        val enable      = Input(Bool())
   })
   val dataReg = RegInit(VecInit(Seq.fill(18)(0.U(32.W))))
 

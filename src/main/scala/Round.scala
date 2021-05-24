@@ -2,16 +2,18 @@ import chisel3._
 
 class Round extends Module{
   val io              = IO( new Bundle {
-    val round_in      = Input(Vec(5, Vec(5,UInt(64.W))))
-    val round_out     = Output(Vec(5, Vec(5,UInt(64.W))))
-    val R_iota_round  = Input(UInt(64.W))
-    val R_theta_out   = Output(Vec(5, Vec(5,UInt(64.W))))
-    val R_rhoPi_out   = Output(Vec(5, Vec(5,UInt(64.W))))
-    val R_chi_out     = Output(Vec(5, Vec(5,UInt(64.W))))
-    val R_iota_out    = Output(UInt(64.W))
-    val R_theta_d_out = Output(Vec(5,UInt(64.W)))
-    val R_theta_c_out = Output(Vec(5,UInt(64.W)))
-    val R_iota_xor_val_out = Output(UInt(64.W))
+    val round_in            = Input(Vec(5, Vec(5,UInt(64.W))))
+    val round_out           = Output(Vec(5, Vec(5,UInt(64.W))))
+    val R_iota_round        = Input(UInt(64.W))
+
+    /* THE SIGNALS BELOW ARE USED FOR (PEEK POKE) TESTING */
+    val R_theta_out         = Output(Vec(5, Vec(5,UInt(64.W))))
+    val R_rhoPi_out         = Output(Vec(5, Vec(5,UInt(64.W))))
+    val R_chi_out           = Output(Vec(5, Vec(5,UInt(64.W))))
+    val R_iota_out          = Output(UInt(64.W))
+    val R_theta_d_out       = Output(Vec(5,UInt(64.W)))
+    val R_theta_c_out       = Output(Vec(5,UInt(64.W)))
+    val R_iota_xor_val_out  = Output(UInt(64.W))
   })
 
   val theta   = Module(new Theta())
