@@ -3,6 +3,17 @@
  - David Risom Pedersen
  - Casper Egholm Jørgensen 
  - Tobias Thomsen
+ 
+## How to test with patmos
+Copy scala files from scala/accelrator, scala/io, and scala/patmos to t-crest/patmos/hardware/scala
+
+Copy patmos.h to t-crest/newlib/newlib/libc/machine/patmos/machine
+
+Copy sma.c to t-crest/patmos/c
+
+do "make emulator APP=sma comp && patemu tmp/sma.elf"
+
+
 ## Schedule:
 ![Block for Key generation](images/schedule.png)
 ## Ideas for other algorithms and expansions of project
