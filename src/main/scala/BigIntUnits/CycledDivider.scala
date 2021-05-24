@@ -27,14 +27,10 @@ class CycledDivider extends Module{
   val quotient_reg: UInt = RegInit(0.U((2 * width).W))
 
   val cycledAdder: CycledAdder = Module(new CycledAdder(2*width, 32))
-  val cycledAdder_Q: CycledAdder = Module(new CycledAdder(2*width, 32))
   cycledAdder.io.adder := dividend_reg  // Placeholder
   cycledAdder.io.addend := 0.U          // Placeholder
   cycledAdder.io.valid_in := false.B
-  // We need a second adder to be able to add to the quotient in parallel
-  cycledAdder_Q.io.adder := quotient_reg
-  cycledAdder_Q.io.addend := 1.U
-  cycledAdder_Q.io.valid_in := false.B
+
 
   // Control signals
   val step_reg: UInt = RegInit(0.U(12.W)) // width = ceil(log2(2048 + 1))
@@ -111,21 +107,18 @@ class CycledDivider extends Module{
           cycledAdder.io.adder := dividend_reg
           cycledAdder.io.addend := cycledAdder.io.result
           cycledAdder.io.valid_in := true.B
-          cycledAdder_Q.io.valid_in := true.B
           state_reg_Q := subtracting
           // ---------
           divisor_reg := divisor_reg >> 1 // STEP (3)
         }
       }.otherwise {
         // state_reg_Q === subtracting
-        when(cycledAdder.io.valid_out && cycledAdder_Q.io.valid_out){
+        when(cycledAdder.io.valid_out){
           //printf("Remainder: %d\n", dividend_reg)
           //printf("Q: %d\n", quotient_reg)
           //printf("\n")
           dividend_reg := cycledAdder.io.result
-          quotient_reg := cycledAdder_Q.io.result
-
-          //quotient_reg := quotient_reg + 1.U  // TODO: CYCLE
+          quotient_reg := quotient_reg | 1.U
           step_reg := step_reg - 1.U
           state_reg_Q := shift
         }
