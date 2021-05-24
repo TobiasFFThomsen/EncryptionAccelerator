@@ -1,19 +1,21 @@
-import BigIntUnits.Divider
+import BigIntUnits.CycledDivider
 import chisel3.iotesters.PeekPokeTester
 import org.scalatest.{FlatSpec, Matchers}
 
-class DividerTester2(dut: Divider) extends PeekPokeTester(dut) {
-  val divisor_1 = 211
-  val dividend_1 = 70000
+import scala.math.BigInt
+
+class CycledDividerTester(dut: CycledDivider) extends PeekPokeTester(dut) {
+  val divisor_1 = 3
+  val dividend_1 = 20
   val divisor_2 = 223
   val dividend_2 = 10010
-  val expected_quotient_1 = 331
+  val expected_quotient_1 = 6
   val expected_quotient_2 = 44
-  val expected_remainder_1 = 159
+  val expected_remainder_1 = 2
   val expected_remainder_2 = 198
 
-
   expect(dut.io.valid_out, true)
+
   poke(dut.io.valid_in, false)
   step(1)
   expect(dut.io.valid_out, true)
@@ -23,8 +25,13 @@ class DividerTester2(dut: Divider) extends PeekPokeTester(dut) {
   poke(dut.io.dividend, dividend_1)
   step(1)
   expect(dut.io.valid_out, false)
+  System.out.println(peek(dut.io.valid_out))
 
-  step(400)
+  step(2000)
+  val valid_o: BigInt = peek(dut.io.valid_out)
+  val q_result: BigInt = peek(dut.io.quotient)
+  val remainder_result: BigInt = peek(dut.io.remainder)
+
   expect(dut.io.valid_out, true)
   expect(dut.io.quotient, expected_quotient_1)
   expect(dut.io.remainder, expected_remainder_1)
@@ -45,15 +52,15 @@ class DividerTester2(dut: Divider) extends PeekPokeTester(dut) {
   step(1)
   expect(dut.io.valid_out, false)
 
-  step(400)
+  step(10000)
   expect(dut.io.valid_out, true)
 
   expect(dut.io.quotient, expected_quotient_2)
   expect(dut.io.remainder, expected_remainder_2)
 }
 
-class DividerSpec_ConsecutiveRuns extends FlatSpec with Matchers {
-  "BigIntUnits.Divider" should "pass" in {
-    chisel3.iotesters.Driver(() => new Divider) { c => new DividerTester2(c)} should be (true)
+class CycledDividerSpec extends FlatSpec with Matchers {
+  "BigIntUnits.CycledDivider" should "pass" in {
+    chisel3.iotesters.Driver(() => new CycledDivider) { c => new CycledDividerTester(c)} should be (true)
   }
 }

@@ -25,6 +25,7 @@ class CycledAdderTester3(dut: CycledAdder) extends PeekPokeTester(dut) {
 
   for(i <- 0 until 130){
     step(1)
+    /*
     //out = peek(dut.io.out)
     result = peek(dut.io.result)
     //adder = peek(dut.io.adder_out)
@@ -40,7 +41,10 @@ class CycledAdderTester3(dut: CycledAdder) extends PeekPokeTester(dut) {
     System.out.println("Valid out         : " + valid_out)
     System.out.println("Carry/Overflow    : " + overflow)
     System.out.println("---------")
+
+     */
   }
+  expect(dut.io.result, BigInt("13789127307890764755981700426600476890670608"))
 
 
 

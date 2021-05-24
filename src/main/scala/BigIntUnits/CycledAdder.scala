@@ -7,7 +7,7 @@ class CycledAdder(fullDataWidth: Int, regDataWidth: Int) extends Module{
   // We need an extra register in the case of subtraction,
   // as the 2's complement takes 1 more bit for representation
   // This will introduce some overhead for smaller numbers, but
-  val registerCount: Int = (fullDataWidth / regDataWidth) + 1
+  val registerCount: Int = (fullDataWidth / regDataWidth)// + 1
   val io = IO(new Bundle {
     // Inputs
     val adder: UInt = Input(UInt((fullDataWidth).W))
@@ -28,30 +28,24 @@ class CycledAdder(fullDataWidth: Int, regDataWidth: Int) extends Module{
   })
   // DATA REGISTERS AND WIRES
   // ---------------
-  val adder_reg: ParallelShiftRegister = Module(new ParallelShiftRegister(fullDataWidth+regDataWidth, regDataWidth))
+  val adder_reg: ParallelShiftRegister = Module(new ParallelShiftRegister(fullDataWidth, regDataWidth))
   // We need to add a single additional shiftregister for the addend to hold the 2's complement in case of subtraction
-  val addend_reg: ParallelShiftRegister = Module(new ParallelShiftRegister(fullDataWidth+regDataWidth, regDataWidth))
-  val sum_reg: ParallelShiftRegister = Module(new ParallelShiftRegister(fullDataWidth+regDataWidth, regDataWidth))
+  val addend_reg: ParallelShiftRegister = Module(new ParallelShiftRegister(fullDataWidth, regDataWidth))
+  val sum_reg: ParallelShiftRegister = Module(new ParallelShiftRegister(fullDataWidth, regDataWidth))
   val partial_sum: UInt = Wire(UInt((regDataWidth+1).W))
   val carry_reg: UInt = RegInit(0.U(1.W))
   partial_sum := Cat(Seq(0.U, adder_reg.io.out(registerCount - 1))) + Cat(Seq(0.U, addend_reg.io.out(registerCount - 1))) + carry_reg
   carry_reg := 0.U  // Default 0 if
   io.overflow := carry_reg
-
+Seq
   io.result := Cat(sum_reg.io.out)
   //io.out := sum_reg.io.out
 
   val adder_vec: Vec[UInt] = Wire(Vec(registerCount, UInt(regDataWidth.W)))
   val addend_vec: Vec[UInt] = Wire(Vec(registerCount, UInt(regDataWidth.W)))
   for(i <- 0 until registerCount){
-    if(i < (registerCount - 1)){
-      adder_vec(i) := io.adder(regDataWidth-1 + regDataWidth*i, regDataWidth*i)
-      addend_vec(i) :=  io.addend(regDataWidth-1 + regDataWidth*i, regDataWidth*i)
-    }else{
-      // 2's complement hack
-      adder_vec(i) := 0.U   // Sign bit for adder
-      addend_vec(i) := Cat(Seq.fill(regDataWidth)(io.addend(fullDataWidth))) // Sign bit for addend
-    }
+    adder_vec(i) := io.adder(regDataWidth-1 + regDataWidth*i, regDataWidth*i)
+    addend_vec(i) :=  io.addend(regDataWidth-1 + regDataWidth*i, regDataWidth*i)
   }
   adder_reg.io.parallel_input := adder_vec
   addend_reg.io.parallel_input := addend_vec

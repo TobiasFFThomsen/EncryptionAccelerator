@@ -13,11 +13,11 @@ class CycledAdderTester4(dut: CycledAdder) extends PeekPokeTester(dut) {
   System.out.println("Carry/Overflow    : " + overflow)
   System.out.println("---------")
 
-  poke(dut.io.adder, BigInt(""))
+  poke(dut.io.adder, BigInt("1")) // 1's complement of -(2^4096 - 2)
   poke(dut.io.addend, BigInt("1"))
   poke(dut.io.valid_in, true)
 
-  for(i <- 0 until 130){
+  for(i <- 0 until 129){
     step(1)
     //out = peek(dut.io.out)
     result = peek(dut.io.result)
@@ -35,6 +35,7 @@ class CycledAdderTester4(dut: CycledAdder) extends PeekPokeTester(dut) {
     System.out.println("Carry/Overflow    : " + overflow)
     System.out.println("---------")
   }
+  expect(dut.io.result, BigInt("2"))
 
 
 

@@ -11,20 +11,20 @@ class SAMTester(dut: SAM) extends PeekPokeTester(dut) {
   poke(dut.io.valid_in, false)
   step(1)
 
-  poke(dut.io.t, BigInt("17384"));
+  poke(dut.io.t, BigInt("17"));
   poke(dut.io.n, 213);
   poke(dut.io.b, 27);
   poke(dut.io.valid_in, true);
   step(1)
   expect(dut.io.valid_out, false)
-  step(50000)
+  step(100000)
   expect(dut.io.valid_out, true)
-  expect(dut.io.result, 9)
+  expect(dut.io.result, 60)
 
   poke(dut.io.valid_in, false)
   step(1)
 
-
+/*
   poke(dut.io.t, BigInt("16254312363712312311231231231"));
   poke(dut.io.n, 276372);
   poke(dut.io.b, 5216332123123123L);
@@ -40,6 +40,8 @@ class SAMTester(dut: SAM) extends PeekPokeTester(dut) {
   poke(dut.io.valid_in, false)
   step(1)
 
+ */
+/*
   poke(dut.io.t, BigInt("1625431236371231231123123123116254312363712312311231231231"));
   poke(dut.io.n, BigInt("12786387113123"));
   poke(dut.io.b, BigInt("5216332123123123182937982"));
@@ -51,6 +53,8 @@ class SAMTester(dut: SAM) extends PeekPokeTester(dut) {
   step(900000)
   expect(dut.io.valid_out, true)
   expect(dut.io.result, 2643790355569L)
+
+ */
   /*
   val result: BigInt = peek(dut.io.result)
   val v_in: BigInt = peek(dut.io.valid_in)

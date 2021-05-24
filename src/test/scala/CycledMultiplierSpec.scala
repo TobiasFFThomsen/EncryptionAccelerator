@@ -24,7 +24,7 @@ class CycledMultiplierTester1(dut: CycledMultiplier) extends PeekPokeTester(dut)
   step(1)
   expect(dut.io.valid_out, false)
 
-  step(100000)
+  step(60000)
   expect(dut.io.valid_out, true)
   expect(dut.io.result, expected_1)
 

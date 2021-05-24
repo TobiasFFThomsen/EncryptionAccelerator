@@ -67,8 +67,7 @@ class CycledMultiplier extends Module {
           multiplicand_reg := multiplicand_reg << 1
           step_reg := step_reg + 1.U
         }
-
-      }.elsewhen(cycledAdder.io.valid_out){
+      }.elsewhen((sub_state_reg === adding) && cycledAdder.io.valid_out){
         // Assume sub_state summing
         step_reg := step_reg + 1.U
         multiplicator_reg := multiplicator_reg >> 1

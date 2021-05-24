@@ -1,5 +1,5 @@
-import BigIntUnits.{Divider, Multiplier, CycledAdder}
-import Chisel.{Enum, PriorityEncoder, Reverse}
+import BigIntUnits.{CycledDivider, CycledMultiplier}
+import Chisel.{Enum}
 import chisel3._
 
 
@@ -11,7 +11,7 @@ class SAM() extends Module {
   valid_in must be raised and held high while operation is running (until valid_out is raised).
   */
   val max_bit_width = 2048
-  val idle :: start :: squaring :: first_mod :: mult_b :: second_mod :: step_done :: nil1 = Enum(7)
+  val idle :: initialize :: start :: squaring :: first_mod :: mult_b :: second_mod :: step_done :: nil1 = Enum(8)
   val load :: compute :: nil2 = Enum(2)
 
   val io = IO(new Bundle {
@@ -25,17 +25,18 @@ class SAM() extends Module {
     val valid_out: Bool = Output(Bool())
   })
   // Big integer arithmetic modules
-  val multiplier: Multiplier = Module(new Multiplier())
-  val divider: Divider = Module(new Divider())
+  val multiplier: CycledMultiplier = Module(new CycledMultiplier())
+  val divider: CycledDivider = Module(new CycledDivider())
 
   // Initial values
   // ---------------------------------------
   // Result and UI control signals
-  val w_reg: UInt = RegInit(1.U((max_bit_width*2).W)) // Register holding current computed result
+  val w_reg: UInt = RegInit(1.U((max_bit_width * 2).W)) // Register holding current computed result
 
   // Internal control signals
   val progress_reg: UInt = RegInit(0.U(12.W)); // Register holding iteration progress
   val edge_high_reg: Bool = RegInit(false.B) // Register triggering computing on valid_in rising edge
+  edge_high_reg := io.valid_in
   // val exp_lim: UInt = RegInit(1.U(max_bit_width.W))
   val state_reg: UInt = RegInit(idle)
   val sub_state_reg: UInt = RegInit(load)
@@ -48,25 +49,11 @@ class SAM() extends Module {
   // 1) Not already computing
   // 2) valid input signal is raised
   // 3) valid input signal was not raised raised on prior cycle
-  val reversed_t = Reverse(io.t)
-  edge_high_reg := io.valid_in
 
   // ------------------------------------------------------------------------
   // https://stackoverflow.com/questions/60394862/taking-log2ceil-of-uint
 
-  val highest_bit_pos = WireInit(0.U(12.W))
-
-  when(reversed_t(511,0) > 0.U){
-    highest_bit_pos := 511.U - PriorityEncoder(reversed_t(511,0)) + 1536.U
-  }.elsewhen(reversed_t(1023, 512) > 0.U){
-    highest_bit_pos := 511.U - PriorityEncoder(reversed_t(1023, 512)) + 1024.U
-  }.elsewhen(reversed_t(1535, 1024) > 0.U){
-    highest_bit_pos := 511.U - PriorityEncoder(reversed_t(1535, 1024)) + 512.U
-  }.elsewhen(reversed_t(2047, 1536) > 0.U){
-    highest_bit_pos := 511.U - PriorityEncoder(reversed_t(2047, 1536))
-  }.otherwise{
-    highest_bit_pos := 0.U
-  }
+  val highest_bit_pos_reg: UInt = RegInit(2047.U(12.W))
 
   // Multiplier states
   multiplier.io.valid_in := false.B
@@ -77,18 +64,18 @@ class SAM() extends Module {
   divider.io.divisor := 0.U
 
   // Multiplier control
-  when(state_reg === squaring){
+  when(state_reg === squaring) {
     multiplier.io.valid_in := true.B
     multiplier.io.multiplicator := w_reg(2047, 0)
     multiplier.io.multiplicand := w_reg(2047, 0)
-  }.elsewhen(state_reg === mult_b){
+  }.elsewhen(state_reg === mult_b) {
     multiplier.io.valid_in := true.B
     multiplier.io.multiplicator := w_reg(2047, 0)
     multiplier.io.multiplicand := io.b
   }
 
   // Divider control
-  when(state_reg === first_mod || state_reg === second_mod){
+  when(state_reg === first_mod || state_reg === second_mod) {
     divider.io.valid_in := true.B
     divider.io.dividend := w_reg
     divider.io.divisor := io.n
@@ -99,15 +86,25 @@ class SAM() extends Module {
     // Trigger computation
     when(io.valid_in & !edge_high_reg) {
       //Initialize computation if not already running and edge high
+      highest_bit_pos_reg := 2047.U
+      state_reg := initialize
       w_reg := 1.U
       progress_reg := 0.U
+    }
+
+  }.elsewhen(state_reg === initialize){
+    // Search for the most significant asserted bit
+    // printf("pos: %d\n", highest_bit_pos_reg)
+    when(io.t(highest_bit_pos_reg)){
       state_reg := start
+    }.otherwise{
+      highest_bit_pos_reg := highest_bit_pos_reg - 1.U
     }
 
   }.elsewhen(state_reg === start) {
     // Start computation
 
-    when(progress_reg === highest_bit_pos + 1.U) {
+    when(progress_reg === highest_bit_pos_reg + 1.U) {
       // Done, stop iterating
       state_reg := idle
       // printf("DONE!\n")
@@ -142,7 +139,7 @@ class SAM() extends Module {
     }.otherwise {
       when(divider.io.valid_out) {
         // Store result. Reset divider.
-        when(io.t(highest_bit_pos - progress_reg)) { // If exponent bit is 1
+        when(io.t(highest_bit_pos_reg - progress_reg)) { // If exponent bit is 1
           state_reg := mult_b
         }.otherwise {
           // Stop. Next step (exponent bit)
