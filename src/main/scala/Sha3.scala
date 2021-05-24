@@ -3,113 +3,134 @@ import chisel3.util._
 
 class Sha3 extends Module {
   val io            = IO( new Bundle {
-
-    //val iota_round   = Input(UInt(64.W))
-    val data_in      = Input(UInt(32.W))
-    val c_in         = Input(Vec(16,UInt(64.W)))
-    val buffer_ready = Input(Bool())
-    val enable_buffer = Output(Bool())
-    val result_512        = Output(UInt(512.W))
+    val data_in           = Input(UInt(32.W))
+    val buffer_ready      = Input(Bool())
+    val enable_buffer     = Input(Bool())
     val result_32         = Output(Vec(16,UInt(32.W)))
+    val status_reg        = Output(UInt(32.W))
+    val m_len             = Input(UInt(32.W))
+
     // For testing:
-    val round_out = Output(Vec(5,Vec(5,UInt(64.W))))
-    val theta_out = Output(Vec(5,Vec(5,UInt(64.W))))
-    val theta_c   = Output(Vec(5,UInt(64.W)))
-    val theta_d   = Output(Vec(5,UInt(64.W)))
-    val rhoPi_out = Output(Vec(5,Vec(5,UInt(64.W))))
-    val chi_out   = Output(Vec(5,Vec(5,UInt(64.W))))
-    val iota_out  = Output(UInt(64.W))
-    val iota_xor_val_out = Output(UInt(64.W))
-    val iota_round       = Output(UInt(64.W))
-    val round_in  = Output(Vec(5,Vec(5,UInt(64.W))))
-
-    val IObuffer_content = Output(Vec(9,UInt(64.W)))
-    val IObuffer_content_32 = Output(Vec(18,UInt(32.W)))
-
-    //val register_in   = Input(Vec(5,Vec(5,UInt(64.W))))
-    val register_out  = Output(Vec(5,Vec(5,UInt(64.W))))
-    //val state = Output(String)
-
+    /*
+    val round_out           = Output(Vec(5,Vec(5,UInt(64.W))))
+    val theta_out           = Output(Vec(5,Vec(5,UInt(64.W))))
+    val theta_c             = Output(Vec(5,UInt(64.W)))
+    val theta_d             = Output(Vec(5,UInt(64.W)))
+    val rhoPi_out           = Output(Vec(5,Vec(5,UInt(64.W))))
+    val chi_out             = Output(Vec(5,Vec(5,UInt(64.W))))
+    val iota_out            = Output(UInt(64.W))
+    val iota_xor_val_out    = Output(UInt(64.W))
+    val iota_round          = Output(UInt(64.W))
+    val round_in            = Output(Vec(5,Vec(5,UInt(64.W))))
+    val register_out        = Output(Vec(5,Vec(5,UInt(64.W))))
+    val buffer_content_32   = Output(Vec(18,UInt(32.W)))
+    val next_state          = Output(UInt(32.W))
+     */
   })
 
   // Instantiating the Round module
   val round    = Module(new Round())
   val buffer   = Module(new Buffer())
+
   // Initializing the state register
+  // SHA3 state:
   val stateReg  = RegInit(VecInit(Seq.fill(5)(VecInit(Seq.fill(5)(0.U(64.W))))))
   val resultReg = RegInit(VecInit(Seq.fill(16)(0.U(32.W))))
-  // Initializing the counter register
-  val idle :: rounds :: result_ready :: Nil = Enum(3)
-  //val counterReg    = RegInit(0.U)
-  val next_state    = RegInit(idle)
-  val xor_select    = RegInit(false.B)
-  val iota_round    = RegInit(0.U(8.W))
-  val status_reg    = RegInit(0.U(8.W))
+
+  val idle :: error :: rounds :: result_ready :: Nil = Enum(4)
+
+
+  // Registers
+  val state_reg         = RegInit(idle)
+  val xor_select        = RegInit(false.B)
+  val iota_round        = RegInit(0.U(8.W))
+  val status_reg        = RegInit(0.U(32.W))
+  val current_message   = RegInit(0.U(32.W))
 
   // Signals
+  io.status_reg := status_reg
   buffer.io.dataIn  := io.data_in
   buffer.io.enable  := io.enable_buffer
 
-
   // Signals for testing
-  io.theta_d      := round.io.R_theta_d_out
-  io.theta_c      := round.io.R_theta_c_out
-  io.theta_out    := round.io.R_theta_out
-  io.rhoPi_out    := round.io.R_rhoPi_out
-  io.chi_out      := round.io.R_chi_out
-  io.iota_out     := round.io.R_iota_out
-  io.round_in     := round.io.round_in
-  io.register_out := stateReg
-  io.iota_xor_val_out := round.io.R_iota_xor_val_out
-  io.iota_round       := round.io.R_iota_round
-  io.IObuffer_content := buffer.io.dataOut
-  io.IObuffer_content_32  := buffer.io.data_32_out
+  /*
+  io.next_state := state_reg
+  io.theta_d              := round.io.R_theta_d_out
+  io.theta_c              := round.io.R_theta_c_out
+  io.theta_out            := round.io.R_theta_out
+  io.rhoPi_out            := round.io.R_rhoPi_out
+  io.chi_out              := round.io.R_chi_out
+  io.iota_out             := round.io.R_iota_out
+  io.round_in             := round.io.round_in
+  io.register_out         := stateReg
+  io.iota_xor_val_out     := round.io.R_iota_xor_val_out
+  io.iota_round           := round.io.R_iota_round
+  io.buffer_content_32    := buffer.io.data_32_out
 
   for(x <- 0 to 4){
     for(y <- 0 to 4){
       io.round_out(x)(y) := round.io.round_out(x)(y)
     }
   }
+  */
 
-  io.enable_buffer := true.B
-  switch(next_state){
+  switch(state_reg){
     is(idle) {
-      xor_select := true.B
-      iota_round := 0.U
-      when(io.buffer_ready){
-        next_state  := rounds
-        io.enable_buffer := false.B
+      when(io.buffer_ready && io.m_len > 0.U){
+        xor_select := true.B
+        iota_round := 0.U
+        status_reg := 1.U
+        state_reg  := rounds
+        current_message := current_message + 1.U
+      }.elsewhen(io.buffer_ready && io.m_len <= 0.U){
+        state_reg := error
       }
     }
     is(rounds) {
       xor_select := false.B
       stateReg   := round.io.round_out
-      when(iota_round < 23.U){
-        next_state := rounds
+      when(iota_round < 24.U){
         iota_round := iota_round + 1.U
-        io.enable_buffer := false.B
+      }.elsewhen(current_message===io.m_len){
+        resultReg(0)  := Cat(Seq(stateReg(0)(0)(7,0),stateReg(0)(0)(15,8),stateReg(0)(0)(23,16),stateReg(0)(0)(31,24)))
+        resultReg(1)  := Cat(Seq(stateReg(0)(0)(39,32),stateReg(0)(0)(47,40),stateReg(0)(0)(55,48),stateReg(0)(0)(63,56)))
+        resultReg(2)  := Cat(Seq(stateReg(1)(0)(7,0),stateReg(1)(0)(15,8),stateReg(1)(0)(23,16),stateReg(1)(0)(31,24)))
+        resultReg(3)  := Cat(Seq(stateReg(1)(0)(39,32),stateReg(1)(0)(47,40),stateReg(1)(0)(55,48),stateReg(1)(0)(63,56)))
+        resultReg(4)  := Cat(Seq(stateReg(2)(0)(7,0),stateReg(2)(0)(15,8),stateReg(2)(0)(23,16),stateReg(2)(0)(31,24)))
+        resultReg(5)  := Cat(Seq(stateReg(2)(0)(39,32),stateReg(2)(0)(47,40),stateReg(2)(0)(55,48),stateReg(2)(0)(63,56)))
+        resultReg(6)  := Cat(Seq(stateReg(3)(0)(7,0),stateReg(3)(0)(15,8),stateReg(3)(0)(23,16),stateReg(3)(0)(31,24)))
+        resultReg(7)  := Cat(Seq(stateReg(3)(0)(39,32),stateReg(3)(0)(47,40),stateReg(3)(0)(55,48),stateReg(3)(0)(63,56)))
+        resultReg(8)  := Cat(Seq(stateReg(4)(0)(7,0),stateReg(4)(0)(15,8),stateReg(4)(0)(23,16),stateReg(4)(0)(31,24)))
+        resultReg(9)  := Cat(Seq(stateReg(4)(0)(39,32),stateReg(4)(0)(47,40),stateReg(4)(0)(55,48),stateReg(4)(0)(63,56)))
+        resultReg(10) := Cat(Seq(stateReg(0)(1)(7,0),stateReg(0)(1)(15,8),stateReg(0)(1)(23,16),stateReg(0)(1)(31,24)))
+        resultReg(11) := Cat(Seq(stateReg(0)(1)(39,32),stateReg(0)(1)(47,40),stateReg(0)(1)(55,48),stateReg(0)(1)(63,56)))
+        resultReg(12) := Cat(Seq(stateReg(1)(1)(7,0),stateReg(1)(1)(15,8),stateReg(1)(1)(23,16),stateReg(1)(1)(31,24)))
+        resultReg(13) := Cat(Seq(stateReg(1)(1)(39,32),stateReg(1)(1)(47,40),stateReg(1)(1)(55,48),stateReg(1)(1)(63,56)))
+        resultReg(14) := Cat(Seq(stateReg(2)(1)(7,0),stateReg(2)(1)(15,8),stateReg(2)(1)(23,16),stateReg(2)(1)(31,24)))
+        resultReg(15) := Cat(Seq(stateReg(2)(1)(39,32),stateReg(2)(1)(47,40),stateReg(2)(1)(55,48),stateReg(2)(1)(63,56)))
+        state_reg := idle
+        status_reg := 2.U;
+        current_message := 0.U
+
+        for(x <- 0 to 4)
+          for(y <- 0 to 4)
+            stateReg(x)(y) := 0.U
+
       }.otherwise{
-        iota_round := iota_round
-        next_state := idle
+        status_reg := 4.U
+        state_reg := idle
       }
     }
-    is(result_ready) {
-
+    is(error) {
+      state_reg := idle
+      current_message := 0.U
+      status_reg := 3.U
     }
   }
-
-
-
-
-
-  // The iota round tells the iota module what number in the table it should xor with.
+  // The iota round tells the iota module what number in the it's table it should xor with (and is used in the FSM to keep track of the round count, ensuring that the module runs for 24 rounds).
   round.io.R_iota_round := iota_round
 
-  // Connecting the state register.
-  //round.io.round_in   := stateReg
-
   // Rate (r) =  9 * 64 = 576 bits.
-
   when(xor_select){
     round.io.round_in(0)(0) := buffer.io.dataOut(8)^stateReg(0)(0)
     round.io.round_in(1)(0) := buffer.io.dataOut(7)^stateReg(1)(0)
@@ -150,140 +171,6 @@ class Sha3 extends Module {
   round.io.round_in(3)(4) := stateReg(3)(4)
   round.io.round_in(4)(4) := stateReg(4)(4)
 
-/*
-  io.result := Cat(Seq( stateReg(0)(0)(3,0),
-                        stateReg(0)(0)(7,3)
-    ,
-                        stateReg(0)(0)(12,8),
-                        stateReg(0)(0)(16,12),
-                        stateReg(0)(0)(20,16),
-                        stateReg(0)(0)(24,20),
-                        stateReg(0)(0)(28,24),
-                        stateReg(0)(0)(32,28),
-                        stateReg(0)(0)(36,32),
-                        stateReg(0)(0)(40,36),
-                        stateReg(0)(0)(40,36),
-  ))
- */
-
-
-  resultReg(0)  := Cat(Seq(stateReg(0)(0)(7,0),stateReg(0)(0)(15,8),stateReg(0)(0)(23,16),stateReg(0)(0)(31,24)))
-  resultReg(1)  := Cat(Seq(stateReg(0)(0)(39,32),stateReg(0)(0)(47,40),stateReg(0)(0)(55,48),stateReg(0)(0)(63,56)))
-  resultReg(2)  := Cat(Seq(stateReg(1)(0)(7,0),stateReg(1)(0)(15,8),stateReg(1)(0)(23,16),stateReg(1)(0)(31,24)))
-  resultReg(3)  := Cat(Seq(stateReg(1)(0)(39,32),stateReg(1)(0)(47,40),stateReg(1)(0)(55,48),stateReg(1)(0)(63,56)))
-  resultReg(4)  := Cat(Seq(stateReg(2)(0)(7,0),stateReg(2)(0)(15,8),stateReg(2)(0)(23,16),stateReg(2)(0)(31,24)))
-  resultReg(5)  := Cat(Seq(stateReg(2)(0)(39,32),stateReg(2)(0)(47,40),stateReg(2)(0)(55,48),stateReg(2)(0)(63,56)))
-  resultReg(6)  := Cat(Seq(stateReg(3)(0)(7,0),stateReg(3)(0)(15,8),stateReg(3)(0)(23,16),stateReg(3)(0)(31,24)))
-  resultReg(7)  := Cat(Seq(stateReg(3)(0)(39,32),stateReg(3)(0)(47,40),stateReg(3)(0)(55,48),stateReg(3)(0)(63,56)))
-  resultReg(8)  := Cat(Seq(stateReg(4)(0)(7,0),stateReg(4)(0)(15,8),stateReg(4)(0)(23,16),stateReg(4)(0)(31,24)))
-  resultReg(9)  := Cat(Seq(stateReg(4)(0)(39,32),stateReg(4)(0)(47,40),stateReg(4)(0)(55,48),stateReg(4)(0)(63,56)))
-  resultReg(10) := Cat(Seq(stateReg(0)(1)(7,0),stateReg(0)(1)(15,8),stateReg(0)(1)(23,16),stateReg(0)(1)(31,24)))
-  resultReg(11) := Cat(Seq(stateReg(0)(1)(39,32),stateReg(0)(1)(47,40),stateReg(0)(1)(55,48),stateReg(0)(1)(63,56)))
-  resultReg(12) := Cat(Seq(stateReg(1)(1)(7,0),stateReg(1)(1)(15,8),stateReg(1)(1)(23,16),stateReg(1)(1)(31,24)))
-  resultReg(13) := Cat(Seq(stateReg(1)(1)(39,32),stateReg(1)(1)(47,40),stateReg(1)(1)(55,48),stateReg(1)(1)(63,56)))
-  resultReg(14) := Cat(Seq(stateReg(2)(1)(7,0),stateReg(2)(1)(15,8),stateReg(2)(1)(23,16),stateReg(2)(1)(31,24)))
-  resultReg(15) := Cat(Seq(stateReg(2)(1)(39,32),stateReg(2)(1)(47,40),stateReg(2)(1)(55,48),stateReg(2)(1)(63,56)))
-
-  io.result_512 := Cat(Seq(
-                        //0
-                        stateReg(0)(0)(7,0),
-                        stateReg(0)(0)(15,8),
-                        stateReg(0)(0)(23,16),
-                        stateReg(0)(0)(31,24),
-
-                        //1
-                        stateReg(0)(0)(39,32),
-                        stateReg(0)(0)(47,40),
-                        stateReg(0)(0)(55,48),
-                        stateReg(0)(0)(63,56),
-
-                        //2
-                        stateReg(1)(0)(7,0),
-                        stateReg(1)(0)(15,8),
-                        stateReg(1)(0)(23,16),
-                        stateReg(1)(0)(31,24),
-
-                        //3
-                        stateReg(1)(0)(39,32),
-                        stateReg(1)(0)(47,40),
-                        stateReg(1)(0)(55,48),
-                        stateReg(1)(0)(63,56),
-
-                        //4
-                        stateReg(2)(0)(7,0),
-                        stateReg(2)(0)(15,8),
-                        stateReg(2)(0)(23,16),
-                        stateReg(2)(0)(31,24),
-
-                        //5
-                        stateReg(2)(0)(39,32),
-                        stateReg(2)(0)(47,40),
-                        stateReg(2)(0)(55,48),
-                        stateReg(2)(0)(63,56),
-
-                        //6
-                        stateReg(3)(0)(7,0),
-                        stateReg(3)(0)(15,8),
-                        stateReg(3)(0)(23,16),
-                        stateReg(3)(0)(31,24),
-
-                        //7
-                        stateReg(3)(0)(39,32),
-                        stateReg(3)(0)(47,40),
-                        stateReg(3)(0)(55,48),
-                        stateReg(3)(0)(63,56),
-
-                        //8
-                        stateReg(4)(0)(7,0),
-                        stateReg(4)(0)(15,8),
-                        stateReg(4)(0)(23,16),
-                        stateReg(4)(0)(31,24),
-
-                        //9
-                        stateReg(4)(0)(39,32),
-                        stateReg(4)(0)(47,40),
-                        stateReg(4)(0)(55,48),
-                        stateReg(4)(0)(63,56),
-
-                        //10
-                        stateReg(0)(1)(7,0),
-                        stateReg(0)(1)(15,8),
-                        stateReg(0)(1)(23,16),
-                        stateReg(0)(1)(31,24),
-
-                        //11
-                        stateReg(0)(1)(39,32),
-                        stateReg(0)(1)(47,40),
-                        stateReg(0)(1)(55,48),
-                        stateReg(0)(1)(63,56),
-
-                        //12
-                        stateReg(1)(1)(7,0),
-                        stateReg(1)(1)(15,8),
-                        stateReg(1)(1)(23,16),
-                        stateReg(1)(1)(31,24),
-
-                        //13
-                        stateReg(1)(1)(39,32),
-                        stateReg(1)(1)(47,40),
-                        stateReg(1)(1)(55,48),
-                        stateReg(1)(1)(63,56),
-
-                        //14
-                        stateReg(2)(1)(7,0),
-                        stateReg(2)(1)(15,8),
-                        stateReg(2)(1)(23,16),
-                        stateReg(2)(1)(31,24),
-
-                        //15
-                        stateReg(2)(1)(39,32),
-                        stateReg(2)(1)(47,40),
-                        stateReg(2)(1)(55,48),
-                        stateReg(2)(1)(63,56),
-                  ))
-
-  //^(stateReg(0)(0))(12,8)^(stateReg(0)(0))(12,8)
-  //io.enable_buffer := true.B
   io.result_32 := resultReg
 }
 

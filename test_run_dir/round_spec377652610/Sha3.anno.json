@@ -1,7 +1,7 @@
 [
   {
     "class":"firrtl.stage.FirrtlFileAnnotation",
-    "file":"test_run_dir/round_spec1914275924/Sha3.lo.fir"
+    "file":"test_run_dir/round_spec377652610/Sha3.lo.fir"
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
@@ -22,6 +22,6 @@
   },
   {
     "class":"firrtl.transforms.BlackBoxTargetDirAnno",
-    "targetDir":"test_run_dir/round_spec1914275924"
+    "targetDir":"test_run_dir/round_spec377652610"
   }
 ]
